@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Noticeboard</string>
+    <string name="email_address">Email</string>
+    <string name="password">Password</string>
+    <string name="cpassword">Confirm Password</string>
+    <string name="signup_link">New User? Sign Up</string>
+    <string name="login_button">Login</string>
+    <string name="fullnames">Full Names</string>
+    <string name="regno">Registration Number (For both staff and students)</string>
+    <string name="phonenumber">Phone Number</string>
+    <string name="signup_button">SignUp</string>
+    <string name="login_link">Already Have an Account? Login</string>
+    <string name="signupextension">Please fill in the details below</string>
+    <string name="submitsuignup">Submit</string>
+    <string name="title_activity_bottomnavigation">bottomnavigation</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+</resources>
