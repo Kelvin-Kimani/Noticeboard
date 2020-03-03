@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">trial</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="newpage">Create Page</string>
+    <string name="settings">Settings</string>
+    <string name="insearchpage">Look for a page here</string>
+    <string name="Welcome">You will get notices as soon as you follow a page.</string>
+    <string name="homefollowpage">Follow Page</string>
+    <string name="createpage">Wanna create a page instead?</string>
+    <string name="createpagelink">Create Page</string>
+</resources>

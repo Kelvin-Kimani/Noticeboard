@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.noticeboard">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,11 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".FeedsPage" />
-        <activity android:name=".signupextended" />
-        <activity
-            android:name=".SignUp"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".login"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -24,6 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".signupextended"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+        <activity android:name=".createpage"
+            android:label="@string/create_page"/>
+        <activity android:name=".resetpassword" />
+        <activity
+            android:name=".SignUp"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

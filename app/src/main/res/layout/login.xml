@@ -5,52 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".login">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText4"
-        android:drawableLeft="@drawable/pwd_icon"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="@string/login_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="190dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="50dp"
-        android:text="@string/signup_link"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        android:textAlignment="center" />
+            <EditText
+                android:id="@+id/loginemail"
+                android:layout_width="240dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/email_address"
+                android:inputType="textEmailAddress"
+                android:layout_marginTop="300dp"
+                android:layout_centerHorizontal="true"
+                android:drawableStart="@drawable/ic_email_black_24dp"/>
 
-    <EditText
-        android:id="@+id/editText4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
-        android:ems="10"
-        android:hint="@string/email_address"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:drawableLeft="@drawable/email_icon"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/loginpwd"
+                android:layout_width="240dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:layout_marginTop="50dp"
+                android:layout_below="@+id/loginemail"
+                android:layout_centerHorizontal="true"
+                android:drawableLeft="@drawable/pwd_icon"/>
+
+
+            <Button
+                android:id="@+id/loginbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:text="@string/login_button"
+                android:layout_marginTop="50dp"
+                android:layout_below="@+id/loginpwd"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/roundedshapebtn"/>
+
+            <TextView
+                android:id="@+id/loginlink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_link"
+                android:layout_marginTop="30dp"
+                android:layout_below="@+id/loginbutton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:textSize="15sp"
+                android:onClick="signuplink"
+                />
+
+            <TextView
+                android:id="@+id/forgotpwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgotpwd"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/loginlink"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:textSize="15sp"
+                android:onClick="resetlink"
+                />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="64dp"
+                android:layout_height="51dp"
+                android:layout_gravity="center|center_vertical"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </ScrollView></androidx.constraintlayout.widget.ConstraintLayout>
