@@ -6,7 +6,7 @@
     <string name="signup_link">New User? Sign Up</string>
     <string name="login_button">Login</string>
     <string name="fullnames">Full Names</string>
-    <string name="regno">Registration Number (For both staff and students)</string>
+    <string name="regno">Registration Number</string>
     <string name="phonenumber">Phone Number</string>
     <string name="signup_button">SignUp</string>
     <string name="login_link">Already Have an Account? Login</string>
@@ -62,4 +62,17 @@
     <string name="logout">Log Out</string>
     <string name="logout_popup">Are you sure you want to Logout?</string>
     <string name="create_page">Create Page</string>
+
+    <string name="post_title">Post Title</string>
+    <string name="post">Write something to post...</string>
+    <string name="create">Create</string>
+    <string name="title_activity_user_profile_page">UserProfilePage</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_user_profile">UserProfile</string>
+    <string name="add">Add</string>
+    <string name="cancel">No, Thank You</string>
+    <string name="add_profile_pic">Add Profile Picture</string>
+    <string name="desription">You can add a picture or could skip this step.</string>
+    <string name="create_page_text">Please fill in the Information below</string>
 </resources>

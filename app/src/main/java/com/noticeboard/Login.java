@@ -17,7 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class login extends AppCompatActivity {
+public class Login extends AppCompatActivity {
 
    private EditText email, pwd;
    private FirebaseAuth firebaseAuth;
@@ -34,7 +34,7 @@ public class login extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         if (firebaseAuth.getCurrentUser()!=null){
-            startActivity(new Intent(login.this,MainActivity.class));
+            startActivity(new Intent(Login.this,MainActivity.class));
             finish();
         }
 
@@ -70,7 +70,7 @@ public class login extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
 
 
-                firebaseAuth.signInWithEmailAndPassword(Email,Pwd).addOnCompleteListener(com.noticeboard.login.this, new OnCompleteListener<AuthResult>() {
+                firebaseAuth.signInWithEmailAndPassword(Email,Pwd).addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -81,10 +81,10 @@ public class login extends AppCompatActivity {
                             if (pwd.length() < 6) {
                                 pwd.setError(getString(R.string.minimum_password));
                             } else {
-                                Toast.makeText(login.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                Toast.makeText(Login.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            Intent intent = new Intent(login.this, MainActivity.class);
+                            Intent intent = new Intent(Login.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
@@ -98,13 +98,13 @@ public class login extends AppCompatActivity {
 
     public void signuplink(View view) {
 
-        Intent intent = new Intent(login.this,SignUp.class);
+        Intent intent = new Intent(Login.this,SignUp.class);
         startActivity(intent);
     }
 
     public void resetlink(View view) {
 
-        Intent intent = new Intent(login.this,resetpassword.class);
+        Intent intent = new Intent(Login.this, ResetPassword.class);
         startActivity(intent);
     }
 }

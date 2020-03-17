@@ -3,7 +3,6 @@ package com.noticeboard;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -64,7 +63,7 @@ public class SignUp extends AppCompatActivity {
                 firebaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(SignUp.this,"createUserWithEmail:onComplete"+task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this,"Sign Up successful", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
 
                         if (!task.isSuccessful()){
@@ -72,7 +71,8 @@ public class SignUp extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            startActivity(new Intent(SignUp.this, signupextended.class));
+
+                            startActivity(new Intent(SignUp.this, SignUpExtended.class));
                             finish();
                         }
 
@@ -92,7 +92,7 @@ public class SignUp extends AppCompatActivity {
 
     public void loginlink(View view) {
 
-        Intent intent = new Intent(SignUp.this,login.class);
+        Intent intent = new Intent(SignUp.this, Login.class);
         startActivity(intent);
     }
 }

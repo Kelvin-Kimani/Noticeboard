@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".signupextended">
+    tools:context=".SignUpExtended">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,41 +16,32 @@
 
             <TextView
                 android:id="@+id/profiletext"
-                android:layout_width="170dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:fontFamily="sans-serif-condensed-medium"
                 android:text="Profile Details"
                 android:textSize="25dp"
                 android:layout_centerHorizontal="true"
+                android:textStyle="bold"
                 />
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingActionButton3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_below="@+id/profiletext"
-                android:clickable="true"
-                app:fabSize="auto"
-                app:srcCompat="@drawable/ic_photo_camera_black_100dp"
-                android:layout_centerHorizontal="true" />
 
             <TextView
-                android:id="@+id/uploadtext"
+                android:id="@+id/createusertext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/photo"
-                android:layout_below="@id/floatingActionButton3"
                 android:layout_centerHorizontal="true"
-                 />
+                android:layout_marginTop="50dp"
+                android:text="@string/create_page_text"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_below="@+id/profiletext"/>
 
             <EditText
                 android:id="@+id/fullnames"
                 android:layout_width="250dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="40dp"
-                android:layout_below="@id/uploadtext"
+                android:layout_marginTop="100dp"
+                android:layout_below="@id/createusertext"
                 android:ems="10"
                 android:hint="@string/fullnames"
                 android:inputType="textPersonName"
@@ -63,7 +54,7 @@
                 android:layout_height="30dp"
                 android:layout_below="@id/fullnames"
                 android:layout_marginTop="60dp"
-                android:layout_marginLeft="70dp"
+                android:layout_marginLeft="60dp"
                 android:text="@string/phoneprefix"
                 android:textAlignment="center"
                 android:textSize="20sp" />
@@ -91,25 +82,26 @@
                 android:id="@+id/regno"
                 android:layout_width="250dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="50dp"
                 android:layout_below="@id/spinner"
                 android:ems="10"
                 android:hint="@string/regno"
-                android:inputType="textPersonName"
                 android:layout_centerHorizontal="true"
-                 />
+                />
+
             <Button
                 android:id="@+id/submitbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="60dp"
                 android:layout_marginBottom="50dp"
                 android:layout_below="@id/regno"
-                android:background="@drawable/roundedshapebtn"
-                android:text="@string/submitsuignup"
-                android:layout_centerHorizontal="true"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:text="@string/next"
+                android:layout_alignRight="@+id/regno"
+                android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:onClick="saveUserDetails"
                 />
-
 
         </RelativeLayout>
 

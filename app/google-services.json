@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "262735885187",
-    "firebase_url": "https://noticeboard-3.firebaseio.com",
-    "project_id": "noticeboard-3",
-    "storage_bucket": "noticeboard-3.appspot.com"
+    "project_number": "364086282061",
+    "firebase_url": "https://noticeboard-2.firebaseio.com",
+    "project_id": "noticeboard-2",
+    "storage_bucket": "noticeboard-2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:262735885187:android:5f7bcd670297bc729afcb6",
+        "mobilesdk_app_id": "1:364086282061:android:c5d5bf2d278871a0a09904",
         "android_client_info": {
           "package_name": "com.noticeboard"
         }
       },
       "oauth_client": [
         {
-          "client_id": "262735885187-i6dekoppemft3dlru1lh8pnpq77q8k88.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.noticeboard",
-            "certificate_hash": "d05ffcd6c1f02570b10c5b316e6b8067c447a7b1"
-          }
-        },
-        {
-          "client_id": "262735885187-iek2rre2i95o70p1fc29i7qmj5l9e7kq.apps.googleusercontent.com",
+          "client_id": "364086282061-qtsqbkqcehgj6v447po819d1h3gepi60.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBeFKg8ZSHh2TelYxnWJLmMcqQ4XC6CvgI"
+          "current_key": "AIzaSyAvsHlwuDbaMwnumT5lPmMdXX3R1db0_S4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "262735885187-iek2rre2i95o70p1fc29i7qmj5l9e7kq.apps.googleusercontent.com",
+              "client_id": "364086282061-qtsqbkqcehgj6v447po819d1h3gepi60.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

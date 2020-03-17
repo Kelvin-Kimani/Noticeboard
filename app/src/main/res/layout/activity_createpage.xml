@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUp">
+    tools:context=".CreatePage">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,26 +14,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingActionButton"
+            <TextView
+                android:id="@+id/createpagetitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="150dp"
-                android:clickable="true"
                 android:layout_centerHorizontal="true"
-                app:srcCompat="@drawable/ic_photo_camera_black_100dp" />
+                android:layout_marginTop="100dp"
+                android:text="@string/create_page"
+                android:textStyle="bold"
+                android:textSize="30sp"/>
 
+            <TextView
+                android:id="@+id/createpagetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:text="@string/create_page_text"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_below="@+id/createpagetitle"/>
 
             <EditText
                 android:id="@+id/pagename"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="100dp"
                 android:ems="10"
                 android:hint="@string/pagename"
-                android:layout_below="@+id/floatingActionButton"/>
+                android:layout_below="@+id/createpagetext"/>
 
             <EditText
                 android:id="@+id/bioinfo"
@@ -41,22 +51,31 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
                 android:layout_centerHorizontal="true"
+                android:inputType="textMultiLine"
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:hint="@string/bio"
                 android:layout_below="@+id/pagename" />
 
+            <Spinner
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/bioinfo"
+                android:layout_marginTop="80dp"
+                android:id="@+id/spinner"/>
+
             <Button
-                android:id="@+id/nextbutton"
+                android:id="@+id/createpagebutton"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
-                android:layout_alignRight="@+id/bioinfo"
+                android:layout_marginTop="80dp"
+                android:layout_alignRight="@+id/spinner"
                 android:layout_marginBottom="70dp"
-                android:text="@string/next"
-                android:layout_below="@+id/bioinfo"
-                android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"/>
+                android:text="@string/create"
+                android:layout_below="@+id/spinner"
+                android:textStyle="bold"
+                android:onClick="savePage"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

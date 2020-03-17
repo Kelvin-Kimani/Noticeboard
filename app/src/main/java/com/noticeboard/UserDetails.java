@@ -1,28 +1,18 @@
 package com.noticeboard;
 
+public class UserDetails {
 
+    String fullname;
+    String level;
+    String phonenumber;
 
-class UserDetails {
-
-    String fullname,level,regno,id,phonenumber;
-
-    public UserDetails(){
-
+    public UserDetails() {
     }
-    public UserDetails(String id, String fullname, String phonenumber, String level, String regno){
-        this.id = id;
+
+    public UserDetails(String fullname, String level, String phonenumber) {
         this.fullname = fullname;
-        this.phonenumber = phonenumber;
         this.level = level;
-        this.regno = regno;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.phonenumber = phonenumber;
     }
 
     public String getFullname() {
@@ -39,14 +29,6 @@ class UserDetails {
 
     public void setLevel(String level) {
         this.level = level;
-    }
-
-    public String getRegno() {
-        return regno;
-    }
-
-    public void setRegno(String regno) {
-        this.regno = regno;
     }
 
     public String getPhonenumber() {

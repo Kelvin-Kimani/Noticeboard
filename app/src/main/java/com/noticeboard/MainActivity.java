@@ -16,15 +16,20 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 public class MainActivity extends AppCompatActivity {
 
+   private FirebaseFirestore db = FirebaseFirestore.getInstance();
+   private CollectionReference postref = db.collection("Posts");
+   private PostAdapter adapter;
     Button logout;
-
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -35,12 +40,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+       /* fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,createpage.class));
+                startActivity(new Intent(MainActivity.this,CreatePage.class));
             }
-        });
+        });*/
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -54,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
 
-
         logout = (Button) findViewById(R.id.logout);
+
+        //we now create an adapter class
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 FirebaseAuth.getInstance().signOut();
 
-                                Intent intent =  new Intent(MainActivity.this, login.class);
+                                Intent intent =  new Intent(MainActivity.this, Login.class);
 
                                 //makesure user cant go back
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -87,7 +94,25 @@ public class MainActivity extends AppCompatActivity {
                 alert11.show();
             }
         });
+
+        setUpRecyclerView();
+
+
     }
+
+    private void setUpRecyclerView() {
+        Query query = postref.orderBy("title", Query.Direction.DESCENDING);
+        FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
+                .setQuery(query, PostDetails.class)
+                .build();
+        adapter = new PostAdapter(options);
+
+       // RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        //recyclerView.setHasFixedSize(true);
+       // recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView.setAdapter(adapter);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,3 +128,4 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 }
+

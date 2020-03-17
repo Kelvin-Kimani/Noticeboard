@@ -15,7 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class resetpassword extends AppCompatActivity {
+public class ResetPassword extends AppCompatActivity {
 
     EditText resetemail;
     Button resetpwdbutton;
@@ -38,7 +38,7 @@ public class resetpassword extends AppCompatActivity {
                 String email = resetemail.getText().toString();
 
                 if (TextUtils.isEmpty(email)){
-                    Toast.makeText(resetpassword.this,"Please write your valid Email Address", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ResetPassword.this,"Please write your valid Email Address", Toast.LENGTH_SHORT).show();
                 }
 
                 else {
@@ -49,13 +49,13 @@ public class resetpassword extends AppCompatActivity {
 
                             if (task.isSuccessful()){
 
-                                    Toast.makeText(resetpassword.this,"Please check your email account",Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(resetpassword.this,login.class));
+                                    Toast.makeText(ResetPassword.this,"Please check your email account",Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(ResetPassword.this, Login.class));
                             }
 
                             else {
                                 String message = task.getException().getMessage();
-                                Toast.makeText(resetpassword.this,"Error occured:" +message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ResetPassword.this,"Error occured:" +message, Toast.LENGTH_SHORT).show();
                             }
 
                         }
