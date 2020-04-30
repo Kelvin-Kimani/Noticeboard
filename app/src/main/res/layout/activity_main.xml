@@ -20,7 +20,12 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" >
+        app:menu="@menu/activity_main_drawer"
+        app:itemTextColor="@color/color_title"
+        app:itemIconSize="@dimen/dimen_20dp"
+        app:itemIconTint="@color/color_title"
+        android:theme="@style/NavigationTheme"
+        >
 
         <Button
             android:id="@+id/logout"
@@ -29,8 +34,9 @@
             android:layout_gravity="bottom|center_horizontal"
             android:text="@string/logout"
             android:textSize="15sp"
-            android:drawableLeft="@drawable/ic_power_settings_new_black_24dp"
+            android:drawableLeft="@drawable/navbar_log_out"
             style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_marginBottom="0dp"
             />
 
     </com.google.android.material.navigation.NavigationView>

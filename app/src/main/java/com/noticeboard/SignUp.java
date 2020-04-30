@@ -3,6 +3,8 @@ package com.noticeboard;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,15 +15,19 @@ import android.text.TextUtils;
 import android.widget.ProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SignUp extends AppCompatActivity {
 
+    private TextInputLayout textEmailLayout, textPwdLayout;
     EditText emailaddress, password;
     FirebaseAuth firebaseAuth;
     Button signupbtn;
     ProgressBar progressBar;
+    FirebaseUser user;
 
 
     @Override
@@ -29,70 +35,91 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        textEmailLayout = (TextInputLayout) findViewById(R.id.emailTIL);
+        textPwdLayout = (TextInputLayout) findViewById(R.id.pwdTIL);
         emailaddress = (EditText) findViewById(R.id.idemail);
         password = (EditText) findViewById(R.id.pwd);
         signupbtn = (Button) findViewById(R.id.signup);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+
         firebaseAuth = FirebaseAuth.getInstance();
+
 
         signupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = emailaddress.getText().toString();
-                String pwd = password.getText().toString();
 
+                if (validate()){
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Email Address cannot be empty", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    String email = emailaddress.getText().toString().trim();
+                    String pwd = password.getText().toString().trim();
 
-                if (TextUtils.isEmpty(pwd)) {
-                    Toast.makeText(getApplicationContext(), "Fill in the Password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    ProgressDialog signUpProgressDialog = new ProgressDialog(SignUp.this);
+                    signUpProgressDialog.setMessage("Signing Up...");
+                    signUpProgressDialog.setCancelable(false);
+                    signUpProgressDialog.show();
 
-                if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    firebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
 
-                progressBar.setVisibility(View.VISIBLE);
+                            if (task.isSuccessful()) {
 
-                firebaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(SignUp.this,"Sign Up successful", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
+                                startActivity(new Intent(SignUp.this, SignUpExtended.class));
+                                finish();
 
-                        if (!task.isSuccessful()){
-                            Toast.makeText(SignUp.this, "Authentication Failed"+ task.getException(),
-                                    Toast.LENGTH_SHORT).show();
+                            } else
+                            {
+
+                                Toast.makeText(SignUp.this, "Authentication Failed" + task.getException(),Toast.LENGTH_SHORT).show();
+
+                            }
+
                         }
-                        else {
+                    });
 
-                            startActivity(new Intent(SignUp.this, SignUpExtended.class));
-                            finish();
-                        }
+                }
 
-                    }
-                });
             }
-
         });
+    }
+
+    private boolean validate() {
+
+        boolean valid = true;
+
+        String email = emailaddress.getText().toString();
+        String pwd = password.getText().toString();
+
+        if (pwd.isEmpty() || pwd.length() < 6) {
+            password.setError("Enter at least 6 characters");
+            valid = false;
+        } else {password.setError(null);}
+
+        if (email.isEmpty()){
+            emailaddress.setError("Email Address cannot be empty");
+            valid = false;
+        }
+
+        else if (!email.contains(".") ||!email.contains("@")) {
+            emailaddress.setError("Bad Email Address Format!");
+            valid = false;
+        }
+        else{emailaddress.setError(null);}
+
+        return valid;
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        progressBar.setVisibility(View.GONE);
     }
 
 
     public void loginlink(View view) {
 
-        Intent intent = new Intent(SignUp.this, Login.class);
-        startActivity(intent);
+        startActivity(new Intent(SignUp.this, Login.class));
     }
 }

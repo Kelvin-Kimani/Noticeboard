@@ -2,16 +2,19 @@ package com.noticeboard;
 
 public class PageDetails {
 
+
     String pagename, pageinfo, privacy;
 
-    public PageDetails(String pagename, String pageinfo, String privacy) {
+    public PageDetails( String pagename, String pageinfo, String privacy) {
         this.pagename = pagename;
         this.pageinfo = pageinfo;
         this.privacy = privacy;
+
     }
 
     public PageDetails() {
     }
+
 
     public String getPagename() {
         return pagename;
@@ -36,4 +39,5 @@ public class PageDetails {
     public void setPrivacy(String privacy) {
         this.privacy = privacy;
     }
+
 }

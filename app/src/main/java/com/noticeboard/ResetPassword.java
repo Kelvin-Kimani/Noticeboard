@@ -13,10 +13,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ResetPassword extends AppCompatActivity {
-
+    private TextInputLayout textEmailLayout;
     EditText resetemail;
     Button resetpwdbutton;
     FirebaseAuth auth;
@@ -26,8 +27,12 @@ public class ResetPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resetpassword);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         auth = FirebaseAuth.getInstance();
 
+        textEmailLayout = (TextInputLayout) findViewById(R.id.resetEmailTIL);
         resetemail = (EditText) findViewById(R.id.resetemail);
         resetpwdbutton = (Button) findViewById(R.id.resetbutton);
 
@@ -35,13 +40,10 @@ public class ResetPassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String email = resetemail.getText().toString();
+                if (validate()){
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(ResetPassword.this,"Please write your valid Email Address", Toast.LENGTH_SHORT).show();
-                }
+                    String email = resetemail.getText().toString().trim();
 
-                else {
 
                     auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -49,8 +51,8 @@ public class ResetPassword extends AppCompatActivity {
 
                             if (task.isSuccessful()){
 
-                                    Toast.makeText(ResetPassword.this,"Please check your email account",Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(ResetPassword.this, Login.class));
+                                Toast.makeText(ResetPassword.this,"Please check your email account",Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(ResetPassword.this, Login.class));
                             }
 
                             else {
@@ -64,5 +66,24 @@ public class ResetPassword extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean validate() {
+        boolean valid = true;
+
+        String email = resetemail.getText().toString().trim();
+
+        if (email.isEmpty()){
+            resetemail.setError("Email Address cannot be empty");
+            valid = false;
+        }
+
+        else if (!email.contains(".") ||!email.contains("@")) {
+            resetemail.setError("Bad Email Address Format!");
+            valid = false;
+        }
+        else{resetemail.setError(null);}
+
+        return valid;
     }
 }

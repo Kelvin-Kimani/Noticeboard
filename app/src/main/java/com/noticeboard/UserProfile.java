@@ -1,35 +1,240 @@
 package com.noticeboard;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfile extends AppCompatActivity {
 
-    private TabLayout tabLayout;
-    private AppBarLayout appBarLayout;
-    private ViewPager viewPager;
+    FloatingActionButton floatingActionButton;
+    CircleImageView circleImageView;
+    TextView username;
+    FirebaseFirestore firestore;
+    FirebaseAuth auth;
+    String userID;
+    DatabaseReference imageref;
+    Uri imageUri;
+    StorageReference storageReference;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
 
-        tabLayout = (TabLayout) findViewById(R.id.tablayout);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbarid);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        //adding fragments
-        adapter.addFragment(new FragmentFollowing(),"FOLLOWING");
+        circleImageView = (CircleImageView) findViewById(R.id.userprofileimg);
+        username = (TextView) findViewById(R.id.username);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
 
-        //adapter setup
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+        //edit profile pic
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateProfile();
+            }
+        });
+
+
+        auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        imageref = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference().child("User Profiles");
+
+        userID = auth.getCurrentUser().getUid();
+
+        // retrieve user details
+        DocumentReference documentReference = firestore.collection("Users").document(userID);
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                username.setText(documentSnapshot.getString("fullname"));
+
+            }
+        });
+
+
+        retrieveUserImage();
+    }
+
+    private void updateProfile() {
+
+        CropImage.startPickImageActivity(this);
 
     }
+
+    public void cropImageRequest(Uri imageUri){
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1, 1)
+                .setMultiTouchEnabled(true)
+                .start(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+            imageUri = CropImage.getPickImageResultUri(this, data);
+            cropImageRequest(imageUri);
+
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (resultCode == RESULT_OK) {
+
+                Uri resultUri = result.getUri();
+
+                StorageReference filereference = storageReference.child(userID + ".jpg");
+
+                filereference.putFile(resultUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                Toast.makeText(UserProfile.this, "Profile Updated", Toast.LENGTH_LONG).show();
+
+                                Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while (!urlTask.isSuccessful());
+                                Uri downloadUrl = urlTask.getResult();
+                                String imageurl = String.valueOf(downloadUrl);
+
+                                imageref.child("Users Profiles").child(userID).child("image")
+                                        .setValue(imageurl)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                                if (task.isSuccessful()){
+                                                    Toast.makeText(UserProfile.this, "Image Url Saved too!", Toast.LENGTH_LONG).show();
+                                                }
+                                                else{
+
+                                                    String message = task.getException().toString();
+                                                    Toast.makeText(UserProfile.this, "Error:"+message, Toast.LENGTH_LONG).show();
+
+                                                }
+
+                                            }
+                                        });
+
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+
+                                Toast.makeText(UserProfile.this, "Updating Profile", Toast.LENGTH_LONG).show();
+                                double progress = (100.0* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                Task task = null;
+                                String message = task.getException().toString();
+                                Toast.makeText(UserProfile.this, "Error:"+message, Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+                    }
+                }
+            }
+
+    private void retrieveUserImage() {
+
+        // retrieve user image
+        imageref.child("Users Profiles").child(userID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))){
+
+                            String imageurl = dataSnapshot.child("image").getValue().toString();
+                            Picasso.get().load(imageurl).into(circleImageView);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+
+    public void openPages(View view) {
+        startActivity(new Intent(UserProfile.this, Pages.class));
+        finish();
+    }
+
+    public void openAssociationPages(View view) {
+
+        startActivity(new Intent(UserProfile.this, AssociationPages.class));
+        finish();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+        getMenuInflater().inflate(R.menu.edit, menu);
+
+        return true;
+    }
+
+
+
+
 }

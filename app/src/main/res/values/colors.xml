@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimary">#FFFF</color>
     <color name="colorPrimaryDark">#03A9F4</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="colorpink">#D81B60</color>
     //latter
 
     <color name="gradient_start">#5770f3</color>
     <color name="gradient_end">#8e5aeb</color>
-    <color name="profile_desc">#D1D1FF</color>
+    <color name="profile_desc">@color/profile_default_tint</color>
     <color name="bg_meta_container">#000000</color>
     <color name="profile_default_tint">#e0e0e0</color>
 
     <color name="tabtextcolor">#2d2d2d</color>
     <color name="tabcolor">#FFFF</color>
+    <color name="color_title">#000000</color>
 </resources>

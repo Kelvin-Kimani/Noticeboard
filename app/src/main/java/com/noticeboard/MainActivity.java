@@ -3,11 +3,15 @@ package com.noticeboard;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,16 +24,31 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-   private FirebaseFirestore db = FirebaseFirestore.getInstance();
-   private CollectionReference postref = db.collection("Posts");
-   private PostAdapter adapter;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Button logout;
+    FirebaseFirestore firestore;
+    String userID;
+    DatabaseReference imageref;
+
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -40,29 +59,65 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-       /* fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,CreatePage.class));
-            }
-        });*/
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        final TextView username = (TextView) header.findViewById(R.id.username);
+        final CircleImageView UserImage = (CircleImageView) header.findViewById(R.id.userprofileimg);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_search, R.id.nav_notification, R.id.nav_profile)
+                R.id.nav_home, R.id.nav_savedpost, R.id.nav_pages, R.id.nav_settings)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-
         logout = (Button) findViewById(R.id.logout);
 
-        //we now create an adapter class
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        userID = user.getUid();
+        firestore = FirebaseFirestore.getInstance();
+        imageref = FirebaseDatabase.getInstance().getReference();
+
+
+        if (user != null) {
+
+            DocumentReference documentReference = firestore.collection("Users").document(userID);
+            documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                    username.setText(documentSnapshot.getString("fullname"));
+
+                }
+            });
+
+            imageref.child("Users Profiles").child(userID)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))){
+
+                                String imageurl = dataSnapshot.child("image").getValue().toString();
+                                Picasso.get().load(imageurl).into(UserImage);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                }
+
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 FirebaseAuth.getInstance().signOut();
 
-                                Intent intent =  new Intent(MainActivity.this, Login.class);
+                                Intent intent = new Intent(MainActivity.this, Login.class);
 
                                 //makesure user cant go back
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -95,22 +150,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setUpRecyclerView();
-
-
-    }
-
-    private void setUpRecyclerView() {
-        Query query = postref.orderBy("title", Query.Direction.DESCENDING);
-        FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
-                .setQuery(query, PostDetails.class)
-                .build();
-        adapter = new PostAdapter(options);
-
-       // RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        //recyclerView.setHasFixedSize(true);
-       // recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //recyclerView.setAdapter(adapter);
     }
 
 

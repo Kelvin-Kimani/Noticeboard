@@ -29,9 +29,10 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="resetintro">Reset Password</string>
-    <string name="resetinstruction">We will email you with password reset instructions.Thank you.</string>
+    <string name="resetinstruction">We will email you with password reset instructions.</string>
     <string name="resetbutton">Reset Password</string>
     <string name="next">Next</string>
+    <string name="thanks">Thank You</string>
     <string name="signout">SignOut</string>
     <string name="pagename">Page Name</string>
     <string name="bio">Bio (Page Description)</string>
@@ -59,12 +60,14 @@
     <string name="menu_profile">Profile</string>
     <string name="menu_settings">Settings</string>
     <string name="home_second">Home Second</string>
-    <string name="logout">Log Out</string>
+    <string name="logout">LogOut</string>
     <string name="logout_popup">Are you sure you want to Logout?</string>
     <string name="create_page">Create Page</string>
+    <string name="pages">Pages</string>
 
-    <string name="post_title">Post Title</string>
-    <string name="post">Write something to post...</string>
+    <string name="post_title">Post Title (Required)</string>
+    <string name="post">What is the announcement?</string>
+    <string name="posts">Posts</string>
     <string name="create">Create</string>
     <string name="title_activity_user_profile_page">UserProfilePage</string>
     <string name="tab_text_1">Tab 1</string>
@@ -75,4 +78,6 @@
     <string name="add_profile_pic">Add Profile Picture</string>
     <string name="desription">You can add a picture or could skip this step.</string>
     <string name="create_page_text">Please fill in the Information below</string>
+    <string name="savedpost">Saved Post</string>
+    <string name="edit">Edit</string>
 </resources>

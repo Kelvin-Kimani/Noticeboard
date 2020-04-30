@@ -20,29 +20,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:text="Profile Details"
-                android:textSize="25dp"
+                android:textSize="20sp"
                 android:layout_centerHorizontal="true"
                 android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
                 />
-
             <TextView
-                android:id="@+id/createusertext"
+                android:id="@+id/instruction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
-                android:text="@string/create_page_text"
+                android:text="Please fill In the information below"
+                android:textSize="15sp"
+                android:layout_centerHorizontal="true"
                 android:textStyle="bold"
-                android:textSize="18sp"
-                android:layout_below="@+id/profiletext"/>
+               android:layout_below="@+id/profiletext"
+                />
 
             <EditText
                 android:id="@+id/fullnames"
-                android:layout_width="250dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="100dp"
-                android:layout_below="@id/createusertext"
-                android:ems="10"
+                android:layout_below="@id/instruction"
+                android:ems="15"
                 android:hint="@string/fullnames"
                 android:inputType="textPersonName"
                 android:layout_centerHorizontal="true"
@@ -57,34 +58,35 @@
                 android:layout_marginLeft="60dp"
                 android:text="@string/phoneprefix"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/phonenumber"
-                android:layout_width="160dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/fullnames"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="50dp"
                 android:ems="10"
                 android:hint="@string/phonenumber"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 android:layout_marginLeft="150dp"/>
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="250dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="40dp"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
                 android:layout_below="@id/phonenumber"
                 android:layout_centerHorizontal="true"/>
 
             <EditText
                 android:id="@+id/regno"
-                android:layout_width="250dp"
-                android:layout_height="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:layout_below="@id/spinner"
-                android:ems="10"
+                android:ems="15"
                 android:hint="@string/regno"
                 android:layout_centerHorizontal="true"
                 />
@@ -97,11 +99,8 @@
                 android:layout_marginBottom="50dp"
                 android:layout_below="@id/regno"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@string/next"
-                android:layout_alignRight="@+id/regno"
-                android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
-                android:onClick="saveUserDetails"
-                />
+                android:text="Nxt"
+                android:layout_alignRight="@+id/regno"/>
 
         </RelativeLayout>
 

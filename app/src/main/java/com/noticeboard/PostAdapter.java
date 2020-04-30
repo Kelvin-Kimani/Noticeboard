@@ -11,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class PostAdapter extends FirestoreRecyclerAdapter<PostDetails, PostAdapter.PostHolder> {
 
     public PostAdapter(@NonNull FirestoreRecyclerOptions<PostDetails> options) {
@@ -22,6 +27,9 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostDetails, PostAdapt
 
         holder.title.setText(model.getTitle());
         holder.content.setText(model.getContent());
+       //Remember to add time
+        holder.time.setText(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+
     }
 
     @NonNull
@@ -34,13 +42,14 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostDetails, PostAdapt
 
     class PostHolder extends RecyclerView.ViewHolder {
 
-        TextView title, content;
+        TextView title, content,time;
 
         public PostHolder(@NonNull View itemView) {
             super(itemView);
 
             title  = itemView.findViewById(R.id.posttitle);
             content = itemView.findViewById(R.id.post);
+            time = itemView.findViewById(R.id.time);
 
         }
     }

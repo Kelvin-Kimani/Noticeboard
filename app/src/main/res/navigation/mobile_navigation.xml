@@ -8,41 +8,23 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.noticeboard.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
+        android:label="@string/posts"
+        tools:layout="@layout/fragment_home"/>
 
-        <action
-            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-            app:destination="@id/nav_home_second" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_home_second"
-        android:name="com.noticeboard.ui.home.HomeSecondFragment"
-        android:label="@string/home_second"
-        tools:layout="@layout/fragment_home_second">
-        <action
-            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
+    <activity
+        android:id="@+id/nav_pages"
+        android:name="com.noticeboard.Pages"
+        android:label="@string/pages"
+        tools:layout="@layout/pages"/>
 
-        <argument
-            android:name="myArg"
-            app:argType="string" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_search"
-        android:name="com.noticeboard.ui.search.SearchFragment"
-        android:label="@string/menu_search"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
-        android:id="@+id/nav_notification"
-        android:name="com.noticeboard.ui.notification.NotificationFragment"
-        android:label="@string/menu_notification"
-        tools:layout="@layout/fragment_notification" />
-    <fragment
-        android:id="@+id/nav_profile"
-        android:name="com.noticeboard.ui.profile.ProfileFragment"
+    <activity
+        android:id="@+id/nav_savedpost"
+        android:name="com.noticeboard.SavedPost"
+        android:label="@string/savedpost"
+        tools:layout="@layout/activity_saved_post" />
+    <activity
+        android:id="@+id/nav_settings"
+        android:name="com.noticeboard.UserProfile"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/user_profile" />
 </navigation>
