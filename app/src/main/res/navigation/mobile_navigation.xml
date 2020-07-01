@@ -23,8 +23,20 @@
         android:label="@string/savedpost"
         tools:layout="@layout/activity_saved_post" />
     <activity
-        android:id="@+id/nav_settings"
+        android:id="@+id/nav_profile"
         android:name="com.noticeboard.UserProfile"
         android:label="@string/menu_profile"
         tools:layout="@layout/user_profile" />
+    <activity
+        android:id="@+id/nav_notifications"
+        android:label="@string/menu_notification"
+        tools:layout="@layout/activity_notifications"
+       android:name="com.noticeboard.Notifications"/>
+
+    <activity
+        android:id="@+id/nav_help"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/activity_help_and_faqs"
+        android:name="com.noticeboard.HelpAndFAQs"/>
+
 </navigation>

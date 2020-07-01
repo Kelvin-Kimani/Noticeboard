@@ -24,8 +24,7 @@
         app:itemTextColor="@color/color_title"
         app:itemIconSize="@dimen/dimen_20dp"
         app:itemIconTint="@color/color_title"
-        android:theme="@style/NavigationTheme"
-        >
+        android:theme="@style/NavigationTheme">
 
         <Button
             android:id="@+id/logout"
@@ -36,8 +35,7 @@
             android:textSize="15sp"
             android:drawableLeft="@drawable/navbar_log_out"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_marginBottom="0dp"
-            />
+            android:layout_marginBottom="0dp"/>
 
     </com.google.android.material.navigation.NavigationView>
 

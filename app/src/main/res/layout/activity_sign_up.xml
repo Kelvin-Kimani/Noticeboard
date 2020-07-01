@@ -44,7 +44,7 @@
                 android:layout_gravity="center"
                 android:layout_below="@+id/icon"
                 android:ems="12"
-                android:hint="@string/email_address"
+                android:hint="Email (If Staff Use Institution Email)"
                 android:inputType="textEmailAddress"
                 android:layout_margin="@dimen/dimen_40dp"
                 android:layout_centerHorizontal="true"
@@ -85,7 +85,8 @@
                 android:layout_below="@+id/pwdTIL"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/roundedshapebtn"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/loginlink"

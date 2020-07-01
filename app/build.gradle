@@ -15,6 +15,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            aaptOptions { cruncherEnabled = false }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -53,6 +54,9 @@ dependencies {
     // FirebaseUI for Cloud Storage
     implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
 
+    // FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
+
     //noinspection GradleCompatible
     implementation 'com.android.support:design:25.3.1'
 
@@ -72,6 +76,7 @@ dependencies {
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 
-    implementation 'jp.wasabeef:blurry:2.1.1'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
 
 }

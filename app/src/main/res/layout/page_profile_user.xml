@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,40 +8,44 @@
     <RelativeLayout
         android:id="@+id/relativelayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="150dp"
+        <ToggleButton
+            android:id="@+id/followbutton"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/roundedshapebtn"
-            android:text="Follow"
-            android:layout_below="@+id/pageprofileimg"
+            android:layout_below="@id/pageprofileimg"
             android:layout_centerHorizontal="true"
-            android:layout_margin="40dp"/>
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/button_background"
+            android:onClick="onToggleClick"
+            android:textAllCaps="false"
+            android:textOff="Follow"
+            android:textOn="Following"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/pageprofileimg"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/profileimage"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/pagename"
-            android:layout_marginBottom="@dimen/dimen_20dp"
-            />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="@dimen/dimen_40dp"
+            android:src="@drawable/page_avatar" />
 
 
         <TextView
             android:id="@+id/pagename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PAGE NAME"
-            android:layout_marginTop="20dp"
-            android:textSize="25sp"
-            android:textStyle="bold"
             android:layout_centerHorizontal="true"
-            />
+            android:text="PAGE NAME"
+            android:textColor="@color/color_title"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
@@ -65,40 +68,64 @@
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
             android:text="Description"
-            android:textSize="20sp"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_margin="20dp"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/description"
+            android:layout_margin="20dp"
+            android:text="Bio"
+            android:textColor="@color/color_title"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/bio"
+            android:background="@color/profile_desc" />
 
         <RelativeLayout
             android:id="@+id/postslayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/description">
+            android:layout_below="@+id/bio"
+            android:onClick="openPosts">
 
             <ImageView
                 android:id="@+id/postsicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_library_books_black_24dp"
-                android:layout_margin="15dp" />
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_library_books_black_24dp" />
+
             <TextView
                 android:id="@+id/posts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Posts"
                 android:layout_centerVertical="true"
-                android:layout_margin="15dp"
+                android:layout_margin="20dp"
                 android:layout_toRightOf="@+id/postsicon"
-                android:textStyle="bold"/>
+                android:text="Posts"
+                android:textStyle="bold" />
 
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/posts"
-                android:background="@color/profile_desc"
-                android:layout_alignStart="@+id/posts"/>
+                android:layout_alignStart="@+id/posts"
+                android:layout_marginBottom="0dp"
+                android:background="@color/profile_desc" />
 
 
         </RelativeLayout>
@@ -113,38 +140,38 @@
                 android:id="@+id/notificationsicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_notifications_black_24dp"
-                android:layout_margin="15dp" />
+                android:layout_margin="15dp"
+                android:src="@drawable/ic_notifications_black_24dp" />
+
             <TextView
                 android:id="@+id/notifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notifications"
                 android:layout_centerVertical="true"
                 android:layout_margin="15dp"
                 android:layout_toRightOf="@+id/notificationsicon"
-                android:textStyle="bold"/>
+                android:text="Notifications"
+                android:textStyle="bold" />
 
             <View
                 android:id="@+id/view7"
                 android:layout_width="1dp"
                 android:layout_height="@dimen/dimen_40dp"
-                android:background="@color/profile_desc"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/notificationswitch"/>
+                android:layout_toLeftOf="@id/notificationswitch"
+                android:background="@color/profile_desc" />
 
             <Switch
                 android:id="@+id/notificationswitch"
+                style="@style/Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_margin="15dp"
-                android:checked="false"
-                style="@style/Switch"/>
+                android:checked="false" />
 
         </RelativeLayout>
-
 
 
     </RelativeLayout>

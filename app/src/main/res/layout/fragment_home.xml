@@ -3,24 +3,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.home.HomeFragment">
 
+
+    <RelativeLayout
+        android:id="@+id/welcometextRL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome"
+            android:textSize="20sp"
+            android:textColor="@color/color_title"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create a page to reach out to many people as possible."
+            android:layout_below="@id/text"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Also, get updates without the hustle. Follow a page now"
+            android:layout_below="@id/text1"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"/>
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homerecyclerview"
         android:layout_width="match_parent"
-        android:layout_marginTop="1dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/postsFragmentFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:tint="@color/colorPrimary"
-        android:src="@drawable/ic_add_black_24dp"/>
+        android:src="@drawable/ic_note_add_black_24dp"
+        android:tint="@color/colorPrimary" />
 
 </RelativeLayout>

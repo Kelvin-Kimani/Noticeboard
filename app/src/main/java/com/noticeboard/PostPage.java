@@ -1,16 +1,14 @@
 package com.noticeboard;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -18,27 +16,24 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.Calendar;
 
-public class PostPage extends AppCompatActivity{
+public class PostPage extends AppCompatActivity {
 
-    private static final String TAG = "Post";
     EditText posttitle, post;
     Button postbutton;
-    DatabaseReference reference;
-    static final String KEY_TITLE= "Post Title";
-    static final String KEY_CONTENT = "Post Content";
-    FirebaseFirestore db;
+    String pageID;
+    String page_name;
+    String defaultValue = "No";
 
 
     @Override
@@ -50,66 +45,56 @@ public class PostPage extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Compose");
 
-        posttitle = (EditText) findViewById(R.id.posttitle);
-        post = (EditText) findViewById(R.id.post);
-        postbutton = (Button) findViewById(R.id.postbutton);
+        posttitle = findViewById(R.id.posttitle);
+        post = findViewById(R.id.post);
+        postbutton = findViewById(R.id.postbutton);
 
-        db = FirebaseFirestore.getInstance();
         final String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-
-        /*db.collection("Users").document(userID).collection("Pages").document(pagename).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-
-                    @Override
-                   public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-
-                        String pagename = document.getString("Page Name");
-
-                        Log.d("TAG", pagename );
-                    }
-                }
-            }
-        }); */
+        Intent intent = getIntent();
+        pageID = intent.getStringExtra("pageID");
+        page_name = intent.getStringExtra("pagename");
 
         postbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (validateForm()){
+                if (validateForm()) {
 
                     String title = posttitle.getText().toString().trim();
                     String content = post.getText().toString().trim();
 
-                    Map<String, Object> post = new HashMap<>();
+                    //SimpleDateFormat ISO_8601_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+                    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
+                    //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    String time = dateTimeInstance.format(Calendar.getInstance().getTime());
 
-                    post.put(KEY_TITLE, title);
-                    post.put(KEY_CONTENT, content);
-                    post.put("Date", new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+                    DocumentReference postreference = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Posts").document();
+                    String postID = postreference.getId();
+                    postreference.set(new PostDetails(title, content, time, postID));
 
-                    //remember to edit document name
-                    db.collection("Users").document(userID).collection("Pages").document().collection("Posts").document("Date").set(post)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
 
-                                    Toast.makeText(PostPage.this, "Information Posted Successfully", Toast.LENGTH_LONG).show();
-                                    //add intent flag
-                                    startActivity(new Intent(PostPage.this, MainActivity.class));
-                                    finish();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
+                    DocumentReference allpostreference = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").document();
+                    allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
 
-                                    Toast.makeText(PostPage.this, "Error!", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, e.toString());
-                            }
+                            Toast.makeText(PostPage.this, "Information Posted Successfully!", Toast.LENGTH_LONG).show();
+                            finish();
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            Toast.makeText(PostPage.this, "An Error Occurred. Please try again later ", Toast.LENGTH_LONG).show();
+
+                        }
                     });
+
+                    CollectionReference follower = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Followers");
+
+                    
                 }
             }
         });
@@ -124,19 +109,19 @@ public class PostPage extends AppCompatActivity{
         if (title.isEmpty()) {
             posttitle.setError("Post Title Cannot Be Empty!");
             valid = false;
-        }
-        else if (title.length() < 2) {
+        } else if (title.length() < 2) {
             posttitle.setError("Post Title should be at least 2 characters");
             valid = false;
+        } else {
+            posttitle.setError(null);
         }
-        else
-        {posttitle.setError(null);}
 
-        if (content.isEmpty()){
+        if (content.isEmpty()) {
             post.setError("Post Cannot Be Empty!");
             valid = false;
+        } else {
+            post.setError(null);
         }
-        else{post.setError(null);}
 
         return valid;
     }

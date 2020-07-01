@@ -14,29 +14,44 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/postTitleTIL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_40dp"
+                app:errorEnabled="true"
+                android:layout_centerHorizontal="true">
 
             <EditText
                 android:id="@+id/posttitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:ems="10"
+                android:ems="15"
                 android:layout_marginTop="50dp"
                 android:layout_alignParentLeft="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="50dp"
                 android:hint="@string/post_title"
                 />
+            </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/postTIL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_40dp"
+                app:errorEnabled="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/postTitleTIL">
 
             <EditText
                 android:id="@+id/post"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:ems="15"
                 android:inputType="textMultiLine"
                 android:layout_gravity="center"
-                android:layout_alignParentLeft="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="50dp"
                 android:layout_below="@+id/posttitle"
@@ -44,16 +59,18 @@
                 android:hint="@string/post"
                 />
 
+            </com.google.android.material.textfield.TextInputLayout>
+
             <Button
                 android:id="@+id/postbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/post"
+                android:layout_below="@+id/postTIL"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="100dp"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_alignRight="@+id/post"
+                android:layout_alignRight="@+id/postTIL"
                 android:drawableRight="@drawable/ic_send_black_24dp"/>
 
             <ProgressBar

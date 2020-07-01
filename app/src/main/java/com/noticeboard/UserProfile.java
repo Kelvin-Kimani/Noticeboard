@@ -1,13 +1,11 @@
 package com.noticeboard;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +38,8 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,14 +47,13 @@ public class UserProfile extends AppCompatActivity {
 
     FloatingActionButton floatingActionButton;
     CircleImageView circleImageView;
-    TextView username;
+    TextView username, level;
     FirebaseFirestore firestore;
     FirebaseAuth auth;
     String userID;
     DatabaseReference imageref;
     Uri imageUri;
     StorageReference storageReference;
-
 
 
     @Override
@@ -66,9 +64,10 @@ public class UserProfile extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        circleImageView = (CircleImageView) findViewById(R.id.userprofileimg);
-        username = (TextView) findViewById(R.id.username);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        circleImageView = findViewById(R.id.userprofileimg);
+        username = findViewById(R.id.username);
+        level = findViewById(R.id.level);
+        floatingActionButton = findViewById(R.id.fab);
 
         //edit profile pic
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +76,6 @@ public class UserProfile extends AppCompatActivity {
                 updateProfile();
             }
         });
-
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -93,10 +91,10 @@ public class UserProfile extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
                 username.setText(documentSnapshot.getString("fullname"));
+                level.setText(documentSnapshot.getString("level"));
 
             }
         });
-
 
         retrieveUserImage();
     }
@@ -107,7 +105,7 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
-    public void cropImageRequest(Uri imageUri){
+    public void cropImageRequest(Uri imageUri) {
         CropImage.activity(imageUri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(1, 1)
@@ -143,23 +141,28 @@ public class UserProfile extends AppCompatActivity {
                                 Toast.makeText(UserProfile.this, "Profile Updated", Toast.LENGTH_LONG).show();
 
                                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                                while (!urlTask.isSuccessful());
+                                while (!urlTask.isSuccessful()) ;
                                 Uri downloadUrl = urlTask.getResult();
-                                String imageurl = String.valueOf(downloadUrl);
+                                final String imageurl = String.valueOf(downloadUrl);
 
-                                imageref.child("Users Profiles").child(userID).child("image")
+                                imageref.child("Users Profiles").child(userID).child("image").child("userimage")
                                         .setValue(imageurl)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
 
-                                                if (task.isSuccessful()){
+                                                if (task.isSuccessful()) {
+
+                                                    DocumentReference userImageRef = FirebaseFirestore.getInstance().collection("Users").document(userID);
+                                                    Map<String, Object> map = new HashMap<>();
+                                                    map.put("userimage", imageurl);
+                                                    userImageRef.update(map);
+
                                                     Toast.makeText(UserProfile.this, "Image Url Saved too!", Toast.LENGTH_LONG).show();
-                                                }
-                                                else{
+                                                } else {
 
                                                     String message = task.getException().toString();
-                                                    Toast.makeText(UserProfile.this, "Error:"+message, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(UserProfile.this, "Error:" + message, Toast.LENGTH_LONG).show();
 
                                                 }
 
@@ -173,7 +176,7 @@ public class UserProfile extends AppCompatActivity {
                             public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
                                 Toast.makeText(UserProfile.this, "Updating Profile", Toast.LENGTH_LONG).show();
-                                double progress = (100.0* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -182,25 +185,24 @@ public class UserProfile extends AppCompatActivity {
 
                                 Task task = null;
                                 String message = task.getException().toString();
-                                Toast.makeText(UserProfile.this, "Error:"+message, Toast.LENGTH_LONG).show();
+                                Toast.makeText(UserProfile.this, "Error:" + message, Toast.LENGTH_LONG).show();
 
                             }
                         });
-                    }
-                }
             }
+        }
+    }
 
     private void retrieveUserImage() {
 
-        // retrieve user image
         imageref.child("Users Profiles").child(userID)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))){
+                        if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))) {
 
-                            String imageurl = dataSnapshot.child("image").getValue().toString();
+                            String imageurl = dataSnapshot.child("image").child("userimage").getValue().toString();
                             Picasso.get().load(imageurl).into(circleImageView);
                         }
                     }
@@ -210,18 +212,18 @@ public class UserProfile extends AppCompatActivity {
 
                     }
                 });
-
     }
 
     public void openPages(View view) {
+
         startActivity(new Intent(UserProfile.this, Pages.class));
-        finish();
+
     }
 
     public void openAssociationPages(View view) {
 
-        startActivity(new Intent(UserProfile.this, AssociationPages.class));
-        finish();
+        AssociationPages associationPages = new AssociationPages();
+        associationPages.show(getSupportFragmentManager(), "BottomSheet");
 
     }
 
@@ -230,11 +232,25 @@ public class UserProfile extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         getMenuInflater().inflate(R.menu.edit, menu);
-
         return true;
     }
 
 
+    public void openEditUser(MenuItem item) {
 
+        startActivity(new Intent(UserProfile.this, EditUser.class));
 
+    }
+
+    public void openFAQs(View view) {
+
+        startActivity(new Intent(UserProfile.this, HelpAndFAQs.class));
+
+    }
+
+    public void openCreatedPages(View view) {
+
+        startActivity(new Intent(UserProfile.this, Pages.class));
+
+    }
 }

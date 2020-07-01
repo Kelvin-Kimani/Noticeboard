@@ -1,64 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Pages">
 
-    <RelativeLayout
-        android:id="@+id/relativelayout"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/pagesappbarlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/profile_desc">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <include
+            android:id="@+id/page_toolbar"
+            layout="@layout/app_bar_layout"></include>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/page_tabs"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-                android:text="Pages Created"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"/>
+            android:theme="@style/CustomActivityTheme"
+            app:tabTextAppearance="@style/TabLayout"
+            app:tabSelectedTextColor="@color/color_title"
+            app:tabTextColor="@color/tabtextcolor1"/>
 
-    </RelativeLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pagesrecyclerview"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pagesviewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="1dp"
-        android:layout_below="@+id/relativelayout"/>
-
-    <RelativeLayout
-        android:id="@+id/followingrelative"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/profile_desc"
-        android:layout_below="@+id/pagesrecyclerview">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Following"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"/>
-
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/followingrelative"
-        android:layout_margin="1dp"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:tint="@color/colorPrimary"
-        android:src="@drawable/ic_add_black_24dp"
-        android:onClick="openCreatePage"/>
+        android:layout_below="@id/pagesappbarlayout"/>
 
 </RelativeLayout>

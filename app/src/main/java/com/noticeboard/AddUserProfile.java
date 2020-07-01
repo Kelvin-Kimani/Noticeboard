@@ -1,29 +1,19 @@
 package com.noticeboard;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,20 +23,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AddUserProfile extends AppCompatActivity {
 
@@ -66,11 +55,11 @@ public class AddUserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user_profile);
 
-        userprofileimg =(ImageView) findViewById(R.id.userprofileimg);
-        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        add = (Button) findViewById(R.id.addbutton);
-        cancel = (Button) findViewById(R.id.skipbutton);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        userprofileimg = findViewById(R.id.userprofileimg);
+        fab = findViewById(R.id.floatingActionButton);
+        add = findViewById(R.id.addbutton);
+        cancel = findViewById(R.id.skipbutton);
+        progressBar = findViewById(R.id.progressBar);
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         storageReference = FirebaseStorage.getInstance().getReference().child("User Profiles");
@@ -98,13 +87,14 @@ public class AddUserProfile extends AppCompatActivity {
         CropImage.startPickImageActivity(this);
     }
 
-    public void cropImageRequest(Uri imageUri){
+    public void cropImageRequest(Uri imageUri) {
         CropImage.activity(imageUri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(1, 1)
                 .setMultiTouchEnabled(true)
                 .start(this);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,7 +111,7 @@ public class AddUserProfile extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
-            Uri resultUri = result.getUri();
+                Uri resultUri = result.getUri();
 
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
@@ -131,61 +121,68 @@ public class AddUserProfile extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-            StorageReference filereference = storageReference.child(userID + ".jpg");
+                StorageReference filereference = storageReference.child(userID + ".jpg");
 
-            filereference.putFile(resultUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                filereference.putFile(resultUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                 Toast.makeText(AddUserProfile.this, "Image Uploaded successfully", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(AddUserProfile.this, MainActivity.class));
-
+                                //Avoid going back to the same page on back press
+                                finish();
 
                                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                                while (!urlTask.isSuccessful());
+                                while (!urlTask.isSuccessful()) ;
                                 Uri downloadUrl = urlTask.getResult();
-                                String imageurl = String.valueOf(downloadUrl);
+                                final String imageurl = String.valueOf(downloadUrl);
 
+                                final UserDetails userImage = new UserDetails(imageurl);
                                 imageref.child("Users Profiles").child(userID).child("image")
-                                        .setValue(imageurl)
+                                        .setValue(userImage)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
 
-                                                if (task.isSuccessful()){
+                                                if (task.isSuccessful()) {
+
+                                                    DocumentReference userImageRef = FirebaseFirestore.getInstance().collection("Users").document(userID);
+                                                    Map<String, Object> map = new HashMap<>();
+                                                    map.put("userimage", imageurl);
+                                                    userImageRef.update(map);
+
                                                     Toast.makeText(AddUserProfile.this, "Image Url Saved too!", Toast.LENGTH_LONG).show();
-                                                }
-                                                else{
+                                                } else {
 
                                                     String message = task.getException().toString();
-                                                    Toast.makeText(AddUserProfile.this, "Error:"+message, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(AddUserProfile.this, "Error:" + message, Toast.LENGTH_LONG).show();
 
                                                 }
 
                                             }
                                         });
 
-                        }
-                    })
-            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
-                    Toast.makeText(AddUserProfile.this, "Upload in progress", Toast.LENGTH_LONG).show();
-                    double progress = (100.0* taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    }
-                })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AddUserProfile.this, "Upload in progress", Toast.LENGTH_LONG).show();
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                    Task task = null;
-                    String message = task.getException().toString();
-                    Toast.makeText(AddUserProfile.this, "Error:"+message, Toast.LENGTH_LONG).show();
+                                Task task = null;
+                                String message = task.getException().toString();
+                                Toast.makeText(AddUserProfile.this, "Error:" + message, Toast.LENGTH_LONG).show();
 
-                    }
-                });
+                            }
+                        });
             }
         }
     }

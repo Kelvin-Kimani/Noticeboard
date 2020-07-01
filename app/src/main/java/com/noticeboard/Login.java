@@ -1,39 +1,32 @@
 package com.noticeboard;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
-import jp.wasabeef.blurry.Blurry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.noticeboard.Utils.AppUtils;
 
 public class Login extends AppCompatActivity {
 
-   private TextInputLayout textEmailLayout, textPwdLayout;
-   private EditText email, pwd;
-   private FirebaseAuth firebaseAuth;
-   private ProgressBar progressBar;
-   private Button login;
-   private ProgressDialog loginProgressDialog;
-
+    Context context = this;
+    private TextInputLayout textEmailLayout, textPwdLayout;
+    private EditText email, pwd;
+    private FirebaseAuth firebaseAuth;
+    private ProgressBar progressBar;
+    private Button login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +36,21 @@ public class Login extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        if (firebaseAuth.getCurrentUser()!=null){
+        if (firebaseAuth.getCurrentUser() != null) {
 
-            startActivity(new Intent(Login.this,MainActivity.class));
+            startActivity(new Intent(Login.this, MainActivity.class));
             finish();
         }
 
 
         setContentView(R.layout.login);
 
-        textEmailLayout = (TextInputLayout) findViewById(R.id.emailTIL);
-        textPwdLayout = (TextInputLayout) findViewById(R.id.pwdTIL);
-        email = (EditText) findViewById(R.id.loginemail);
-        pwd = (EditText) findViewById(R.id.loginpwd);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        login = (Button) findViewById(R.id.loginbutton);
+        textEmailLayout = findViewById(R.id.emailTIL);
+        textPwdLayout = findViewById(R.id.pwdTIL);
+        email = findViewById(R.id.loginemail);
+        pwd = findViewById(R.id.loginpwd);
+        progressBar = findViewById(R.id.progressBar);
+        login = findViewById(R.id.loginbutton);
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -67,43 +60,42 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (validateForm()) {
+                if (AppUtils.isNetworkConnected(context)) {
 
-                    String emailAddress = email.getText().toString().trim();
-                    String password = pwd.getText().toString().trim();
+                    if (validateForm()) {
 
-                    /*loginProgressDialog = new ProgressDialog(Login.this);
-                    loginProgressDialog.setMessage("Logging in...");
-                    loginProgressDialog.setCancelable(false);
-                    loginProgressDialog.show();*/
+                        String emailAddress = email.getText().toString().trim();
+                        String password = pwd.getText().toString().trim();
 
+                        progressBar.setVisibility(View.VISIBLE);
 
-                    progressBar.setVisibility(View.VISIBLE);
+                        firebaseAuth.signInWithEmailAndPassword(emailAddress, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
 
-                    firebaseAuth.signInWithEmailAndPassword(emailAddress,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
+                                progressBar.setVisibility(View.GONE);
 
-                            progressBar.setVisibility(View.GONE);
+                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
 
-                            Intent intent = new Intent(Login.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                                progressBar.setVisibility(View.GONE);
 
-                            progressBar.setVisibility(View.GONE);
+                                Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_LONG).show();
 
-                            Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_LONG).show();
+                            }
+                        });
 
+                    }
 
-                        }
-                    });
+                } else {
 
-
+                    Toast.makeText(Login.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -120,18 +112,19 @@ public class Login extends AppCompatActivity {
         if (password.isEmpty() || password.length() < 6) {
             pwd.setError("Enter at least 6 characters");
             valid = false;
-        } else {pwd.setError(null);}
+        } else {
+            pwd.setError(null);
+        }
 
-        if (emailAddress.isEmpty()){
+        if (emailAddress.isEmpty()) {
             email.setError("Email Address cannot be empty");
             valid = false;
-        }
-
-        else if (!emailAddress.contains(".") ||!emailAddress.contains("@")) {
+        } else if (!emailAddress.contains(".") || !emailAddress.contains("@")) {
             email.setError("Bad Email Address Format!");
             valid = false;
+        } else {
+            email.setError(null);
         }
-        else{email.setError(null);}
 
         return valid;
     }
@@ -139,7 +132,7 @@ public class Login extends AppCompatActivity {
 
     public void signuplink(View view) {
 
-        Intent intent = new Intent(Login.this,SignUp.class);
+        Intent intent = new Intent(Login.this, SignUp.class);
         startActivity(intent);
     }
 
@@ -147,6 +140,11 @@ public class Login extends AppCompatActivity {
 
         Intent intent = new Intent(Login.this, ResetPassword.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }

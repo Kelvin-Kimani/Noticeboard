@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- WHEN IS CHECKED -->
+    <item android:drawable="@drawable/ic_bookmark_black_24dp" android:state_checked="true" />
+
+    <!-- WHEN IS NOT CHECKED -->
+    <item android:drawable="@drawable/ic_bookmark_empty" android:state_checked="false" />
+
+</selector>

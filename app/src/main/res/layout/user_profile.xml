@@ -1,283 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UserProfile">
 
-
-    <RelativeLayout
-        android:id="@+id/relativelayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userprofileimg"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_person_black_24dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginBottom="40dp"
-            android:layout_marginTop="@dimen/dimen_20dp"
-            android:layout_marginRight="@dimen/dimen_20dp"/>
-
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="John Doe"
-            android:layout_marginTop="45dp"
-            android:textSize="25sp"
-            android:textStyle="bold"
-
-            android:layout_toRightOf="@+id/userprofileimg"
-            />
-
-    </RelativeLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_photo_camera_black_50dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:outlineAmbientShadowColor="@color/colorPrimaryDark"
-        android:layout_below="@+id/relativelayout"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="-30dp"
-        android:layout_marginRight="10dp"
-        android:tint="@color/colorPrimary"
-        />
-
-    <View
-        android:id="@+id/view1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/relativelayout"
-        android:background="@color/profile_desc"/>
-
-
-    <RelativeLayout
-        android:id="@+id/relativelayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/view1">
-
-        <TextView
-            android:id="@+id/profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_margin="20dp"
-            android:textStyle="bold"/>
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/relativelayout21"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile"
-            android:onClick="openPages">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/pageicon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/baseline_pages_black_18dp_smaller"
-                android:layout_margin="15dp" />
-            <TextView
-                android:id="@+id/pages"
+            <RelativeLayout
+                android:id="@+id/relativelayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userprofileimg"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="@dimen/dimen_20dp"
+                    android:layout_marginRight="@dimen/dimen_20dp"
+                    android:layout_marginBottom="40dp"
+                    android:src="@drawable/user_image_avatar" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_toRightOf="@+id/userprofileimg"
+                    android:text="John Doe"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_title"/>
+
+                <TextView
+                    android:id="@+id/level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/username"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/userprofileimg"
+                    android:text="level"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pages"
-                android:layout_centerVertical="true"
-                android:layout_margin="15dp"
-                android:layout_toRightOf="@+id/pageicon"
-                android:textStyle="bold"/>
+                android:layout_below="@+id/relativelayout"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="-30dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:outlineAmbientShadowColor="@color/colorPrimaryDark"
+                android:src="@drawable/ic_photo_camera_black_50dp"
+                android:tint="@color/colorPrimary" />
 
             <View
-                android:id="@+id/view2"
+                android:id="@+id/view1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/pages"
-                android:background="@color/profile_desc"
-                android:layout_alignStart="@+id/pages"/>
+                android:layout_below="@+id/relativelayout"
+                android:background="@color/profile_desc" />
 
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/relativelayout22"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/relativelayout21"
-            android:onClick="openPages">
-
-            <ImageView
-                android:id="@+id/followingicon"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/relativelayout2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_person_black_24dp"/>
-            <TextView
-                android:id="@+id/following"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Following"
-                android:layout_centerVertical="true"
-                android:layout_margin="15dp"
-                android:layout_toRightOf="@+id/followingicon"
-                android:textStyle="bold"/>
+                android:layout_below="@id/view1">
+
+                <TextView
+                    android:id="@+id/profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:text="Profile"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/relativelayout21"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/profile"
+                    android:onClick="openCreatedPages">
+
+                    <ImageView
+                        android:id="@+id/pageicon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:src="@drawable/ic_pages_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/pages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:layout_toRightOf="@+id/pageicon"
+                        android:text="Pages"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/pages"
+                        android:layout_alignStart="@+id/pages"
+                        android:background="@color/profile_desc" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativelayout22"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/relativelayout21"
+                    android:onClick="openPages">
+
+                    <ImageView
+                        android:id="@+id/followingicon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:src="@drawable/ic_person_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/following"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:layout_toRightOf="@+id/followingicon"
+                        android:text="Following"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/view3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/following"
+                        android:layout_alignStart="@+id/following"
+                        android:background="@color/profile_desc" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/relativelayout22"
+                    android:onClick="openAssociationPages">
+
+                    <ImageView
+                        android:id="@+id/associationicon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:src="@drawable/ic_group_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/associations"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:layout_toRightOf="@+id/associationicon"
+                        android:text="Associations"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
 
             <View
-                android:id="@+id/view3"
+                android:id="@+id/view4"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/following"
-                android:background="@color/profile_desc"
-                android:layout_alignStart="@+id/following"/>
+                android:layout_height="10dp"
+                android:layout_below="@+id/relativelayout2"
+                android:background="@color/profile_desc" />
 
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/relativelayout22"
-            android:onClick="openAssociationPages">
-
-            <ImageView
-                android:id="@+id/associationicon"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/relativelayout3"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_group_black_24dp"
-                android:layout_margin="15dp" />
-            <TextView
-                android:id="@+id/associations"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Associations"
-                android:layout_centerVertical="true"
-                android:layout_margin="15dp"
-                android:layout_toRightOf="@+id/associationicon"
-                android:textStyle="bold"/>
+                android:layout_below="@id/view4">
 
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:text="Settings"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
 
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/view4"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_below="@+id/relativelayout2"
-        android:background="@color/profile_desc"/>
-
-    <RelativeLayout
-        android:id="@+id/relativelayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/view4">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="Settings"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-
-
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/view5"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_below="@+id/relativelayout3"
-        android:background="@color/profile_desc"/>
-
-    <RelativeLayout
-        android:id="@+id/relativelayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/view5">
-
-
-        <TextView
-            android:id="@+id/help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="Help"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"/>
-
-        <RelativeLayout
-            android:id="@+id/FAQsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/help">
-
-            <ImageView
-                android:id="@+id/FAQIcon"
-                android:layout_width="@dimen/dimen_20dp"
-                android:layout_height="@dimen/dimen_20dp"
-                android:src="@drawable/round_help_black_18dp"
-                android:layout_margin="15dp" />
-
-            <TextView
-                android:id="@+id/faqs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="FAQs"
-                android:layout_margin="15dp"
-                android:textStyle="bold"
-                android:layout_toRightOf="@id/FAQIcon"/>
+            </RelativeLayout>
 
             <View
-                android:id="@+id/view6"
+                android:id="@+id/view5"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/faqs"
-                android:background="@color/profile_desc"
-                android:layout_alignStart="@+id/faqs"/>
-
+                android:layout_height="match_parent"
+                android:layout_below="@+id/relativelayout3"
+                android:background="@color/profile_desc" />
 
 
         </RelativeLayout>
 
-        <RelativeLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/FAQsLayout">
-
-            <ImageView
-                android:id="@+id/privacyicon"
-                android:layout_width="@dimen/dimen_20dp"
-                android:layout_height="@dimen/dimen_20dp"
-                android:src="@drawable/round_verified_user_black_18dp"
-                android:layout_margin="15dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Privacy Policy"
-                android:layout_margin="15dp"
-                android:textStyle="bold"
-                android:layout_toRightOf="@id/privacyicon"/>
-
-        </RelativeLayout>
-
-
-    </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

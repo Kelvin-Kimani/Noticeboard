@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditPage">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/editpagetitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/edit_page"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/createpagetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:text="@string/create_page_text"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_below="@+id/editpagetitle"
+                android:textColor="@color/color_title"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/pagenameTIL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                app:errorEnabled="true"
+                android:layout_below="@id/createpagetext"
+                android:layout_centerHorizontal="true">
+                <EditText
+                    android:id="@+id/pagename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:ems="15"
+                    android:hint="@string/pagename"
+                    android:layout_below="@+id/createpagetext"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bioTIL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                app:errorEnabled="true"
+                android:layout_below="@id/pagenameTIL"
+                android:layout_centerHorizontal="true">
+
+                <EditText
+                    android:id="@+id/bioinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    android:layout_centerHorizontal="true"
+                    android:inputType="textMultiLine"
+                    android:ems="15"
+                    android:hint="@string/bio"
+                    android:layout_below="@+id/pagename" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

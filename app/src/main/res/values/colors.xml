@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#03A9F4</color>
     <color name="colorAccent">#03A9F4</color>
     <color name="colorpink">#D81B60</color>
+    <color name="colorRed">#FF1100</color>
     //latter
 
     <color name="gradient_start">#5770f3</color>
@@ -12,7 +13,9 @@
     <color name="bg_meta_container">#000000</color>
     <color name="profile_default_tint">#e0e0e0</color>
 
-    <color name="tabtextcolor">#2d2d2d</color>
+    <color name="tabtextcolor">#232323</color>
+    <color name="tabtextcolor1">#B1B1B1</color>
+    <color name="navigationview">#DFDFDF</color>
     <color name="tabcolor">#FFFF</color>
     <color name="color_title">#000000</color>
 </resources>

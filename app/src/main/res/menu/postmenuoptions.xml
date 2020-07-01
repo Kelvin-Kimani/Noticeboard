@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/save"
+        android:orderInCategory="100"
+        android:title="save"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_bookmark_empty"
+        android:onClick="openEditUser"/>
+
+    <item
+        android:id="@+id/edit"
+        android:orderInCategory="100"
+        android:title="@string/edit"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_mode_edit_black_24dp"/>
+
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="100"
+        android:title="delete"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_delete_black_24dp" />
+
+</menu>

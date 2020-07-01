@@ -1,83 +1,88 @@
 package com.noticeboard;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-import android.text.TextUtils;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.noticeboard.Utils.AppUtils;
 
 public class SignUp extends AppCompatActivity {
 
-    private TextInputLayout textEmailLayout, textPwdLayout;
     EditText emailaddress, password;
     FirebaseAuth firebaseAuth;
     Button signupbtn;
     ProgressBar progressBar;
-    FirebaseUser user;
-
+    Context context = this;
+    private TextInputLayout textEmailLayout, textPwdLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        textEmailLayout = (TextInputLayout) findViewById(R.id.emailTIL);
-        textPwdLayout = (TextInputLayout) findViewById(R.id.pwdTIL);
-        emailaddress = (EditText) findViewById(R.id.idemail);
-        password = (EditText) findViewById(R.id.pwd);
-        signupbtn = (Button) findViewById(R.id.signup);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
+        textEmailLayout = findViewById(R.id.emailTIL);
+        textPwdLayout = findViewById(R.id.pwdTIL);
+        emailaddress = findViewById(R.id.idemail);
+        password = findViewById(R.id.pwd);
+        signupbtn = findViewById(R.id.signup);
+        progressBar = findViewById(R.id.progressBar);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
 
         signupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (validate()){
+                if (AppUtils.isNetworkConnected(context)) {
 
-                    String email = emailaddress.getText().toString().trim();
-                    String pwd = password.getText().toString().trim();
+                    if (validate()) {
 
-                    ProgressDialog signUpProgressDialog = new ProgressDialog(SignUp.this);
-                    signUpProgressDialog.setMessage("Signing Up...");
-                    signUpProgressDialog.setCancelable(false);
-                    signUpProgressDialog.show();
+                        String email = emailaddress.getText().toString().trim();
+                        String pwd = password.getText().toString().trim();
 
-                    firebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        ProgressDialog signUpProgressDialog = new ProgressDialog(SignUp.this);
+                        signUpProgressDialog.setMessage("Signing Up");
+                        signUpProgressDialog.setCancelable(false);
+                        signUpProgressDialog.show();
 
-                            if (task.isSuccessful()) {
+                        firebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                startActivity(new Intent(SignUp.this, SignUpExtended.class));
-                                finish();
+                                if (task.isSuccessful()) {
 
-                            } else
-                            {
+                                    startActivity(new Intent(SignUp.this, SignUpExtended.class));
+                                    finish();
 
-                                Toast.makeText(SignUp.this, "Authentication Failed" + task.getException(),Toast.LENGTH_SHORT).show();
+                                } else {
+
+                                    Toast.makeText(SignUp.this, "Authentication Failed" + task.getException(), Toast.LENGTH_SHORT).show();
+
+                                }
 
                             }
+                        });
 
-                        }
-                    });
+                    }
+
+                } else {
+
+                    Toast.makeText(SignUp.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -95,18 +100,19 @@ public class SignUp extends AppCompatActivity {
         if (pwd.isEmpty() || pwd.length() < 6) {
             password.setError("Enter at least 6 characters");
             valid = false;
-        } else {password.setError(null);}
+        } else {
+            password.setError(null);
+        }
 
-        if (email.isEmpty()){
+        if (email.isEmpty()) {
             emailaddress.setError("Email Address cannot be empty");
             valid = false;
-        }
-
-        else if (!email.contains(".") ||!email.contains("@")) {
+        } else if (!email.contains(".") || !email.contains("@")) {
             emailaddress.setError("Bad Email Address Format!");
             valid = false;
+        } else {
+            emailaddress.setError(null);
         }
-        else{emailaddress.setError(null);}
 
         return valid;
 
@@ -120,6 +126,8 @@ public class SignUp extends AppCompatActivity {
 
     public void loginlink(View view) {
 
-        startActivity(new Intent(SignUp.this, Login.class));
+        Intent intent = new Intent(SignUp.this, Login.class);
+        startActivity(intent);
+        finish();
     }
 }
