@@ -47,6 +47,7 @@
             android:layout_below="@+id/view">
 
             <TextView
+                android:id="@+id/unfollowText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

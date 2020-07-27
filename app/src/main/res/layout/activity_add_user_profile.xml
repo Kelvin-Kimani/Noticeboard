@@ -53,7 +53,8 @@
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="@color/colorPrimaryDark"
                 android:clickable="true"
-                android:src="@drawable/ic_photo_camera_black_50dp" />
+                android:src="@drawable/ic_photo_camera_black_50dp"
+                android:focusable="true" />
 
             <Button
                 android:id="@+id/skipbutton"

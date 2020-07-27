@@ -10,20 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ToggleButton
-            android:id="@+id/followbutton"
-            android:layout_width="120dp"
+        <TextView
+            android:id="@+id/pagename"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pageprofileimg"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dimen_20dp"
-            android:layout_marginBottom="60dp"
-            android:background="@drawable/button_background"
-            android:onClick="onToggleClick"
-            android:textAllCaps="false"
-            android:textOff="Follow"
-            android:textOn="Following"
-            android:textSize="18sp"
+            android:text="PAGE NAME"
+            android:textColor="@color/color_title"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -36,16 +30,64 @@
             android:layout_marginBottom="@dimen/dimen_40dp"
             android:src="@drawable/page_avatar" />
 
-
-        <TextView
-            android:id="@+id/pagename"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/followstate"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/pageprofileimg"
             android:layout_centerHorizontal="true"
-            android:text="PAGE NAME"
-            android:textColor="@color/color_title"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/dimen_40dp"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/add_page_icon"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:drawablePadding="10dp"
+            android:text="Follow"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:onClick="followpage" />
+
+        <Button
+            android:id="@+id/requestedstate"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@+id/pageprofileimg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dimen_40dp"
+           android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:drawablePadding="10dp"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/ic_access_time_black_24dp"
+            android:text="Requested"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:onClick="cancelRequest"/>
+
+        <Button
+            android:id="@+id/followingstate"
+            android:layout_width="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:drawablePadding="10dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/pageprofileimg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dimen_40dp"
+            android:background="@drawable/button_clicked"
+            android:drawableLeft="@drawable/following_page_icon"
+            android:text="Following"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:visibility="gone"
+            android:onClick="unfollowpage"
+            android:textStyle="bold"/>
+
 
     </RelativeLayout>
 

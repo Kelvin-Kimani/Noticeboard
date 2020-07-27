@@ -4,8 +4,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,16 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageUserAdapter.PageHolder> {
 
-    String pagename, pageinfo, pageID, userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), confirmedPageID;
     private OnItemClickListener listener;
-    private OnButtonClickListener buttonClickListener;
+    private OnFollowButtonClickListener followButtonClickListener;
 
 
     /**
@@ -36,12 +39,15 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull PageHolder holder, int position, @NonNull PageDetails model) {
+    protected void onBindViewHolder(@NonNull final PageHolder holder, int position, @NonNull PageDetails model) {
 
-        pagename = model.getPagename();
-        pageinfo = model.getPageinfo();
-        pageID = model.getPageID();
+        String pagename = model.getPagename();
+        String pageinfo = model.getPageinfo();
+        String pageID = model.getPageID();
+        String adminUID = model.getUserID();
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        holder.follow.setVisibility(View.VISIBLE);
         holder.textViewPageName.setText(pagename);
         holder.textViewPageInfo.setText(pageinfo);
 
@@ -80,9 +86,9 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
         this.listener = listener;
     }
 
-    public void setOnButtonClickListener(OnButtonClickListener buttonClickListener) {
+    public void setOnFollowButtonClickListener(OnFollowButtonClickListener followButtonClickListener) {
 
-        this.buttonClickListener = buttonClickListener;
+        this.followButtonClickListener = followButtonClickListener;
 
     }
 
@@ -91,9 +97,9 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
         void onItemClick(DocumentSnapshot documentSnapshot, int position);
     }
 
-    public interface OnButtonClickListener {
+    public interface OnFollowButtonClickListener {
 
-        void onButtonClick(DocumentSnapshot documentSnapshot, int position);
+        void onFollowButtonClick(DocumentSnapshot documentSnapshot, int position);
 
     }
 
@@ -102,7 +108,8 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
         TextView textViewPageName;
         TextView textViewPageInfo;
         CircleImageView pageImageView;
-        ToggleButton followButton;
+        Button follow, following, requested;
+
 
         public PageHolder(@NonNull View itemView) {
             super(itemView);
@@ -110,7 +117,9 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
             textViewPageName = (itemView).findViewById(R.id.pagename);
             textViewPageInfo = (itemView).findViewById(R.id.bio);
             pageImageView = (itemView).findViewById(R.id.pageprofileimg);
-            followButton = (itemView).findViewById(R.id.followbutton);
+            follow = (itemView).findViewById(R.id.followbutton);
+            following = (itemView).findViewById(R.id.followingbutton);
+            requested = (itemView).findViewById(R.id.requestbutton);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -127,22 +136,39 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
                 }
             });
 
-
-            followButton.setOnClickListener(new View.OnClickListener() {
+            follow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // remember to implement
                     int position = getAdapterPosition();
 
-                    if (position != RecyclerView.NO_POSITION && buttonClickListener != null) {
+                    if (position != RecyclerView.NO_POSITION && followButtonClickListener != null) {
 
-                        buttonClickListener.onButtonClick(getSnapshots().getSnapshot(position), position);
+                        followButtonClickListener.onFollowButtonClick(getSnapshots().getSnapshot(position), position);
 
                     }
 
                 }
             });
 
+
+           /* following.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // remember to implement
+                    int position = getAdapterPosition();
+
+                   }
+            });
+
+            requested.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // remember to implement
+                    int position = getAdapterPosition();
+
+                   }
+            });*/
         }
     }
 }

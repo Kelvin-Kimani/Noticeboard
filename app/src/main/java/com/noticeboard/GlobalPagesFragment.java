@@ -92,7 +92,6 @@ public class GlobalPagesFragment extends Fragment {
         userAdapter = new PageUserAdapter(options1);
 
         recyclerView = v.findViewById(R.id.globalpagesrecyclerview);
-        //recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(userAdapter);
 
@@ -128,100 +127,93 @@ public class GlobalPagesFragment extends Fragment {
             }
         });
 
-        userAdapter.setOnButtonClickListener(new PageUserAdapter.OnButtonClickListener() {
+        userAdapter.setOnFollowButtonClickListener(new PageUserAdapter.OnFollowButtonClickListener() {
             @Override
-            public void onButtonClick(DocumentSnapshot documentSnapshot, int position) {
+            public void onFollowButtonClick(DocumentSnapshot documentSnapshot, int position) {
+
                 PageDetails page = documentSnapshot.toObject(PageDetails.class);
 
-                final String followpagename = page.getPagename();
-                final String adminUserID = page.getUserID();
-                final String followedPageInfo = page.getPageinfo();
-                final String followedPagePrivacy = page.getPrivacy();
-                final String followedPageID = page.getPageID();
-
-
-                //Follow a page
-                DocumentReference pagefollower = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(followedPageID).collection("Followers").document(userID);
-                pagefollower.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                DocumentReference checkPrivacy = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID);
+                checkPrivacy.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                         if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String privacy = document.getString("privacy");
 
-                            // unfollow
-                            final CollectionReference followers = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(followedPageID).collection("Followers");
-                            Query query = followers.whereEqualTo("userID", userID);
-                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (privacy.equals("Private")) {
 
-                                    if (task.isSuccessful()) {
-                                        for (DocumentSnapshot document : task.getResult()) {
+                                    DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
+                                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if (documentSnapshot.exists()) {
 
-                                            followers.document(document.getId()).delete();
+                                                final String username = documentSnapshot.getString("fullname");
+                                                String level = documentSnapshot.getString("level");
+                                                String userImage = documentSnapshot.getString("userimage");
 
-                                            final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
-                                            Query query1 = pagefollowed.whereEqualTo("pageID", followedPageID);
-                                            query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                //save requested follower details
+                                                DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Requested").document(userID);
+                                                requested.set(new UserDetails(username, level, userID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                                    if (task.isSuccessful()) {
-                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                        if (task.isSuccessful()) {
 
-                                                            pagefollowed.document(document.getId()).delete();
-                                                            Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(getActivity(), username + " " + " Requested", Toast.LENGTH_SHORT).show();
+
                                                         }
                                                     }
-                                                }
-                                            });
+                                                });
 
-
-                                        }
-                                    }
-                                }
-
-                            });
-
-                        } else {
-
-                            //follow
-                            DocumentReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed").document();
-                            pagefollowed.set(new PageDetails(followpagename, followedPageInfo, followedPagePrivacy, followedPageID, adminUserID));
-
-                            DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
-                            documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    if (documentSnapshot.exists()) {
-
-                                        username = documentSnapshot.getString("fullname");
-                                        level = documentSnapshot.getString("level");
-                                        phonenumber = "+254" + documentSnapshot.getString("phonenumber");
-                                        email = documentSnapshot.getString("email");
-
-                                        DocumentReference followers = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(followedPageID).collection("Followers").document(userID);
-                                        followers.set(new UserDetails(username, level, userID, phonenumber,email)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-
-                                                if (task.isSuccessful()) {
-
-                                                    Toast.makeText(getActivity(), username + " " + userID + " Followed", Toast.LENGTH_SHORT).show();
-
-                                                }
                                             }
-                                        });
+                                        }
 
-                                    }
+                                    });
+
+                                } else {
+
+                                    //save page details
+                                    DocumentReference pagefollowed1 = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed").document(pageID);
+                                    pagefollowed1.set(new PageDetails(pname, pinfo, privacy, pageID, administratorUID));
+
+                                    DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
+                                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            if (documentSnapshot.exists()) {
+
+                                                final String username = documentSnapshot.getString("fullname");
+                                                String level = documentSnapshot.getString("level");
+                                                String userImage = documentSnapshot.getString("userimage");
+
+                                                //save follower details
+                                                DocumentReference followers = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                                                followers.set(new UserDetails(username, level, userID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                                        if (task.isSuccessful()) {
+
+                                                            Toast.makeText(getActivity(), username + " " + " Followed", Toast.LENGTH_SHORT).show();
+
+                                                        }
+                                                    }
+                                                });
+
+                                            }
+                                        }
+
+                                    });
                                 }
-                            });
 
+                            }
                         }
-
                     }
                 });
-
             }
         });
 
