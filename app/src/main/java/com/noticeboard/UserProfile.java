@@ -214,23 +214,27 @@ public class UserProfile extends AppCompatActivity {
                 });
     }
 
-    public void openPages(View view) {
+    public void openPagesFollowing(View view) {
 
-        startActivity(new Intent(UserProfile.this, Pages.class));
+        int page = 1;
+        Intent intent = new Intent(UserProfile.this, Pages.class);
+        intent.putExtra("IntendedPage", page);
+        startActivity(intent);
 
     }
 
     public void openAssociationPages(View view) {
 
-        AssociationPages associationPages = new AssociationPages();
-        associationPages.show(getSupportFragmentManager(), "BottomSheet");
+        int page = 2;
+        Intent intent = new Intent(UserProfile.this, Pages.class);
+        intent.putExtra("IntendedPage", page);
+        startActivity(intent);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
         getMenuInflater().inflate(R.menu.edit, menu);
         return true;
     }
@@ -239,12 +243,6 @@ public class UserProfile extends AppCompatActivity {
     public void openEditUser(MenuItem item) {
 
         startActivity(new Intent(UserProfile.this, EditUser.class));
-
-    }
-
-    public void openFAQs(View view) {
-
-        startActivity(new Intent(UserProfile.this, HelpAndFAQs.class));
 
     }
 

@@ -14,6 +14,7 @@
     <color name="profile_default_tint">#e0e0e0</color>
 
     <color name="tabtextcolor">#232323</color>
+    <color name="tabtextcolor2">#5C5C5C</color>
     <color name="tabtextcolor1">#B1B1B1</color>
     <color name="navigationview">#DFDFDF</color>
     <color name="tabcolor">#FFFF</color>

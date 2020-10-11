@@ -1,16 +1,13 @@
 package com.noticeboard;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageSwitcher;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -48,30 +45,7 @@ public class PageProfileAdapter extends FirestoreRecyclerAdapter<PageDetails, Pa
         holder.textViewPageName.setText(pagename);
         holder.textViewPageInfo.setText(pageinfo);
 
-        //if (!pageimage.isEmpty()){
-
-            Picasso.get().load(model.getPageimage()).placeholder(R.drawable.user_image_avatar).into(pageImageView);
-
-        //}
-
-        /*else{
-
-            Character firstLetter = pagename.charAt(0);
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(Color.RED)
-                    .fontSize(30)
-                    .toUpperCase()
-                    .bold()
-                    .width(80)  // width in px
-                    .height(80) // height in px
-                    .endConfig()
-                    .buildRect(String.valueOf(firstLetter), color);
-
-            holder.pageImageView.setImageDrawable(drawable);
-
-
-        }*/
+        Picasso.get().load(model.getPageimage()).placeholder(R.drawable.page_avatar).into(pageImageView);
 
 
     }

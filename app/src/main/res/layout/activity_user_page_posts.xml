@@ -32,7 +32,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/followersview"
+        android:id="@+id/requestedfollowers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -50,11 +50,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You'll start receiving posts as soon as they are posted"
+            android:text="You'll start receiving posts as soon as your request is approved"
             android:textColor="@color/color_title"
             android:layout_below="@id/textview1"
             android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userPagePostsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

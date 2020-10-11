@@ -33,6 +33,13 @@ public class PageDetails {
     public PageDetails() {
     }
 
+    public PageDetails(String pagename, String pageinfo, String pageimage, String pageID) {
+        this.pagename = pagename;
+        this.pageinfo = pageinfo;
+        this.pageimage = pageimage;
+        this.pageID = pageID;
+    }
+
     public String getPageimage() {
         return pageimage;
     }

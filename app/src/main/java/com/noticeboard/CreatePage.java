@@ -38,6 +38,7 @@ public class CreatePage extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         page_name = findViewById(R.id.pagename);
         bio = findViewById(R.id.bioinfo);
@@ -135,6 +136,19 @@ public class CreatePage extends AppCompatActivity {
             Toast.makeText(CreatePage.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

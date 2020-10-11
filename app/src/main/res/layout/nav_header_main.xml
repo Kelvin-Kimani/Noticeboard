@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
     android:gravity="bottom"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
@@ -14,6 +13,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
         android:src="@drawable/user_image_avatar" />
 
     <TextView
@@ -24,15 +24,17 @@
         android:text="John Doe"
         android:textColor="@color/color_title"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"/>
 
     <TextView
         android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="level"
-        android:textColor="@color/color_title"
-        android:textSize="16sp" />
+        android:textColor="@color/tabtextcolor2"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"/>
 
     <View
         android:layout_width="match_parent"

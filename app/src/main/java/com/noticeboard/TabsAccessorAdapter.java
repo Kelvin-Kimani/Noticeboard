@@ -27,6 +27,10 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
                 return pagesFollowedFragment;
 
             case 2:
+                AssociationPagesFragment associationPagesFragment = new AssociationPagesFragment();
+                return associationPagesFragment;
+
+            case 3:
                 GlobalPagesFragment globalPagesFragment = new GlobalPagesFragment();
                 return globalPagesFragment;
 
@@ -38,7 +42,7 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Nullable
@@ -53,6 +57,9 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
                 return "Following";
 
             case 2:
+                return "Associated";
+
+            case 3:
                 return "Global";
 
             default:

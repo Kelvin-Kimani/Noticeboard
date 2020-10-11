@@ -50,9 +50,6 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PageProfileAdmin extends AppCompatActivity {
@@ -71,8 +68,8 @@ public class PageProfileAdmin extends AppCompatActivity {
     RadioButton radioButton;
     Uri imageUri;
     Context context;
-    private String privacy;
-
+    private String privacy,adminUserID;
+    RelativeLayout requested, deletePage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +78,7 @@ public class PageProfileAdmin extends AppCompatActivity {
         dialog = new Dialog(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         notificationswitch = findViewById(R.id.notificationswitch);
@@ -89,6 +87,8 @@ public class PageProfileAdmin extends AppCompatActivity {
         circleImageView = findViewById(R.id.pageprofileimg);
         pagename = findViewById(R.id.pagename);
         pageinfo = findViewById(R.id.bio);
+        requested = findViewById(R.id.requestedRL);
+        deletePage = findViewById(R.id.deletepagerelativelayout);
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -97,6 +97,23 @@ public class PageProfileAdmin extends AppCompatActivity {
         Intent intent = getIntent();
         pageID = intent.getStringExtra("pageID");
         privacy = intent.getStringExtra("privacy");
+        adminUserID = intent.getStringExtra("adminUserID");
+
+        DocumentReference page = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID);
+        page.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                privacy = documentSnapshot.getString("privacy");
+
+                if (privacy.equals("Private")) {
+
+                   requested.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
 
         DocumentReference documentReference = firestore.collection("Users").document(userID).collection("Pages").document(pageID);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -104,23 +121,12 @@ public class PageProfileAdmin extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
                 page_name = documentSnapshot.getString("pagename");
+                page_info = documentSnapshot.getString("pageinfo");
+                privacyreceived = documentSnapshot.getString("privacy");
                 pagename.setText(page_name);
                 pageinfo.setText(documentSnapshot.getString("pageinfo"));
                 pageIDOnline = documentSnapshot.getString("pageID");
 
-                firstLetter = page_name.charAt(0);
-                drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(Color.RED)
-                        .fontSize(30)
-                        .toUpperCase()
-                        .bold()
-                        .width(80)  // width in px
-                        .height(80) // height in px
-                        .endConfig()
-                        .buildRect(String.valueOf(firstLetter), Color.BLACK);
-
-                circleImageView.setImageDrawable(drawable);
             }
         });
 
@@ -205,7 +211,10 @@ public class PageProfileAdmin extends AppCompatActivity {
 
                                 Toast.makeText(PageProfileAdmin.this, "Page is now " + chosenPrivacy, Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
-
+                                finish();
+                                overridePendingTransition(0, 0);
+                                startActivity(getIntent());
+                                overridePendingTransition(0, 0);
                             }
                         }
                     });
@@ -298,7 +307,6 @@ public class PageProfileAdmin extends AppCompatActivity {
                                                     PageDetails pageimageupdate = new PageDetails(page_name, page_info, privacyreceived, pageID, userID, imageurl);
                                                     pageImageRef.set(pageimageupdate);
 
-                                                    Toast.makeText(PageProfileAdmin.this, "Image Url Saved too!", Toast.LENGTH_LONG).show();
                                                 } else {
 
                                                     String message = task.getException().toString();
@@ -344,9 +352,10 @@ public class PageProfileAdmin extends AppCompatActivity {
 
     public void openPagePosts(View view) {
 
-        Intent intent = new Intent(PageProfileAdmin.this, PagePosts.class);
+        Intent intent = new Intent(PageProfileAdmin.this, AdminPagePosts.class);
         intent.putExtra("pagename", page_name);
         intent.putExtra("pageID", pageID);
+        intent.putExtra("pageAdminID", userID);
         startActivity(intent);
 
     }
@@ -471,4 +480,24 @@ public class PageProfileAdmin extends AppCompatActivity {
 
     }
 
+    public void openFollowRequests(View view) {
+
+        Intent intent = new Intent(PageProfileAdmin.this, RequestedFollowers.class);
+        intent.putExtra("pageID", pageID);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

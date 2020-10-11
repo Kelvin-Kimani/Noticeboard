@@ -3,12 +3,14 @@ package com.noticeboard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +29,7 @@ public class SavedPost extends AppCompatActivity {
 
     HomePostAdapter postAdapter;
     RecyclerView recyclerView;
-    String changedValue = "Yes", userID, postID, postTitle, postContent, postPageName;
+    String changedValue = "Yes", userID, postID, postTitle, postContent, postPageName, posters_id,pageID,pageAdminID;
     RelativeLayout relativeLayout;
 
     @Override
@@ -36,6 +38,7 @@ public class SavedPost extends AppCompatActivity {
         setContentView(R.layout.activity_saved_post);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Saved Posts");
 
         relativeLayout = findViewById(R.id.savedpostRL);
@@ -48,10 +51,11 @@ public class SavedPost extends AppCompatActivity {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
 
                 PostDetails post = documentSnapshot.toObject(PostDetails.class);
-                postID = documentSnapshot.getId();
+                postID = post.getPostID();
                 postTitle = post.getTitle();
                 postContent = post.getContent();
                 postPageName = post.getPagename();
+                posters_id = post.getPostersID();
 
                 Toast.makeText(SavedPost.this,
                         "Title: " + postTitle, Toast.LENGTH_LONG).show();
@@ -59,11 +63,12 @@ public class SavedPost extends AppCompatActivity {
 
                 Intent intent = new Intent(SavedPost.this, PostWithComments.class);
                 //intent.putExtra("model", model);
-                intent.putExtra("pagename", post.getPagename());
-                intent.putExtra("postTitle", post.getTitle());
-                intent.putExtra("postContent", post.getContent());
+                intent.putExtra("pagename", postPageName);
+                intent.putExtra("postTitle", postTitle);
+                intent.putExtra("postContent", postContent);
                 intent.putExtra("postTime", post.getTime());
-                intent.putExtra("postID", documentSnapshot.getId());
+                intent.putExtra("postID", postID);
+                intent.putExtra("postersID", posters_id);
 
                 startActivity(intent);
 
@@ -121,6 +126,30 @@ public class SavedPost extends AppCompatActivity {
 
             }
         });
+
+        postAdapter.setOnCommentsClickListener(new HomePostAdapter.OnCommentsClickListener() {
+            @Override
+            public void onCommentsClick(DocumentSnapshot documentSnapshot, int position) {
+
+                PostDetails post = documentSnapshot.toObject(PostDetails.class);
+                postID = post.getPostID();
+                pageID = post.getPageID();
+                postTitle = post.getTitle();
+                postContent = post.getContent();
+                pageAdminID = post.getPageAdminID();
+
+                Intent intent = new Intent(SavedPost.this, Comments.class);
+
+                intent.putExtra("pageID", pageID);
+                intent.putExtra("postTitle", postTitle);
+                intent.putExtra("postContent", postContent);
+                intent.putExtra("postID", postID);
+                intent.putExtra("pageAdminID", pageAdminID);
+
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void setUpSavedPostRecyclerView() {
@@ -175,6 +204,44 @@ public class SavedPost extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchData(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
+    }
+
+    private void searchData(String query) {
+
+        FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").whereEqualTo("saveValue", changedValue).orderBy("title", Query.Direction.ASCENDING).startAt(query).endAt(query+"\uf8ff"), PostDetails.class)
+                .build();
+
+        postAdapter = new HomePostAdapter(options);
+        postAdapter.startListening();
+        recyclerView.setAdapter(postAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

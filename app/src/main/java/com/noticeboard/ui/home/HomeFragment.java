@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.noticeboard.Comments;
 import com.noticeboard.PostDetails;
 import com.noticeboard.PostWithComments;
 import com.noticeboard.R;
@@ -34,7 +35,7 @@ public class HomeFragment extends Fragment {
     FloatingActionButton floatingActionButton;
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    String postID, postTitle, postContent, postPageName;
+    String postID, postTitle, postContent, postPageName, postersID, pageID,pageAdminID;
     View v;
     RelativeLayout relativeLayout;
     private CollectionReference postref;
@@ -65,7 +66,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
 
         loadPosts();
         recyclerViewOnClick();
@@ -115,21 +115,27 @@ public class HomeFragment extends Fragment {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
 
                 PostDetails post = documentSnapshot.toObject(PostDetails.class);
-                postID = documentSnapshot.getId();
+                postID = post.getPostID();
                 postTitle = post.getTitle();
                 postContent = post.getContent();
                 postPageName = post.getPagename();
+                postersID = post.getPostersID();
+                pageAdminID = post.getPageAdminID();
+                pageID = post.getPageID();
 
                 Toast.makeText(getActivity(),
                         "PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(getContext(), PostWithComments.class);
-                //intent.putExtra("model", model);
-                intent.putExtra("pagename", post.getPagename());
-                intent.putExtra("postTitle", post.getTitle());
-                intent.putExtra("postContent", post.getContent());
+
+                intent.putExtra("pagename", postPageName);
+                intent.putExtra("postTitle", postTitle);
+                intent.putExtra("postContent", postContent);
                 intent.putExtra("postTime", post.getTime());
-                intent.putExtra("postID", documentSnapshot.getId());
+                intent.putExtra("postID", postID);
+                intent.putExtra("postersID", postersID);
+                intent.putExtra("pageAdminID", pageAdminID);
+                intent.putExtra("pageID", pageID);
 
                 startActivity(intent);
 
@@ -187,6 +193,32 @@ public class HomeFragment extends Fragment {
         });
 
 
+        postAdapter.setOnCommentsClickListener(new HomePostAdapter.OnCommentsClickListener() {
+            @Override
+            public void onCommentsClick(DocumentSnapshot documentSnapshot, int position) {
+
+                PostDetails post = documentSnapshot.toObject(PostDetails.class);
+                postID = post.getPostID();
+                pageID = post.getPageID();
+                postTitle = post.getTitle();
+                postContent = post.getContent();
+                pageAdminID = post.getPageAdminID();
+
+                Toast.makeText(getActivity(),
+                        "PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(getContext(), Comments.class);
+
+                intent.putExtra("pageID", pageID);
+                intent.putExtra("postTitle", postTitle);
+                intent.putExtra("postContent", postContent);
+                intent.putExtra("postID", postID);
+                intent.putExtra("pageAdminID", pageAdminID);
+
+                startActivity(intent);
+
+            }
+        });
     }
 
 

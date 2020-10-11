@@ -67,7 +67,7 @@
     <string name="create_page">Create Page</string>
     <string name="pages">Pages</string>
 
-    <string name="post_title">Post Title (Required)</string>
+    <string name="post_title">Post Title</string>
     <string name="post">What is the announcement?</string>
     <string name="posts">Posts</string>
     <string name="create">Create</string>
@@ -86,5 +86,6 @@
 
     <string name="deletePage">Are you sure you want to delete this page? \n\nAll your posts will be deleted. Your Associators and Followers will be automatically removed. \n\n Do you wish to continue?</string>
     <string name="leavesignup">You have not completed signing up. \nIf you leave now, you\'ll have to sign up again next time. \n\n Do you wish to continue?</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

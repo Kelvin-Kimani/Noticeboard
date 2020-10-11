@@ -13,8 +13,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userprofileimg"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="40dp"
             android:layout_marginBottom="40dp"
             android:layout_marginTop="@dimen/dimen_20dp"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="John Doe"
             android:layout_marginTop="30dp"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:layout_toRightOf="@+id/userprofileimg"
             android:textColor="@color/color_title"/>
@@ -115,14 +115,24 @@
 
 
             <TextView
+                android:id="@+id/prefix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+254"
+                android:textColor="@color/color_title"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
                 android:id="@+id/phonenumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+254790838747"
-                android:layout_marginLeft="20dp"
+                android:text="790838747"
                 android:layout_marginTop="20dp"
                 android:textStyle="bold"
-                android:textColor="@color/color_title"/>
+                android:textColor="@color/color_title"
+                android:layout_toRightOf="@id/prefix"/>
 
             <TextView
                 android:id="@+id/following"

@@ -4,13 +4,12 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -24,8 +23,6 @@ import com.noticeboard.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
 public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomePostAdapter.HomePostHolder> {
 
 
@@ -33,6 +30,7 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
     String pagename, postTitle, pageID;
     private OnItemClickListener listener;
     private OnSaveItemClickListener saveListener;
+    private OnCommentsClickListener commentsListener;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -75,15 +73,13 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
                 .buildRect(String.valueOf(firstLetter), color);
 
         holder.pageImageView.setImageDrawable(drawable);
+
         holder.savePost.setText(saveValue);
-
-
-        if (saveValue.equals("Yes")) {
+        if ("Yes".equals(saveValue)) {
 
             holder.savePost.setChecked(true);
 
-        }
-        else {
+        } else {
 
             holder.savePost.setChecked(false);
 
@@ -111,6 +107,10 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
 
     }
 
+    public void setOnCommentsClickListener(HomePostAdapter.OnCommentsClickListener commentsListener) {
+        this.commentsListener = commentsListener;
+    }
+
     public interface OnItemClickListener {
         void onItemClick(DocumentSnapshot documentSnapshot, int position);
     }
@@ -119,12 +119,17 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
         void onSaveItemClick(DocumentSnapshot documentSnapshot, int position);
     }
 
+    public interface OnCommentsClickListener {
+        void onCommentsClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
     public class HomePostHolder extends RecyclerView.ViewHolder {
 
         CardView cardView;
         TextView textViewPageName, textViewTitle, textViewContent, textViewTime;
         CircleImageView pageImageView;
         ToggleButton savePost;
+        ImageView comments;
 
         public HomePostHolder(@NonNull View itemView) {
             super(itemView);
@@ -136,6 +141,7 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
             pageImageView = itemView.findViewById(R.id.pageprofileimg);
             cardView = itemView.findViewById(R.id.HomePostCardView);
             savePost = itemView.findViewById(R.id.savebutton);
+            comments = itemView.findViewById(R.id.commentbutton);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +167,20 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
                     if (position != RecyclerView.NO_POSITION && saveListener != null) {
 
                         saveListener.onSaveItemClick(getSnapshots().getSnapshot(position), position);
+
+                    }
+                }
+            });
+
+            comments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int position = getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION && commentsListener != null) {
+
+                        commentsListener.onCommentsClick(getSnapshots().getSnapshot(position), position);
 
                     }
                 }

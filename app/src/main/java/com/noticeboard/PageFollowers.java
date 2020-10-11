@@ -3,6 +3,7 @@ package com.noticeboard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,7 @@ import com.google.firebase.firestore.Query;
 
 public class PageFollowers extends AppCompatActivity {
 
-    String pageID, userID, followerUserID;
+    String pageID, followerUserID, associatorID, adminUID;
     FollowersAdapter followersAdapter;
     RecyclerView recyclerview;
 
@@ -27,12 +28,15 @@ public class PageFollowers extends AppCompatActivity {
         setContentView(R.layout.activity_page_followers);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         pageID = intent.getStringExtra("pageID");
+        adminUID = intent.getStringExtra("pageAdminUID");
+
         getSupportActionBar().setTitle(" Followers");
 
-        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        associatorID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         setUpFollowersRecyclerView();
 
@@ -57,7 +61,7 @@ public class PageFollowers extends AppCompatActivity {
 
     private void setUpFollowersRecyclerView() {
 
-        Query query = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Followers").orderBy("fullname", Query.Direction.ASCENDING);
+        Query query = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").orderBy("fullname", Query.Direction.ASCENDING);
         FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()
                 .setQuery(query, UserDetails.class)
                 .build();
@@ -102,5 +106,18 @@ public class PageFollowers extends AppCompatActivity {
 
         finish();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

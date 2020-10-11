@@ -9,7 +9,7 @@ import java.util.Date;
 public class PostDetails {
 
 
-    private String title, content, pagename, time, pageID, postID, saveValue;
+    private String title, content, pagename, time, pageID, postID, saveValue, postersID, pageAdminID;
 
 
 
@@ -21,7 +21,7 @@ public class PostDetails {
 
     }
 
-    public PostDetails(String pagename,String title, String content, String time, String pageID, String postID, String saveValue){
+    public PostDetails(String pagename,String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID){
         this.pagename = pagename;
         this.title = title;
         this.content = content;
@@ -29,9 +29,27 @@ public class PostDetails {
         this.pageID = pageID;
         this.postID = postID;
         this.saveValue = saveValue;
+        this.postersID = postersID;
+        this.pageAdminID = pageAdminID;
     }
 
     public PostDetails() {
+    }
+
+    public String getPageAdminID() {
+        return pageAdminID;
+    }
+
+    public void setPageAdminID(String pageAdminID) {
+        this.pageAdminID = pageAdminID;
+    }
+
+    public String getPostersID() {
+        return postersID;
+    }
+
+    public void setPostersID(String postersID) {
+        this.postersID = postersID;
     }
 
     public String getSaveValue() {

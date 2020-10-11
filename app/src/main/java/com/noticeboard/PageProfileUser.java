@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -53,6 +54,7 @@ public class PageProfileUser extends AppCompatActivity {
         dialog = new Dialog(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         notificationswitch = findViewById(R.id.notificationswitch);
@@ -141,7 +143,7 @@ public class PageProfileUser extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
                 String privacy = documentSnapshot.getString("privacy");
-                if (privacy.equals("Private")) {
+                if ("Private".equals(privacy)) {
 
                     DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
                     documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -152,10 +154,12 @@ public class PageProfileUser extends AppCompatActivity {
                                 final String username = documentSnapshot.getString("fullname");
                                 String level = documentSnapshot.getString("level");
                                 String userImage = documentSnapshot.getString("userimage");
+                                String phonenumber = documentSnapshot.getString("phonenumber");
+                                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
                                 //save requested follower details
                                 DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Requested").document(userID);
-                                requested.set(new UserDetails(username, level, userID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                requested.set(new UserDetails(username, level, userID,phonenumber, userImage, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -314,6 +318,18 @@ public class PageProfileUser extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -36,7 +36,7 @@ public class PagesCreatedFragment extends Fragment {
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo;
     RelativeLayout relativeLayout;
-    String privacy;
+    String privacy, adminUserID;
 
     public PagesCreatedFragment() {
         // Required empty public constructor
@@ -80,7 +80,8 @@ public class PagesCreatedFragment extends Fragment {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 PageDetails page = documentSnapshot.toObject(PageDetails.class);
 
-                pageID = documentSnapshot.getId();
+                pageID = page.getPageID();
+                adminUserID = page.getUserID();
                 pname = page.getPagename();
                 pinfo = page.getPageinfo();
                 privacy = page.getPrivacy();
@@ -92,6 +93,7 @@ public class PagesCreatedFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), PageProfileAdmin.class);
                 intent.putExtra("pageID", pageID);
                 intent.putExtra("privacy", privacy);
+                intent.putExtra("adminUserID", adminUserID);
 
                 startActivity(intent);
 

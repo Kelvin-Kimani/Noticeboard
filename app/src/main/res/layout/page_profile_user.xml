@@ -38,7 +38,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dimen_40dp"
             android:background="@drawable/button_border"
-            android:drawableLeft="@drawable/add_page_icon"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:drawablePadding="10dp"
@@ -70,16 +69,12 @@
 
         <Button
             android:id="@+id/followingstate"
-            android:layout_width="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:drawablePadding="10dp"
+            android:layout_width="130dp"
             android:layout_height="50dp"
             android:layout_below="@+id/pageprofileimg"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dimen_40dp"
             android:background="@drawable/button_clicked"
-            android:drawableLeft="@drawable/following_page_icon"
             android:text="Following"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
@@ -145,9 +140,7 @@
                 android:id="@+id/postsicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
+               android:layout_margin="@dimen/dimen_20dp"
                 android:src="@drawable/ic_library_books_black_24dp" />
 
             <TextView
@@ -182,7 +175,7 @@
                 android:id="@+id/notificationsicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="@dimen/dimen_20dp"
                 android:src="@drawable/ic_notifications_black_24dp" />
 
             <TextView
@@ -190,7 +183,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_margin="15dp"
+                android:layout_margin="@dimen/dimen_20dp"
                 android:layout_toRightOf="@+id/notificationsicon"
                 android:text="Notifications"
                 android:textStyle="bold" />

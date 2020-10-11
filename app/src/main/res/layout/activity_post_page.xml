@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,73 +13,59 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/postTitleTIL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_40dp"
-                app:errorEnabled="true"
-                android:layout_centerHorizontal="true">
-
-            <EditText
-                android:id="@+id/posttitle"
+            <RelativeLayout
+                android:id="@+id/titleRL"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="15"
-                android:layout_marginTop="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="50dp"
-                android:hint="@string/post_title"
-                />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/postTIL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_40dp"
-                app:errorEnabled="true"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/postTitleTIL">
+                <EditText
+                    android:id="@+id/posttitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:hint="@string/post_title"
+                    android:padding="10dp"/>
 
-            <EditText
-                android:id="@+id/post"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/posttitle"
+                    android:background="@color/tabtextcolor1" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="15"
-                android:inputType="textMultiLine"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="50dp"
-                android:layout_below="@+id/posttitle"
-                android:layout_marginTop="50dp"
-                android:hint="@string/post"
-                />
+                android:layout_height="match_parent"
+                android:layout_below="@id/titleRL">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <EditText
+                    android:id="@+id/post"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:hint="Type Post"
+                    android:inputType="textMultiLine"
+                    android:background="@null" />
 
-            <Button
-                android:id="@+id/postbutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/postTIL"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="100dp"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_alignRight="@+id/postTIL"
-                android:drawableRight="@drawable/ic_send_black_24dp"/>
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_vertical"
+                    android:visibility="gone" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|center_vertical"
-                android:visibility="gone" />
+            </RelativeLayout>
 
         </RelativeLayout>
 
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

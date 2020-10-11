@@ -36,7 +36,7 @@ public class PostBottomSheetDialog extends BottomSheetDialogFragment {
     private PageProfileAdapter adapter;
     RecyclerView recyclerView;
     RelativeLayout relativeLayout;
-    String pageID, pname, pinfo;
+    String pageID, pname, pinfo, pageAdminID;
 
 
     @Nullable
@@ -106,14 +106,16 @@ public class PostBottomSheetDialog extends BottomSheetDialogFragment {
                 pageID = documentSnapshot.getId();
                 pname = page.getPagename();
                 pinfo = page.getPageinfo();
+                pageAdminID = page.getUserID();
 
                 Toast.makeText(getActivity(),
                         "Position: " + position + " ID: " + pageID + "PN: " + pname + "bio: " + pinfo, Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(getActivity(), PostPage.class);
-                intent.putExtra("pagename", page.getPagename());
-                intent.putExtra("pageinfo", page.getPageinfo());
-                intent.putExtra("pageID", documentSnapshot.getId());
+                intent.putExtra("pagename", pname);
+                intent.putExtra("pageinfo", pinfo);
+                intent.putExtra("pageID", pageID);
+                intent.putExtra("pageAdminID", pageAdminID);
 
                 startActivity(intent);
 

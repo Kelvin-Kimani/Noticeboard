@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +29,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class EditPage extends AppCompatActivity {
 
     EditText pagename, bio;
-    Spinner spinner;
     String userID, pageID, page_name, page_info;
     Dialog dialog;
 
@@ -41,6 +39,7 @@ public class EditPage extends AppCompatActivity {
         dialog = new Dialog(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
@@ -67,24 +66,31 @@ public class EditPage extends AppCompatActivity {
 
     public void updateProfile(MenuItem item) {
 
-        TextView title, text;
-        Button yes, no;
-        dialog.setContentView(R.layout.custom_pop_up);
+        final String pagenameupdated = pagename.getText().toString().trim();
+        final String pageinfoUpdated = bio.getText().toString().trim();
 
-        title = dialog.findViewById(R.id.dialogtitle);
-        title.setText("Update Page");
-        text = dialog.findViewById(R.id.dialogtext);
-        text.setText("Do you wish to continue?");
+        if (pagenameupdated.equals(page_name) && pageinfoUpdated.equals(page_info)) {
 
-        yes = dialog.findViewById(R.id.positivebutton);
-        no = dialog.findViewById(R.id.negativebutton);
+            finish();
+
+        } else if (validateForm()) {
+
+            TextView title, text;
+            Button yes, no;
+            dialog.setContentView(R.layout.custom_pop_up);
+
+            title = dialog.findViewById(R.id.dialogtitle);
+            title.setText("Update Page");
+            text = dialog.findViewById(R.id.dialogtext);
+            text.setText("Do you wish to continue?");
+
+            yes = dialog.findViewById(R.id.positivebutton);
+            no = dialog.findViewById(R.id.negativebutton);
 
 
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (validateForm()) {
+            yes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
                     final String pagenameupdated = pagename.getText().toString().trim();
                     final String pageinfoUpdated = bio.getText().toString().trim();
@@ -119,22 +125,20 @@ public class EditPage extends AppCompatActivity {
                         }
                     });
                 }
-            }
-        });
+            });
 
+            no.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    dialog.cancel();
 
-                dialog.cancel();
+                }
+            });
 
-            }
-        });
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+        }
     }
 
     private boolean validateForm() {
@@ -155,5 +159,18 @@ public class EditPage extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

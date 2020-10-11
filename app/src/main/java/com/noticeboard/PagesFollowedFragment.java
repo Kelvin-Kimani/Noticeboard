@@ -37,13 +37,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class PagesFollowedFragment extends Fragment {
 
-    //PageUserAdapter userAdapterFollowing;
+    PageUserAdapter followingAdapter;
     View v;
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo, administratorUID, privacy, username, level, phonenumber;
     RelativeLayout relativeLayout;
-    OnItemClickListener listener;
-    OnFollowButtonClickListener followButtonClickListener;
     private FirestoreRecyclerAdapter adapter;
 
     public PagesFollowedFragment() {
@@ -68,7 +66,7 @@ public class PagesFollowedFragment extends Fragment {
 
         relativeLayout = v.findViewById(R.id.followpageRL);
         setUpPagesFollowedRecyclerView();
-        //recyclerViewOnClick();
+        recyclerViewOnClick();
     }
 
     private void setUpPagesFollowedRecyclerView() {
@@ -99,145 +97,53 @@ public class PagesFollowedFragment extends Fragment {
                 .setQuery(query, PageDetails.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<PageDetails, FollowingPageHolder>(options) {
-            @NonNull
-            @Override
-            public FollowingPageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.page_tile_user, parent, false);
-                return new FollowingPageHolder(v);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final FollowingPageHolder holder, int position, @NonNull PageDetails model) {
-
-                String pagename = model.getPagename();
-                String pageinfo = model.getPageinfo();
-                String pageID = model.getPageID();
-                String adminUID = model.getUserID();
-
-                holder.follow.setVisibility(View.VISIBLE);
-
-                DocumentReference followedpage = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").document(userID);
-                followedpage.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                holder.following.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-                });
-
-                DocumentReference requestedpage = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Requested").document(userID);
-                requestedpage.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                holder.requested.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-                });
-
-
-                holder.textViewPageName.setText(pagename);
-                holder.textViewPageInfo.setText(pageinfo);
-
-                Character firstLetter = pagename.charAt(0);
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(Color.RED)
-                        .fontSize(30)
-                        .toUpperCase()
-                        .bold()
-                        .width(80)  // width in px
-                        .height(80) // height in px
-                        .endConfig()
-                        .buildRect(String.valueOf(firstLetter), Color.BLACK);
-
-                holder.pageImageView.setImageDrawable(drawable);
-
-                // Picasso.get().load(model.getImage(().placeholder(R.drawable.some_drawable).into(ourimageview)
-
-
-            }
-        };
+        followingAdapter = new PageUserAdapter(options);
 
         recyclerView = v.findViewById(R.id.PagesFollowedRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(followingAdapter);
 
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    private void recyclerViewOnClick() {
 
-        this.listener = listener;
+        followingAdapter.setOnItemClickListener(new PageUserAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+
+                PageDetails page = documentSnapshot.toObject(PageDetails.class);
+
+                pageID = page.getPageID();
+                pname = page.getPagename();
+                pinfo = page.getPageinfo();
+                administratorUID = page.getUserID();
+                privacy = page.getPrivacy();
+
+                Toast.makeText(getActivity(),
+                        "Position: " + position + " ID: " + pageID + "PN: " + pname + "bio: " + pinfo, Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(getActivity(), PageProfileUser.class);
+                intent.putExtra("pagename", pname);
+                intent.putExtra("pageinfo", pinfo);
+                intent.putExtra("pageID", pageID);
+                intent.putExtra("adminUID", administratorUID);
+                intent.putExtra("privacy", privacy);
+
+                startActivity(intent);
+
+            }
+        });
+
     }
-
-    public void setOnFollowButtonClickListener(OnFollowButtonClickListener followButtonClickListener) {
-
-        this.followButtonClickListener = followButtonClickListener;
-
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
+        followingAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
-    }
-
-    public interface OnItemClickListener {
-
-        void onItemClick(View documentSnapshot, int position);
-    }
-
-
-    public interface OnFollowButtonClickListener {
-
-        void onFollowButtonClick(DocumentSnapshot documentSnapshot, int position);
-
-    }
-
-    private class FollowingPageHolder extends RecyclerView.ViewHolder {
-
-        TextView textViewPageName;
-        TextView textViewPageInfo;
-        CircleImageView pageImageView;
-        Button follow, following, requested;
-
-        public FollowingPageHolder(@NonNull View itemView) {
-            super(itemView);
-
-            textViewPageName = (itemView).findViewById(R.id.pagename);
-            textViewPageInfo = (itemView).findViewById(R.id.bio);
-            pageImageView = (itemView).findViewById(R.id.pageprofileimg);
-            follow = (itemView).findViewById(R.id.followbutton);
-            following = (itemView).findViewById(R.id.followingbutton);
-            requested = (itemView).findViewById(R.id.requestbutton);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    if (position != RecyclerView.NO_POSITION && listener != null) {
-
-                        listener.onItemClick(v, getAdapterPosition());
-
-                    }
-
-                }
-            });
-        }
+        followingAdapter.stopListening();
     }
 }

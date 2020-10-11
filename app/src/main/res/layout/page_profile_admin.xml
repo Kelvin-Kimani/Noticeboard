@@ -115,6 +115,7 @@
 
                 </RelativeLayout>
 
+
                 <RelativeLayout
                     android:id="@+id/relativelayout21"
                     android:layout_width="match_parent"
@@ -151,10 +152,46 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/relativelayout22"
+                    android:id="@+id/requestedRL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/relativelayout21"
+                    android:orientation="horizontal"
+                    android:onClick="openFollowRequests"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/requestedicon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:src="@drawable/ic_access_time_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/requested"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dimen_20dp"
+                        android:layout_toRightOf="@+id/requestedicon"
+                        android:text="Requested"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/requestedView"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/requested"
+                        android:layout_alignStart="@+id/requested"
+                        android:background="@color/profile_desc" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativelayout22"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/requestedRL"
                     android:onClick="openAssociators">
 
                     <ImageView

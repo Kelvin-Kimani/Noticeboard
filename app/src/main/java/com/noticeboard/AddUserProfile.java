@@ -57,7 +57,6 @@ public class AddUserProfile extends AppCompatActivity {
 
         userprofileimg = findViewById(R.id.userprofileimg);
         fab = findViewById(R.id.floatingActionButton);
-        add = findViewById(R.id.addbutton);
         cancel = findViewById(R.id.skipbutton);
         progressBar = findViewById(R.id.progressBar);
 
