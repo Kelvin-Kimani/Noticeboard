@@ -9,13 +9,13 @@
         android:id="@+id/nav_home"
         android:name="com.noticeboard.ui.home.HomeFragment"
         android:label="@string/posts"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home" />
 
     <activity
         android:id="@+id/nav_pages"
         android:name="com.noticeboard.Pages"
         android:label="@string/pages"
-        tools:layout="@layout/pages"/>
+        tools:layout="@layout/pages" />
 
     <activity
         android:id="@+id/nav_savedpost"
@@ -29,14 +29,14 @@
         tools:layout="@layout/user_profile" />
     <activity
         android:id="@+id/nav_notifications"
+        android:name="com.noticeboard.Notifications"
         android:label="@string/menu_notification"
-        tools:layout="@layout/activity_notifications"
-       android:name="com.noticeboard.Notifications"/>
+        tools:layout="@layout/activity_notifications" />
 
     <activity
         android:id="@+id/nav_help"
-        android:label="@string/menu_settings"
-        tools:layout="@layout/activity_help_and_faqs"
-        android:name="com.noticeboard.HelpAndFAQs"/>
+        android:name="com.noticeboard.Help"
+        android:label="@string/menu_help"
+        tools:layout="@layout/activity_help" />
 
 </navigation>

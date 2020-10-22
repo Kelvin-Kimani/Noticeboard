@@ -28,6 +28,8 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
     CircleImageView pageImageView;
     private OnItemClickListener listener;
     private OnFollowButtonClickListener followButtonClickListener;
+    private OnFollowingButtonClickListener followingButtonClickListener;
+    private OnRequestedButtonClickListener requestedButtonClickListener;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -57,6 +59,8 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         holder.following.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.following.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -70,6 +74,8 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         holder.requested.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.requested.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -120,6 +126,14 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
 
     }
 
+    public void setOnFollowingButtonClickListener(OnFollowingButtonClickListener followingButtonClickListener) {
+        this.followingButtonClickListener = followingButtonClickListener;
+    }
+
+    public void setOnRequestedButtonClickListener(OnRequestedButtonClickListener requestedButtonClickListener) {
+        this.requestedButtonClickListener = requestedButtonClickListener;
+    }
+
     public interface OnItemClickListener {
 
         void onItemClick(DocumentSnapshot documentSnapshot, int position);
@@ -129,6 +143,14 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
 
         void onFollowButtonClick(DocumentSnapshot documentSnapshot, int position);
 
+    }
+
+    public interface OnFollowingButtonClickListener {
+        void onFollowingButtonClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public interface OnRequestedButtonClickListener {
+        void onRequestedButtonClick(DocumentSnapshot documentSnapshot, int position);
     }
 
     public class PageHolder extends RecyclerView.ViewHolder {
@@ -170,32 +192,41 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
                     int position = getAdapterPosition();
 
                     if (position != RecyclerView.NO_POSITION && followButtonClickListener != null) {
-
                         followButtonClickListener.onFollowButtonClick(getSnapshots().getSnapshot(position), position);
-
+                        notifyItemChanged(position);
                     }
 
                 }
             });
 
 
-           /* following.setOnClickListener(new View.OnClickListener() {
+            following.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // remember to implement
                     int position = getAdapterPosition();
 
-                   }
+                    if (position != RecyclerView.NO_POSITION && followingButtonClickListener != null) {
+                        followingButtonClickListener.onFollowingButtonClick(getSnapshots().getSnapshot(position), position);
+                        notifyItemChanged(position);
+                    }
+
+                }
             });
 
             requested.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // remember to implement
                     int position = getAdapterPosition();
 
-                   }
-            });*/
+                    if (position != RecyclerView.NO_POSITION && requestedButtonClickListener != null) {
+                        requestedButtonClickListener.onRequestedButtonClick(getSnapshots().getSnapshot(position), position);
+                        notifyItemChanged(position);
+                    }
+
+                }
+            });
         }
+
     }
 }

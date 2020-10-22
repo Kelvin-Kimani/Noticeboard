@@ -88,7 +88,7 @@ public class PagesCreatedFragment extends Fragment {
 
 
                 Toast.makeText(getActivity(),
-                        "Position: " + position + " ID: " + pageID + "PN: " + pname + "bio: " + pinfo , Toast.LENGTH_LONG).show();
+                        "Position: " + position + " ID: " + pageID + "PN: " + pname + "bio: " + pinfo, Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(getActivity(), PageProfileAdmin.class);
                 intent.putExtra("pageID", pageID);

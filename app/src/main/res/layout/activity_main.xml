@@ -19,23 +19,23 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:theme="@style/NavigationTheme"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"
-        app:itemTextColor="@color/color_title"
         app:itemIconSize="@dimen/dimen_20dp"
         app:itemIconTint="@color/color_title"
-        android:theme="@style/NavigationTheme">
+        app:itemTextColor="@color/color_title"
+        app:menu="@menu/activity_main_drawer">
 
         <Button
             android:id="@+id/logout"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:text="@string/logout"
-            android:textSize="15sp"
+            android:layout_marginBottom="0dp"
             android:drawableLeft="@drawable/navbar_log_out"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_marginBottom="0dp"/>
+            android:text="@string/logout"
+            android:textSize="15sp" />
 
     </com.google.android.material.navigation.NavigationView>
 

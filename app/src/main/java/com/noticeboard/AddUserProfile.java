@@ -185,4 +185,12 @@ public class AddUserProfile extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+        Toast.makeText(AddUserProfile.this, "Okay, No problem", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(AddUserProfile.this, MainActivity.class));
+        finish();
+    }
 }

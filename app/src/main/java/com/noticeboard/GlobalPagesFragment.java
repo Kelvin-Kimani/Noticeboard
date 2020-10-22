@@ -1,10 +1,15 @@
 package com.noticeboard;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +40,7 @@ public class GlobalPagesFragment extends Fragment {
     PageUserAdapter userAdapter;
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo, administratorUID, privacy, username, level, phonenumber, email;
+    Dialog dialog;
 
     public GlobalPagesFragment() {
         // Required empty public constructor
@@ -54,6 +60,7 @@ public class GlobalPagesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.v = view;
+        dialog = new Dialog(getActivity());
 
         setUpGlobalPages();
         recyclerViewOnClick();
@@ -124,6 +131,211 @@ public class GlobalPagesFragment extends Fragment {
 
                 startActivity(intent);
 
+            }
+        });
+
+        userAdapter.setOnFollowButtonClickListener(new PageUserAdapter.OnFollowButtonClickListener() {
+            @Override
+            public void onFollowButtonClick(DocumentSnapshot documentSnapshot, final int position) {
+
+                PageDetails page = documentSnapshot.toObject(PageDetails.class);
+
+                pageID = page.getPageID();
+                pname = page.getPagename();
+                pinfo = page.getPageinfo();
+                administratorUID = page.getUserID();
+                privacy = page.getPrivacy();
+
+                if ("Private".equals(privacy)) {
+
+                    DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
+                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+
+                                final String username = documentSnapshot.getString("fullname");
+                                String level = documentSnapshot.getString("level");
+                                String userImage = documentSnapshot.getString("userimage");
+                                String phonenumber = documentSnapshot.getString("phonenumber");
+                                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                                //save requested follower details
+                                DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Requested").document(userID);
+                                requested.set(new UserDetails(username, level, userID, phonenumber, userImage, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        if (task.isSuccessful()) {
+
+                                            Toast.makeText(getActivity(), username + " " + " Requested", Toast.LENGTH_SHORT).show();
+                                            userAdapter.notifyItemChanged(position);
+
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+
+                    });
+
+                } else {
+
+                    //save page details
+                    DocumentReference pagefollowed1 = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed").document(pageID);
+                    pagefollowed1.set(new PageDetails(pname, pinfo, privacy, pageID, administratorUID));
+
+                    DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
+                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+
+                                final String username = documentSnapshot.getString("fullname");
+                                String level = documentSnapshot.getString("level");
+                                String userImage = documentSnapshot.getString("userimage");
+
+                                //save follower details
+                                DocumentReference followers = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                                followers.set(new UserDetails(username, level, userID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        if (task.isSuccessful()) {
+
+                                            Toast.makeText(getActivity(), username + " " + " Followed", Toast.LENGTH_SHORT).show();
+                                            userAdapter.notifyItemChanged(position);
+
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+
+                    });
+                }
+
+            }
+
+        });
+
+        userAdapter.setOnFollowingButtonClickListener(new PageUserAdapter.OnFollowingButtonClickListener() {
+            @Override
+            public void onFollowingButtonClick(DocumentSnapshot documentSnapshot, final int position) {
+
+                PageDetails page = documentSnapshot.toObject(PageDetails.class);
+
+                pageID = page.getPageID();
+                pname = page.getPagename();
+                pinfo = page.getPageinfo();
+                administratorUID = page.getUserID();
+                privacy = page.getPrivacy();
+
+                TextView title, text;
+                RelativeLayout accept;
+                dialog.setContentView(R.layout.unfollow_pop_up);
+
+                title = dialog.findViewById(R.id.unfollowTitle);
+                title.setText("Unfollow " + pname);
+
+                accept = dialog.findViewById(R.id.unfollowview);
+                accept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                        pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                if (task.isSuccessful()) {
+
+                                    Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
+                                    final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                                    Query query = pagefollowed.whereEqualTo("pageID", pageID);
+                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                            if (task.isSuccessful()) {
+
+                                                for (DocumentSnapshot document : task.getResult()) {
+
+                                                    pagefollowed.document(document.getId()).delete();
+                                                    userAdapter.notifyItemChanged(position);
+                                                    dialog.dismiss();
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                });
+
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+
+            }
+        });
+
+        userAdapter.setOnRequestedButtonClickListener(new PageUserAdapter.OnRequestedButtonClickListener() {
+            @Override
+            public void onRequestedButtonClick(DocumentSnapshot documentSnapshot, final int position) {
+
+                PageDetails page = documentSnapshot.toObject(PageDetails.class);
+
+                pageID = page.getPageID();
+                pname = page.getPagename();
+                pinfo = page.getPageinfo();
+                administratorUID = page.getUserID();
+                privacy = page.getPrivacy();
+
+                TextView title, text, cancel;
+                RelativeLayout accept;
+                dialog.setContentView(R.layout.unfollow_pop_up);
+
+                title = dialog.findViewById(R.id.unfollowTitle);
+                title.setText("Discard Follow Request?");
+
+                text = dialog.findViewById(R.id.defaulttext);
+                text.setText("This will cancel your pending request on " + pname);
+
+                accept = dialog.findViewById(R.id.unfollowview);
+                cancel = dialog.findViewById(R.id.unfollowText);
+                cancel.setText("Cancel Request");
+
+                accept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Requested").document(userID);
+                        requested.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                if (task.isSuccessful()) {
+
+                                    userAdapter.notifyItemChanged(position);
+                                    dialog.cancel();
+                                    Toast.makeText(getActivity(), "Request has been cancelled", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        });
+
+                    }
+                });
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
             }
         });
     }

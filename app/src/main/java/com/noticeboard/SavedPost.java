@@ -29,7 +29,7 @@ public class SavedPost extends AppCompatActivity {
 
     HomePostAdapter postAdapter;
     RecyclerView recyclerView;
-    String changedValue = "Yes", userID, postID, postTitle, postContent, postPageName, posters_id,pageID,pageAdminID;
+    String changedValue = "Yes", userID, postID, postTitle, postContent, postPageName, posters_id, pageID, pageAdminID;
     RelativeLayout relativeLayout;
 
     @Override
@@ -224,7 +224,7 @@ public class SavedPost extends AppCompatActivity {
     private void searchData(String query) {
 
         FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
-                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").whereEqualTo("saveValue", changedValue).orderBy("title", Query.Direction.ASCENDING).startAt(query).endAt(query+"\uf8ff"), PostDetails.class)
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").whereEqualTo("saveValue", changedValue).orderBy("title", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), PostDetails.class)
                 .build();
 
         postAdapter = new HomePostAdapter(options);

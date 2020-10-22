@@ -4,11 +4,11 @@ public class CommentDetails {
 
     String comment, userID, commentID, time, username, imageURL;
 
-    public CommentDetails(){
+    public CommentDetails() {
 
     }
 
-    public CommentDetails(String comment, String userID, String commentID, String time, String username, String imageURL){
+    public CommentDetails(String comment, String userID, String commentID, String time, String username, String imageURL) {
         this.comment = comment;
         this.userID = userID;
         this.commentID = commentID;

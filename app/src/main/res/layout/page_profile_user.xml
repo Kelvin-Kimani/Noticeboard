@@ -38,14 +38,14 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dimen_40dp"
             android:background="@drawable/button_border"
+            android:drawablePadding="10dp"
+            android:onClick="followpage"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:drawablePadding="10dp"
             android:text="Follow"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:onClick="followpage" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/requestedstate"
@@ -54,18 +54,18 @@
             android:layout_below="@+id/pageprofileimg"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dimen_40dp"
-           android:gravity="center"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:drawablePadding="10dp"
             android:background="@drawable/button_border"
             android:drawableLeft="@drawable/ic_access_time_black_24dp"
+            android:drawablePadding="10dp"
+            android:gravity="center"
+            android:onClick="cancelRequest"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="Requested"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:visibility="gone"
             android:textStyle="bold"
-            android:onClick="cancelRequest"/>
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/followingstate"
@@ -75,13 +75,13 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dimen_40dp"
             android:background="@drawable/button_clicked"
+            android:onClick="unfollowpage"
             android:text="Following"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"
-            android:visibility="gone"
-            android:onClick="unfollowpage"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:visibility="gone" />
 
 
     </RelativeLayout>
@@ -140,7 +140,7 @@
                 android:id="@+id/postsicon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-               android:layout_margin="@dimen/dimen_20dp"
+                android:layout_margin="@dimen/dimen_20dp"
                 android:src="@drawable/ic_library_books_black_24dp" />
 
             <TextView

@@ -38,10 +38,10 @@ public class EditUser extends AppCompatActivity {
     Context context = this;
     FirebaseFirestore firestore;
     FirebaseAuth auth;
-    String userID, email;
+    String userID, email, fullname, phonenumber;
     FirebaseUser user;
     Dialog dialog;
-    private EditText fullnames, phonenumber;
+    private EditText fullnamesET, phonenumberET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,8 @@ public class EditUser extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        fullnames = findViewById(R.id.fullnames);
-        phonenumber = findViewById(R.id.phonenumber);
+        fullnamesET = findViewById(R.id.fullnames);
+        phonenumberET = findViewById(R.id.phonenumber);
 
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -64,8 +64,10 @@ public class EditUser extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
-                fullnames.setText(documentSnapshot.getString("fullname"));
-                phonenumber.setText(documentSnapshot.getString("phonenumber"));
+                fullname = documentSnapshot.getString("fullname");
+                phonenumber = documentSnapshot.getString("phonenumber");
+                fullnamesET.setText(fullname);
+                phonenumberET.setText(phonenumber);
 
             }
         });
@@ -85,24 +87,24 @@ public class EditUser extends AppCompatActivity {
 
         boolean valid = true;
 
-        String fname = fullnames.getText().toString().trim();
-        String pno = phonenumber.getText().toString().trim();
+        String fname = fullnamesET.getText().toString().trim();
+        String pno = phonenumberET.getText().toString().trim();
 
         if (fname.length() < 2) {
-            fullnames.setError("Name should be at least 2 characters");
+            fullnamesET.setError("Name should be at least 2 characters");
             valid = false;
         } else {
-            fullnames.setError(null);
+            fullnamesET.setError(null);
         }
 
         if (pno.length() < 9) {
-            phonenumber.setError("Phonenumber too short!");
+            phonenumberET.setError("Phonenumber too short!");
             valid = false;
         } else if (pno.length() > 9) {
-            phonenumber.setError("Phonenumber Long!");
+            phonenumberET.setError("Phonenumber Long!");
             valid = false;
         } else {
-            phonenumber.setError(null);
+            phonenumberET.setError(null);
         }
 
 
@@ -119,18 +121,25 @@ public class EditUser extends AppCompatActivity {
 
     public void updateProfile(MenuItem item) {
 
+        final String updatedFname = fullnamesET.getText().toString().trim();
+        final String updatedPno = phonenumberET.getText().toString().trim();
 
-        if (AppUtils.isNetworkConnected(context)) {
-
-            if (validateForm()) {
-
-                openConfirmationDialog();
-
-            }
+        if (fullname.equals(updatedFname) && phonenumber.equals(updatedPno)) {
+            finish();
         } else {
 
-            Toast.makeText(EditUser.this, "Check your internet connection", Toast.LENGTH_LONG).show();
+            if (AppUtils.isNetworkConnected(context)) {
 
+                if (validateForm()) {
+
+                    openConfirmationDialog();
+
+                }
+            } else {
+
+                Toast.makeText(EditUser.this, "Check your internet connection", Toast.LENGTH_LONG).show();
+
+            }
         }
     }
 
@@ -155,8 +164,8 @@ public class EditUser extends AppCompatActivity {
 
                 if (validateForm()) {
 
-                    final String fname = fullnames.getText().toString().trim();
-                    final String pno = phonenumber.getText().toString().trim();
+                    final String fname = fullnamesET.getText().toString().trim();
+                    final String pno = phonenumberET.getText().toString().trim();
 
                     DocumentReference documentReference = firestore.collection("Users").document(userID);
                     documentReference.update("fullname", fname);
@@ -211,45 +220,53 @@ public class EditUser extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String oldpassword = oldpwd.getText().toString().trim();
-                final String newpassword = newpwd.getText().toString().trim();
+                if (AppUtils.isNetworkConnected(context)) {
 
-                if (oldpassword.isEmpty() || oldpassword.length() < 6) {
 
-                    oldpwd.setError("Enter at least 6 characters");
+                    String oldpassword = oldpwd.getText().toString().trim();
+                    final String newpassword = newpwd.getText().toString().trim();
 
-                } else if (newpassword.isEmpty() || newpassword.length() < 6) {
+                    if (oldpassword.isEmpty() || oldpassword.length() < 6) {
 
-                    newpwd.setError("New Password should be at least 6 characters");
+                        oldpwd.setError("Enter at least 6 characters");
 
+                    } else if (newpassword.isEmpty() || newpassword.length() < 6) {
+
+                        newpwd.setError("New Password should be at least 6 characters");
+
+                    } else {
+
+                        progressBar.setVisibility(View.VISIBLE);
+
+                        AuthCredential credential = EmailAuthProvider.getCredential(email, oldpassword);
+                        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                progressBar.setVisibility(View.INVISIBLE);
+
+                                if (task.isSuccessful()) {
+                                    user.updatePassword(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(EditUser.this, "Password Updated Successfully", Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                            }
+                                        }
+                                    });
+                                } else {
+
+                                    Toast.makeText(EditUser.this, "Please check your old password", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
                 } else {
 
-                    progressBar.setVisibility(View.VISIBLE);
+                    Toast.makeText(EditUser.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
 
-                    AuthCredential credential = EmailAuthProvider.getCredential(email, oldpassword);
-                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-
-                            progressBar.setVisibility(View.INVISIBLE);
-
-                            if (task.isSuccessful()) {
-                                user.updatePassword(newpassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(EditUser.this, "Password Updated Successfully", Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                        }
-                                    }
-                                });
-                            } else {
-
-                                Toast.makeText(EditUser.this, "Please check your old password", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
                 }
             }
         });

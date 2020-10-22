@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Pages">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -20,9 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/CustomActivityTheme"
-            app:tabTextAppearance="@style/TabLayout"
             app:tabSelectedTextColor="@color/color_title"
-            app:tabTextColor="@color/tabtextcolor1"/>
+            app:tabTextAppearance="@style/TabLayout"
+            app:tabTextColor="@color/tabtextcolor1" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -30,6 +30,6 @@
         android:id="@+id/pagesviewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pagesappbarlayout"/>
+        android:layout_below="@id/pagesappbarlayout" />
 
 </RelativeLayout>

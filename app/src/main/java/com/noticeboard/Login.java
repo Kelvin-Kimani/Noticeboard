@@ -1,8 +1,11 @@
 package com.noticeboard;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,10 +25,8 @@ import com.noticeboard.Utils.AppUtils;
 public class Login extends AppCompatActivity {
 
     Context context = this;
-    private TextInputLayout textEmailLayout, textPwdLayout;
     private EditText email, pwd;
     private FirebaseAuth firebaseAuth;
-    private ProgressBar progressBar;
     private Button login;
 
     @Override
@@ -45,11 +46,8 @@ public class Login extends AppCompatActivity {
 
         setContentView(R.layout.login);
 
-        textEmailLayout = findViewById(R.id.emailTIL);
-        textPwdLayout = findViewById(R.id.pwdTIL);
         email = findViewById(R.id.loginemail);
         pwd = findViewById(R.id.loginpwd);
-        progressBar = findViewById(R.id.progressBar);
         login = findViewById(R.id.loginbutton);
 
 
@@ -67,13 +65,14 @@ public class Login extends AppCompatActivity {
                         String emailAddress = email.getText().toString().trim();
                         String password = pwd.getText().toString().trim();
 
-                        progressBar.setVisibility(View.VISIBLE);
+                        final ProgressDialog progress = new ProgressDialog(Login.this);
+                        progress.setMessage("Logging in");
+                        progress.show();
+
 
                         firebaseAuth.signInWithEmailAndPassword(emailAddress, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
-
-                                progressBar.setVisibility(View.GONE);
 
                                 Intent intent = new Intent(Login.this, MainActivity.class);
                                 startActivity(intent);
@@ -83,8 +82,6 @@ public class Login extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-
-                                progressBar.setVisibility(View.GONE);
 
                                 Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_LONG).show();
 

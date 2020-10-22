@@ -22,60 +22,60 @@
                 android:text="@string/edit_page"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="25sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/createpagetext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/editpagetitle"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
                 android:text="@string/create_page_text"
-                android:textStyle="bold"
+                android:textColor="@color/color_title"
                 android:textSize="15sp"
-                android:layout_below="@+id/editpagetitle"
-                android:textColor="@color/color_title"/>
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/pagenameTIL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                app:errorEnabled="true"
                 android:layout_below="@id/createpagetext"
-                android:layout_centerHorizontal="true">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                app:errorEnabled="true">
+
                 <EditText
                     android:id="@+id/pagename"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/createpagetext"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="50dp"
                     android:ems="15"
-                    android:hint="@string/pagename"
-                    android:layout_below="@+id/createpagetext"/>
+                    android:hint="@string/pagename" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bioTIL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                app:errorEnabled="true"
                 android:layout_below="@id/pagenameTIL"
-                android:layout_centerHorizontal="true">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                app:errorEnabled="true">
 
                 <EditText
                     android:id="@+id/bioinfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="80dp"
+                    android:layout_below="@+id/pagename"
                     android:layout_centerHorizontal="true"
-                    android:inputType="textMultiLine"
+                    android:layout_marginTop="80dp"
                     android:ems="15"
                     android:hint="@string/bio"
-                    android:layout_below="@+id/pagename" />
+                    android:inputType="textMultiLine" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

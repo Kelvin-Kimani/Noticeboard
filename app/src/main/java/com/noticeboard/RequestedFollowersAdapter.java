@@ -3,7 +3,6 @@ package com.noticeboard;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,13 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RequestedFollowersAdapter extends FirestoreRecyclerAdapter<UserDetails, RequestedFollowersAdapter.RequestingUser> {
 
-   CircleImageView userImage;
+    CircleImageView userImage;
+    private OnAcceptClickListener onAcceptClickListener;
+    private OnCancelClickListener onCancelClickListener;
+
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
@@ -44,10 +47,25 @@ public class RequestedFollowersAdapter extends FirestoreRecyclerAdapter<UserDeta
         return new RequestingUser(v);
     }
 
+    public void setOnAcceptClickListener(OnAcceptClickListener onAcceptClickListener) {
+        this.onAcceptClickListener = onAcceptClickListener;
+    }
+
+    public void setOnCancelClickListener(OnCancelClickListener onCancelClickListener) {
+        this.onCancelClickListener = onCancelClickListener;
+    }
+
+    public interface OnAcceptClickListener {
+        void onAcceptClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public interface OnCancelClickListener {
+        void onCancelClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
     public class RequestingUser extends RecyclerView.ViewHolder {
 
-        TextView username, level;
-        ImageButton accept, cancel;
+        TextView username, level, accept, cancel;
 
         public RequestingUser(@NonNull View itemView) {
             super(itemView);
@@ -57,6 +75,31 @@ public class RequestedFollowersAdapter extends FirestoreRecyclerAdapter<UserDeta
             accept = itemView.findViewById(R.id.acceptRequest);
             cancel = itemView.findViewById(R.id.cancelRequest);
             userImage = itemView.findViewById(R.id.userprofileimg);
+
+            accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int position = getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION && onAcceptClickListener != null) {
+                        onAcceptClickListener.onAcceptClick(getSnapshots().getSnapshot(position), position);
+                    }
+
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && onCancelClickListener != null) {
+                        onCancelClickListener.onCancelClick(getSnapshots().getSnapshot(position), position);
+
+                    }
+                }
+            });
 
         }
     }

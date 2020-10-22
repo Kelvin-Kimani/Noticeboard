@@ -9,106 +9,104 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         app:cardCornerRadius="10dp"
-        app:cardElevation="10dp"
-        android:layout_centerInParent="true">
+        app:cardElevation="10dp">
 
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/icon"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailTIL"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                android:layout_below="@id/icon">
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/idemail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_below="@+id/icon"
-                android:ems="12"
-                android:hint="Email (If Staff Use Institution Email)"
-                android:inputType="textEmailAddress"
-                android:layout_margin="@dimen/dimen_40dp"
-                android:layout_centerHorizontal="true"
-                />
-            </com.google.android.material.textfield.TextInputLayout>
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/icon" />
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailTIL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/icon"
+                    app:errorEnabled="true">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/pwdTIL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                app:passwordToggleEnabled="true"
-                android:layout_below="@id/emailTIL">
-
-            <EditText
-                android:id="@+id/pwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="12"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                android:layout_margin="@dimen/dimen_40dp"
-                android:layout_below="@+id/idemail"
-                android:layout_centerHorizontal="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/idemail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/icon"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/dimen_40dp"
+                        android:ems="12"
+                        android:hint="Email (If Staff Use Institution Email)"
+                        android:inputType="textEmailAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
 
 
-            <Button
-                android:id="@+id/signup"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/signup_button"
-                android:layout_marginTop="40dp"
-                android:layout_below="@+id/pwdTIL"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/roundedshapebtn"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/pwdTIL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emailTIL"
+                    app:errorEnabled="true"
+                    app:passwordToggleEnabled="true">
 
-            <TextView
-                android:id="@+id/loginlink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_link"
-                android:textStyle="bold"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="20dp"
-                android:layout_below="@+id/signup"
-                android:layout_centerHorizontal="true"
-                android:textSize="15sp"
-                android:onClick="loginlink"
-                android:textColor="@color/colorPrimaryDark"
-                />
+                    <EditText
+                        android:id="@+id/pwd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/idemail"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/dimen_40dp"
+                        android:ems="12"
+                        android:hint="@string/password"
+                        android:inputType="textPassword" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <Button
+                    android:id="@+id/signup"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pwdTIL"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/roundedshapebtn"
+                    android:text="@string/signup_button"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/loginlink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/signup"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:onClick="loginlink"
+                    android:text="@string/login_link"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 

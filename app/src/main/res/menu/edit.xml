@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/edit"
+        android:icon="@drawable/navbar_profile_edit"
+        android:onClick="openEditUser"
         android:orderInCategory="100"
         android:title="@string/edit"
-        app:showAsAction="always"
-        android:icon="@drawable/navbar_profile_edit"
-        android:onClick="openEditUser"/>
+        app:showAsAction="always" />
 </menu>

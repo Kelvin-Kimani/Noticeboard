@@ -10,133 +10,131 @@
         android:id="@+id/LoginCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="10dp"
         android:layout_centerInParent="true"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/icon"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dimen_20dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailTIL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                android:layout_below="@id/icon">
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dimen_20dp"
+                    android:src="@drawable/icon" />
 
-                <EditText
-                    android:id="@+id/loginemail"
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailTIL"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/icon"
+                    app:errorEnabled="true">
+
+                    <EditText
+                        android:id="@+id/loginemail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/dimen_40dp"
+                        android:ems="12"
+                        android:hint="@string/email_address"
+                        android:inputType="textEmailAddress" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/pwdTIL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emailTIL"
+                    app:errorEnabled="true"
+                    app:passwordToggleEnabled="true">
+
+                    <EditText
+                        android:id="@+id/loginpwd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/dimen_40dp"
+                        android:ems="12"
+                        android:hint="@string/password"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/loginbutton"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pwdTIL"
+                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
-                    android:ems="12"
-                    android:hint="@string/email_address"
-                    android:inputType="textEmailAddress"
-                    android:layout_margin="@dimen/dimen_40dp"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/roundedshapebtn"
+                    android:text="@string/login_button"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/loginlink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/loginbutton"
+                    android:layout_marginTop="40dp"
+                    android:layout_toLeftOf="@+id/view"
+                    android:onClick="signuplink"
+                    android:text="@string/signup_link"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/pwdTIL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                app:passwordToggleEnabled="true"
-                android:layout_below="@id/emailTIL">
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="2dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@id/loginbutton"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@color/tabtextcolor1" />
 
-            <EditText
-                android:id="@+id/loginpwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:ems="12"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                android:layout_margin="@dimen/dimen_40dp"
-                android:layout_centerHorizontal="true"
-              />
+                <TextView
+                    android:id="@+id/forgotpwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/loginbutton"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_toRightOf="@+id/view"
+                    android:onClick="resetlink"
+                    android:text="@string/forgotpwd"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/loginbutton"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:text="@string/login_button"
-                android:layout_marginTop="40dp"
-                android:layout_below="@+id/pwdTIL"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/roundedshapebtn"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/loginlink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/signup_link"
-                android:textStyle="bold"
-                android:layout_marginTop="40dp"
-                android:layout_below="@+id/loginbutton"
-                android:layout_toLeftOf="@+id/view"
-                android:textSize="15sp"
-                android:onClick="signuplink"
-                android:textColor="@color/colorPrimaryDark"
-                />
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="2dp"
-                android:layout_height="20dp"
-                android:layout_below="@id/loginbutton"
-                android:layout_marginTop="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/tabtextcolor1"/>
-
-            <TextView
-                android:id="@+id/forgotpwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/forgotpwd"
-                android:textStyle="bold"
-                android:layout_marginTop="40dp"
-                android:layout_below="@id/loginbutton"
-                android:layout_toRightOf="@+id/view"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="10dp"
-                android:textSize="15sp"
-                android:onClick="resetlink"
-                android:textColor="@color/colorPrimaryDark"
-                />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
 
 
-        </RelativeLayout>
+            </RelativeLayout>
 
         </ScrollView>
 

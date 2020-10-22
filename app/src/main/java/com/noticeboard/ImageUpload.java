@@ -10,7 +10,7 @@ public class ImageUpload {
 
     public ImageUpload(String url) {
 
-        this.imageURL= url;
+        this.imageURL = url;
     }
 
 

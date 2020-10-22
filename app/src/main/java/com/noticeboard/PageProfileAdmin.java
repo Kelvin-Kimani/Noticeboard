@@ -68,8 +68,8 @@ public class PageProfileAdmin extends AppCompatActivity {
     RadioButton radioButton;
     Uri imageUri;
     Context context;
-    private String privacy,adminUserID;
     RelativeLayout requested, deletePage;
+    private String privacy, adminUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,7 @@ public class PageProfileAdmin extends AppCompatActivity {
 
                 if (privacy.equals("Private")) {
 
-                   requested.setVisibility(View.VISIBLE);
+                    requested.setVisibility(View.VISIBLE);
 
                 }
             }
@@ -365,6 +365,7 @@ public class PageProfileAdmin extends AppCompatActivity {
 
         Intent intent = new Intent(PageProfileAdmin.this, PageFollowers.class);
         intent.putExtra("pageID", pageID);
+        intent.putExtra("pageAdminUID", adminUserID);
 
         startActivity(intent);
 
@@ -484,6 +485,8 @@ public class PageProfileAdmin extends AppCompatActivity {
 
         Intent intent = new Intent(PageProfileAdmin.this, RequestedFollowers.class);
         intent.putExtra("pageID", pageID);
+        intent.putExtra("pageAdminID", adminUserID);
+
 
         startActivity(intent);
     }

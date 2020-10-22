@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".UserPage">
 
     <RelativeLayout
@@ -16,32 +16,31 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="40dp"
-            android:layout_marginBottom="40dp"
             android:layout_marginTop="@dimen/dimen_20dp"
             android:layout_marginRight="@dimen/dimen_20dp"
-            android:src="@drawable/user_image_avatar"/>
+            android:layout_marginBottom="40dp"
+            android:src="@drawable/user_image_avatar" />
 
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="John Doe"
             android:layout_marginTop="30dp"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:layout_toRightOf="@+id/userprofileimg"
-            android:textColor="@color/color_title"/>
+            android:text="John Doe"
+            android:textColor="@color/color_title"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="level"
-            android:textSize="16sp"
+            android:layout_below="@id/username"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/userprofileimg"
-            android:layout_below="@id/username"
-            />
+            android:text="level"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
@@ -50,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/relativelayout"
-        android:background="@color/profile_desc"/>
+        android:background="@color/profile_desc" />
 
     <RelativeLayout
         android:id="@+id/relativelayout2"
@@ -62,11 +61,11 @@
             android:id="@+id/profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Info"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimaryDark"
             android:layout_margin="20dp"
-            android:textStyle="bold"/>
+            android:text="Info"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:id="@+id/relativelayout21"
@@ -79,31 +78,30 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="abc@gmail.com"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
-                android:textStyle="bold"
-                android:textColor="@color/color_title"/>
+                android:text="abc@gmail.com"
+                android:textColor="@color/color_title"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/emailText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email"
+                android:layout_below="@+id/email"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="@dimen/dimen_20dp"
-                android:layout_below="@+id/email" />
+                android:text="Email" />
 
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/emailText"
-                android:background="@color/profile_desc"
                 android:layout_alignStart="@+id/emailText"
-                />
+                android:background="@color/profile_desc" />
 
         </RelativeLayout>
 
@@ -118,40 +116,40 @@
                 android:id="@+id/prefix"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:text="+254"
                 android:textColor="@color/color_title"
-                android:textStyle="bold"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/phonenumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="790838747"
                 android:layout_marginTop="20dp"
-                android:textStyle="bold"
+                android:layout_toRightOf="@id/prefix"
+                android:text="790838747"
                 android:textColor="@color/color_title"
-                android:layout_toRightOf="@id/prefix"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/following"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mobile"
+                android:layout_below="@id/phonenumber"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:layout_below="@id/phonenumber" />
+                android:text="Mobile" />
 
             <View
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/following"
-                android:background="@color/profile_desc"
-                android:layout_alignStart="@+id/following"/>
+                android:layout_alignStart="@+id/following"
+                android:background="@color/profile_desc" />
 
         </RelativeLayout>
 

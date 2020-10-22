@@ -1,10 +1,15 @@
 package com.noticeboard;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.noticeboard.Utils.AppUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,13 +46,17 @@ public class Comments extends AppCompatActivity {
     String pageID, postID, postTitle, postContent, pageAdminID, username, userimageURL;
     TextView title, content;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    EditText comment;
+    EditText commentET;
     RelativeLayout noComment;
+    Dialog dialog;
+    Context context = this;
+    ImageView sendbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
+        dialog = new Dialog(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -54,8 +64,9 @@ public class Comments extends AppCompatActivity {
 
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
-        comment = findViewById(R.id.comment);
-        noComment =findViewById(R.id.noComments);
+        commentET = findViewById(R.id.comment);
+        noComment = findViewById(R.id.noComments);
+        sendbutton = findViewById(R.id.send);
 
         Intent intent = getIntent();
         pageID = intent.getStringExtra("pageID");
@@ -80,7 +91,136 @@ public class Comments extends AppCompatActivity {
             }
         });
 
+        sendbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String commentDetails = commentET.getText().toString().trim();
+                if (commentDetails.isEmpty()) {
+                    commentET.setError("Comment cannot be empty");
+                } else {
+
+                    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
+                    final String time = dateTimeInstance.format(Calendar.getInstance().getTime());
+
+                    DocumentReference commentsRef = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document();
+                    String commentID = commentsRef.getId();
+                    commentsRef.set(new CommentDetails(commentDetails, userID, commentID, time, username, userimageURL)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                            Toast.makeText(Comments.this, "Comment Posted", Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(getIntent());
+                        }
+                    });
+
+                }
+            }
+        });
+        commentAdapter.setOnItemClickListener(new CommentAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                final CommentDetails comment = documentSnapshot.toObject(CommentDetails.class);
+
+                String commentUID = comment.getUserID();
+                final String commentID = comment.getCommentID();
+                final String commentDetails = comment.getComment();
+
+                if (userID.equals(commentUID)) {
+
+                    final RelativeLayout edit, delete;
+                    TextView editcomment, deletecomment;
+
+                    dialog.setContentView(R.layout.addassociator_pop_up);
+                    editcomment = dialog.findViewById(R.id.viewText);
+                    editcomment.setText("Edit Comment");
+                    deletecomment = dialog.findViewById(R.id.makeAssociatorText);
+                    deletecomment.setText("Delete Comment");
+
+                    edit = dialog.findViewById(R.id.viewprofile);
+                    delete = dialog.findViewById(R.id.makeAssociator);
+
+                    edit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (AppUtils.isNetworkConnected(context)) {
+
+                                dialog.dismiss();
+                                commentET.setText(commentDetails);
+                                commentET.setFocusableInTouchMode(true);
+                                commentET.requestFocus();
+                                AppUtils.openSoftKeyboard(context);
+
+                                sendbutton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        final String newComment = commentET.getText().toString().trim();
+                                        if (commentDetails.isEmpty()) {
+                                            commentET.setError("Comment cannot be empty");
+                                        } else if (commentDetails.equals(newComment)) {
+                                            finish();
+                                        } else {
+
+                                            finish();
+                                            startActivity(getIntent());
+                                            DocumentReference commentsRef = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document(commentID);
+                                            commentsRef.update("comment", newComment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+
+                                                        Toast.makeText(Comments.this, "Comment updated", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            } else {
+
+                                Toast.makeText(Comments.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        }
+                    });
+
+                    delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            if (AppUtils.isNetworkConnected(context)) {
+                                DocumentReference deletecomment = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document(commentID);
+                                deletecomment.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+
+                                            Toast.makeText(Comments.this, "Comment deleted", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(Comments.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+
+
+                }
+            }
+        });
     }
+
 
     private void setUpCommentsRecyclerVIew() {
 
@@ -131,29 +271,6 @@ public class Comments extends AppCompatActivity {
 
 
     public void postComment(View view) {
-
-        final String commentDetails = comment.getText().toString().trim();
-        if (commentDetails.isEmpty()) {
-            comment.setError("Comment cannot be empty");
-        } else {
-
-            DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
-            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            final String time = dateTimeInstance.format(Calendar.getInstance().getTime());
-
-            DocumentReference commentsRef = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document();
-            String commentID = commentsRef.getId();
-            commentsRef.set(new CommentDetails(commentDetails, userID, commentID, time, username, userimageURL)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-
-                    Toast.makeText(Comments.this, "Comment Posted", Toast.LENGTH_SHORT).show();
-                    finish();
-                    startActivity(getIntent());
-                }
-            });
-
-        }
 
     }
 

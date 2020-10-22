@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/gradient_start"
     android:gravity="bottom"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
@@ -12,34 +13,29 @@
         android:id="@+id/userprofileimg"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="50dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/user_image_avatar" />
 
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="John Doe"
-        android:textColor="@color/color_title"
+        android:textColor="@color/colorPrimary"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginLeft="10dp"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="@dimen/dimen_20dp"
         android:text="level"
-        android:textColor="@color/tabtextcolor2"
-        android:textSize="16sp"
-        android:layout_marginLeft="10dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/navigationview" />
+        android:textColor="@color/colorPrimary"
+        android:textSize="15sp" />
 
 </LinearLayout>

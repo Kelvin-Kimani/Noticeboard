@@ -30,6 +30,7 @@ public class PageDetails {
         this.pageimage = pageimage;
 
     }
+
     public PageDetails() {
     }
 

@@ -180,7 +180,7 @@ public class SignUpExtended extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                           Toast.makeText(SignUpExtended.this, "Hope to see you soon", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpExtended.this, "Hope to see you soon", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignUpExtended.this, SignUp.class));
                             finish();
                         } else {

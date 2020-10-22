@@ -17,28 +17,28 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome"
-            android:textSize="20sp"
-            android:textColor="@color/color_title"
-            android:textStyle="bold"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:text="Welcome"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create a page to reach out to many people as possible."
             android:layout_below="@id/text"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="Create a page to reach out to many people as possible." />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Also, get updates without the hustle. Follow a page now"
             android:layout_below="@id/text1"
             android:layout_centerHorizontal="true"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:text="Also, get updates without the hustle. Follow a page now" />
 
     </RelativeLayout>
 

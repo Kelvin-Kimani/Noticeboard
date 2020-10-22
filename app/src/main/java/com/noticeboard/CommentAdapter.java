@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -17,6 +18,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CommentAdapter extends FirestoreRecyclerAdapter<CommentDetails, CommentAdapter.CommentHolder> {
 
     CircleImageView userImage;
+    private OnItemClickListener itemClickListener;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -46,6 +48,14 @@ public class CommentAdapter extends FirestoreRecyclerAdapter<CommentDetails, Com
         return new CommentHolder(v);
     }
 
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
     public class CommentHolder extends RecyclerView.ViewHolder {
         TextView username, comment, time;
 
@@ -57,6 +67,21 @@ public class CommentAdapter extends FirestoreRecyclerAdapter<CommentDetails, Com
             comment = itemView.findViewById(R.id.comment);
             time = itemView.findViewById(R.id.commentpostTime);
             userImage = itemView.findViewById(R.id.userprofileimg);
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION && itemClickListener != null) {
+
+                        itemClickListener.onItemClick(getSnapshots().getSnapshot(position), position);
+
+                    }
+
+                }
+            });
         }
     }
 }

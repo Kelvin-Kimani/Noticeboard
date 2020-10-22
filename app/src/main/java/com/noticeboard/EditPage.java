@@ -1,6 +1,7 @@
 package com.noticeboard;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,12 +26,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.noticeboard.Utils.AppUtils;
 
 public class EditPage extends AppCompatActivity {
 
     EditText pagename, bio;
     String userID, pageID, page_name, page_info;
     Dialog dialog;
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,71 +76,85 @@ public class EditPage extends AppCompatActivity {
 
             finish();
 
-        } else if (validateForm()) {
+        } else {
 
-            TextView title, text;
-            Button yes, no;
-            dialog.setContentView(R.layout.custom_pop_up);
+            if (AppUtils.isNetworkConnected(context)) {
 
-            title = dialog.findViewById(R.id.dialogtitle);
-            title.setText("Update Page");
-            text = dialog.findViewById(R.id.dialogtext);
-            text.setText("Do you wish to continue?");
+                if (validateForm()) {
 
-            yes = dialog.findViewById(R.id.positivebutton);
-            no = dialog.findViewById(R.id.negativebutton);
+                    TextView title, text;
+                    Button yes, no;
+                    dialog.setContentView(R.layout.custom_pop_up);
+
+                    title = dialog.findViewById(R.id.dialogtitle);
+                    title.setText("Update Page");
+                    text = dialog.findViewById(R.id.dialogtext);
+                    text.setText("Do you wish to continue?");
+
+                    yes = dialog.findViewById(R.id.positivebutton);
+                    no = dialog.findViewById(R.id.negativebutton);
 
 
-            yes.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    final String pagenameupdated = pagename.getText().toString().trim();
-                    final String pageinfoUpdated = bio.getText().toString().trim();
-
-                    DocumentReference pageReference = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID);
-                    pageReference.update("pagename", pagenameupdated);
-                    pageReference.update("pageinfo", pageinfoUpdated).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    yes.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+                        public void onClick(View v) {
 
-                            if (task.isSuccessful()) {
+                            final String pagenameupdated = pagename.getText().toString().trim();
+                            final String pageinfoUpdated = bio.getText().toString().trim();
 
-                                Toast.makeText(EditPage.this, "Page Information Updated Successfully", Toast.LENGTH_SHORT).show();
-                                finish();
+                            DocumentReference pageReference = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID);
+                            pageReference.update("pagename", pagenameupdated);
+                            pageReference.update("pageinfo", pageinfoUpdated).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
 
-                            }
-                        }
-                    });
+                                    if (task.isSuccessful()) {
 
-                    final CollectionReference globalPageRef = FirebaseFirestore.getInstance().collection("Global Pages");
-                    Query query1 = globalPageRef.whereEqualTo("pageID", pageID);
-                    query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot document : task.getResult()) {
-                                    globalPageRef.document(document.getId()).update("pagename", pagenameupdated);
-                                    globalPageRef.document(document.getId()).update("pageinfo", pageinfoUpdated);
+                                        Toast.makeText(EditPage.this, "Page Information Updated Successfully", Toast.LENGTH_SHORT).show();
+                                        finish();
 
+                                    }
                                 }
-                            }
+                            });
+
+                            final CollectionReference globalPageRef = FirebaseFirestore.getInstance().collection("Global Pages");
+                            Query query1 = globalPageRef.whereEqualTo("pageID", pageID);
+                            query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            globalPageRef.document(document.getId()).update("pagename", pagenameupdated);
+                                            globalPageRef.document(document.getId()).update("pageinfo", pageinfoUpdated);
+
+                                        }
+                                    }
+                                }
+                            });
                         }
                     });
+
+                    no.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            dialog.cancel();
+
+                        }
+                    });
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+
                 }
-            });
 
-            no.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            } else {
 
-                    dialog.cancel();
+                Toast.makeText(EditPage.this, "Check your internet connection", Toast.LENGTH_LONG).show();
 
-                }
-            });
+            }
 
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
+
         }
     }
 

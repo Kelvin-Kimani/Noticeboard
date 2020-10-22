@@ -42,24 +42,24 @@
             android:id="@+id/verifiedStaff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dimen_20dp"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
-            android:src="@drawable/verified_staff_icon"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
             android:layout_toRightOf="@id/username"
+            android:src="@drawable/verified_staff_icon"
             android:visibility="gone" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A"
-            android:textColor="@color/color_title"
-            android:textStyle="bold"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
+            android:text="A"
+            android:textColor="@color/color_title"
             android:textSize="20sp"
-            android:visibility="gone"/>
-
+            android:textStyle="bold"
+            android:visibility="gone" />
 
 
     </RelativeLayout>

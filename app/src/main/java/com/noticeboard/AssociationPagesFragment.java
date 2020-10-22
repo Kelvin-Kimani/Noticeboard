@@ -14,10 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,6 +82,26 @@ public class AssociationPagesFragment extends Fragment {
     }
 
     private void setUpAssociatorRV() {
+
+        Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Associated Pages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+
+                    if (task.getResult().size() > 0) {
+
+                        relativeLayout.setVisibility(View.GONE);
+
+                    } else {
+
+                        relativeLayout.setVisibility(View.VISIBLE);
+
+                    }
+                }
+
+            }
+        });
 
         Query query = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Associated Pages").orderBy("pagename", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<PageDetails> options = new FirestoreRecyclerOptions.Builder<PageDetails>()

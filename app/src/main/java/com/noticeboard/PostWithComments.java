@@ -31,7 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.noticeboard.Utils.AppUtils;
 
@@ -43,15 +43,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostWithComments extends AppCompatActivity {
 
-    RelativeLayout commentTextbox, noComment, latestCommentRL, addComment;
+    RelativeLayout commentTextbox, noComment, addComment;
     CircleImageView circleImageView;
     TextView pagename, postTitle, postContent, time, postedby, firstComment, yesComment, addCommentTV;
     String page_name, post_title, post_content, post_time, post_id, posters_id, username, userimageURL, pageAdminID, pageID, userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     EditText comment;
-    CircleImageView userImage;
-    TextView latestComment, latestcommenttime, latestusername;
     Context context = this;
-    String latestUserName, latestCommentText, latestCommentTime;
     Dialog dialog;
 
     @Override
@@ -75,16 +72,8 @@ public class PostWithComments extends AppCompatActivity {
         comment = findViewById(R.id.TypeComment);
         noComment = findViewById(R.id.firstcommentRL);
         yesComment = findViewById(R.id.loadComments);
-        latestCommentRL = findViewById(R.id.latestComment);
         addComment = findViewById(R.id.addComment);
         addCommentTV = findViewById(R.id.addCommentText);
-
-        // latest comment
-        userImage = findViewById(R.id.userprofileimg);
-        latestusername = findViewById(R.id.username);
-        latestComment = findViewById(R.id.comment);
-        latestcommenttime = findViewById(R.id.commentpostTime);
-
 
         Intent intent = getIntent();
         page_name = intent.getStringExtra("pagename");
@@ -95,6 +84,11 @@ public class PostWithComments extends AppCompatActivity {
         posters_id = intent.getStringExtra("postersID");
         pageAdminID = intent.getStringExtra("pageAdminID");
         pageID = intent.getStringExtra("pageID");
+
+        pagename.setText(page_name);
+        postTitle.setText(post_title);
+        postContent.setText(post_content);
+        time.setText(post_time);
 
         final DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(posters_id);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -129,7 +123,6 @@ public class PostWithComments extends AppCompatActivity {
                         noComment.setVisibility(View.GONE);
                         yesComment.setVisibility(View.VISIBLE);
                         addComment.setVisibility(View.VISIBLE);
-                        latestCommentRL.setVisibility(View.VISIBLE);
 
 
                     } else {
@@ -141,24 +134,20 @@ public class PostWithComments extends AppCompatActivity {
             }
         });
 
-        CollectionReference latestCommentDetails = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(post_id).collection("Comments");
-        Query query = latestCommentDetails.orderBy("time", Query.Direction.DESCENDING).limit(1);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        addComment.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
+            public void onClick(View v) {
 
-                    QuerySnapshot querySnapshot = task.getResult();
+                Intent intent1 = new Intent(PostWithComments.this, Comments.class);
+                intent1.putExtra("pageID", pageID);
+                intent1.putExtra("postTitle", post_title);
+                intent1.putExtra("postContent", post_content);
+                intent1.putExtra("postID", post_id);
+                intent1.putExtra("pageAdminID", pageAdminID);
 
-
-                }
+                startActivity(intent1);
             }
         });
-
-        pagename.setText(page_name);
-        postTitle.setText(post_title);
-        postContent.setText(post_content);
-        time.setText(post_time);
 
         Character firstLetter = page_name.charAt(0);
         TextDrawable drawable;
@@ -252,11 +241,6 @@ public class PostWithComments extends AppCompatActivity {
 
                     inflater.inflate(R.menu.postmenuoptions, menu);
 
-
-                } else {
-
-                    inflater.inflate(R.menu.save, menu);
-
                 }
 
             }
@@ -278,16 +262,15 @@ public class PostWithComments extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void savePost(MenuItem item) {
-
-
-    }
-
     public void editPost(MenuItem item) {
         //pass title and post content
         Intent intent = new Intent(PostWithComments.this, EditPost.class);
         intent.putExtra("title", post_title);
         intent.putExtra("post", post_content);
+        intent.putExtra("pageID", pageID);
+        intent.putExtra("postID", post_id);
+        intent.putExtra("pageAdminID", pageAdminID);
+
 
         startActivity(intent);
     }
@@ -309,6 +292,49 @@ public class PostWithComments extends AppCompatActivity {
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (AppUtils.isNetworkConnected(context)) {
+
+                    //delete post on page
+                    DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(post_id);
+                    post.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            Toast.makeText(PostWithComments.this, "Post deleted", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            startActivity(new Intent(PostWithComments.this, MainActivity.class));
+
+                            //delete on page admin
+                            DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(post_id);
+                            post.delete();
+
+                            //delete on followers
+                            CollectionReference follower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers");
+                            follower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                            UserDetails user = document.toObject(UserDetails.class);
+
+                                            String followerID = user.getUserID();
+
+                                            DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts").document(post_id);
+                                            post.delete();
+
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+
+                    Toast.makeText(PostWithComments.this, "Check your internet connection", Toast.LENGTH_LONG).show();
+
+                }
 
             }
         });

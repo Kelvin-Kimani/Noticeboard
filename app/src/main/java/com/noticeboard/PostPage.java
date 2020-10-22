@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,11 +17,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.noticeboard.Utils.AppUtils;
@@ -74,9 +71,7 @@ public class PostPage extends AppCompatActivity {
         if (title.isEmpty()) {
             posttitle.setError("Post Title Cannot Be Empty!");
             valid = false;
-        } else if (title.length() < 2) {
-            posttitle.setError("Post Title should be at least 2 characters");
-            valid = false;
+
         } else {
             posttitle.setError(null);
         }
@@ -100,7 +95,7 @@ public class PostPage extends AppCompatActivity {
 
     public void post(MenuItem item) {
 
-        if (AppUtils.isNetworkConnected(context)){
+        if (AppUtils.isNetworkConnected(context)) {
 
             if (validateForm()) {
 
@@ -141,8 +136,8 @@ public class PostPage extends AppCompatActivity {
                 follower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            for (QueryDocumentSnapshot document : task.getResult()){
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
 
                                 UserDetails user = document.toObject(UserDetails.class);
 
@@ -173,9 +168,7 @@ public class PostPage extends AppCompatActivity {
                 });
 
             }
-        }
-
-        else {
+        } else {
 
             Toast.makeText(PostPage.this, "Check your internet connection", Toast.LENGTH_LONG).show();
 

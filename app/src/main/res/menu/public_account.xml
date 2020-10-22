@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black_24dp"
+        android:id="@+id/publicpage"
+        android:icon="@drawable/ic_baseline_lock_open_24"
+        android:iconTint="@color/color_title"
+        android:onClick="publicpopup"
         android:orderInCategory="100"
-        android:title="@string/action_search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:title="Public"
         app:showAsAction="always" />
+
 </menu>

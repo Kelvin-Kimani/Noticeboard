@@ -32,6 +32,15 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/notificationdot"
+            android:backgroundTint="@color/colorRed"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
@@ -84,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/view"
             android:layout_margin="20dp"
-            android:src="@drawable/comment_icon"/>
+            android:src="@drawable/comment_icon" />
 
         <ToggleButton
             android:id="@+id/savebutton"

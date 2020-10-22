@@ -1,16 +1,9 @@
 package com.noticeboard;
 
-import com.google.firebase.Timestamp;
-import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.firestore.ServerTimestamp;
-
-import java.util.Date;
-
 public class PostDetails {
 
 
     private String title, content, pagename, time, pageID, postID, saveValue, postersID, pageAdminID;
-
 
 
     public PostDetails(String title, String content, String time, String postID) {
@@ -21,7 +14,7 @@ public class PostDetails {
 
     }
 
-    public PostDetails(String pagename,String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID){
+    public PostDetails(String pagename, String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID) {
         this.pagename = pagename;
         this.title = title;
         this.content = content;
@@ -75,6 +68,7 @@ public class PostDetails {
     public void setPageID(String pageID) {
         this.pageID = pageID;
     }
+
     public String getTime() {
         return time;
     }

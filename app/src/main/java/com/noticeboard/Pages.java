@@ -7,8 +7,6 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuCompat;
-import androidx.core.view.MenuItemCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -45,7 +43,6 @@ public class Pages extends AppCompatActivity {
         viewPager.setCurrentItem(page);
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

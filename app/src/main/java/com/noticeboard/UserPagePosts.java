@@ -2,6 +2,7 @@ package com.noticeboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -29,6 +30,7 @@ public class UserPagePosts extends AppCompatActivity {
         setContentView(R.layout.activity_user_page_posts);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         forrequested = findViewById(R.id.requestedfollowers);
         fornonfollowers = findViewById(R.id.nonfollowersview);
@@ -90,5 +92,18 @@ public class UserPagePosts extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         postAdapter.stopListening();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

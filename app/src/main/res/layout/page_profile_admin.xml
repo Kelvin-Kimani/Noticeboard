@@ -34,13 +34,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_toEndOf="@+id/pageprofileimg"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="PAGENAME"
                     android:textColor="@color/color_title"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/bio"
@@ -49,11 +48,11 @@
                     android:layout_below="@+id/pagename"
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/pageprofileimg"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="bioinfo"
                     android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:ellipsize="end"
-                    android:maxLines="2"/>
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
@@ -156,8 +155,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/relativelayout21"
-                    android:orientation="horizontal"
                     android:onClick="openFollowRequests"
+                    android:orientation="horizontal"
                     android:visibility="gone">
 
                     <ImageView

@@ -16,18 +16,19 @@
             android:id="@+id/textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Follow Page"
             android:layout_centerHorizontal="true"
+            android:text="Follow Page"
             android:textColor="@color/color_title"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You'll receive a pages posts when you follow the page"
-            android:textColor="@color/color_title"
             android:layout_below="@id/textview"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="You'll receive a pages posts when you follow the page"
+            android:textColor="@color/color_title" />
 
     </RelativeLayout>
 
@@ -42,24 +43,26 @@
             android:id="@+id/textview1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Just a while"
             android:layout_centerHorizontal="true"
+            android:text="Just a while"
             android:textColor="@color/color_title"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You'll start receiving posts as soon as your request is approved"
-            android:textColor="@color/color_title"
             android:layout_below="@id/textview1"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:text="You'll start receiving posts as soon as your request is approved"
+            android:textColor="@color/color_title" />
 
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userPagePostsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

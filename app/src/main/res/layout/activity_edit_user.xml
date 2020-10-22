@@ -97,14 +97,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/phonenumberRL"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/dimen_20dp"
-                android:layout_marginRight="@dimen/dimen_20dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="1dp"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="100dp"
+                android:layout_marginRight="@dimen/dimen_20dp"
+                android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/navigationview"
-                android:layout_centerHorizontal="true">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -116,8 +116,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="@dimen/dimen_20dp"
-                        android:text="Change your email?"
                         android:onClick="openChangeEmailPopUp"
+                        android:text="Change your email?"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="16sp"
                         android:textStyle="bold" />

@@ -127,7 +127,6 @@
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-
             </RelativeLayout>
 
 
@@ -149,7 +148,7 @@
                 <include
                     layout="@layout/user_comment_tile"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             </RelativeLayout>
 
@@ -192,44 +191,62 @@
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/commentTextbox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/view2"
-                android:visibility="gone">
-
-
-                <EditText
-                    android:id="@+id/TypeComment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/send"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="false"
-                    android:layout_margin="10dp"
-                    android:background="@null"
-                    android:ems="15"
-                    android:hint="Type comment"
-                    android:inputType="textMultiLine"
-                    android:padding="10dp"
-                    android:textSize="20sp" />
-
-                <ImageView
-                    android:id="@+id/send"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_send_black_24dp"
-                    android:onClick="postComment" />
-
-            </RelativeLayout>
-
         </RelativeLayout>
 
     </ScrollView>
 
+    <RelativeLayout
+        android:id="@+id/commentTextbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#eeeeee">
+
+            <EditText
+                android:id="@+id/TypeComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="false"
+                android:layout_margin="10dp"
+                android:background="@null"
+                android:ems="15"
+                android:hint="Type comment"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:padding="8dp"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/sendRL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true">
+
+            <ImageView
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="20dp"
+                android:background="@drawable/ic_send_black_24dp"
+                android:onClick="postComment" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
 </RelativeLayout>
+
+

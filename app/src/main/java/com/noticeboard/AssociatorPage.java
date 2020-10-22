@@ -22,6 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,6 +34,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AssociatorPage extends AppCompatActivity {
 
@@ -39,6 +46,7 @@ public class AssociatorPage extends AppCompatActivity {
     RadioGroup group;
     RadioButton radioButton;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    CircleImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,7 @@ public class AssociatorPage extends AppCompatActivity {
 
         pagename = findViewById(R.id.pagename);
         pageinfo = findViewById(R.id.bio);
+        circleImageView = findViewById(R.id.pageprofileimg);
 
         DocumentReference pageDetails = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID);
         pageDetails.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -70,6 +79,31 @@ public class AssociatorPage extends AppCompatActivity {
 
             }
         });
+
+        retrievePageImage();
+
+    }
+
+    private void retrievePageImage() {
+
+        FirebaseDatabase.getInstance().getReference().child("Users Profiles").child(adminUID).child("Pages")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if ((dataSnapshot.exists()) && (dataSnapshot.hasChild(pageID))) {
+
+                            String imageurl = dataSnapshot.child(pageID).child("PageProfile").getValue().toString();
+                            Picasso.get().load(imageurl).into(circleImageView);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
     public void openFollowers(View view) {

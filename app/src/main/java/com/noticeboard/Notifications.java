@@ -1,9 +1,9 @@
 package com.noticeboard;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Notifications extends AppCompatActivity {
 
@@ -17,6 +17,7 @@ public class Notifications extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

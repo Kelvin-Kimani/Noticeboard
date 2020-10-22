@@ -16,19 +16,19 @@
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Follow a page"
-            android:textSize="20sp"
-            android:textColor="@color/color_title"
-            android:textStyle="bold"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:text="Follow a page"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Once you follow a page it will be displayed here"
             android:layout_below="@id/text1"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="Once you follow a page it will be displayed here" />
 
 
     </RelativeLayout>
@@ -36,6 +36,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/PagesFollowedRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

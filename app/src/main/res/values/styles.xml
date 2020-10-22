@@ -21,9 +21,8 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-
-
     // custom actionbar
+
     <style name="CustomActivityTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
@@ -88,7 +87,7 @@
 
     </style>
 
-    <style name="AppModalStyle"  parent="Widget.Design.BottomSheet.Modal">
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
 
         <item name="android:background">@drawable/rounded_bottom_dialog</item>
 

@@ -7,7 +7,7 @@ public class UserDetails {
     String phonenumber, userimage, userID, email;
 
 
-    public UserDetails(String fullname, String phonenumber, String level,  String email, String userID) {
+    public UserDetails(String fullname, String phonenumber, String level, String email, String userID) {
         this.fullname = fullname;
         this.level = level;
         this.phonenumber = phonenumber;
@@ -37,8 +37,9 @@ public class UserDetails {
 
         this.fullname = username;
         this.level = level;
-        this.userID =userID;
+        this.userID = userID;
         this.userimage = userImage;
+
     }
 
     public String getEmail() {

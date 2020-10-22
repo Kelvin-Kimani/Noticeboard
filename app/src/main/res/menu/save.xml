@@ -5,18 +5,18 @@
     <item
         android:id="@+id/save"
         android:icon="@drawable/ic_bookmark_black_24dp"
+        android:onClick="savePost"
         android:orderInCategory="100"
         android:title="Save"
-        android:onClick="savePost"
-        app:showAsAction="never"
-        android:visible="false"/>
+        android:visible="false"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/unsave"
         android:icon="@drawable/ic_bookmark_empty"
         android:orderInCategory="100"
         android:title="Unsave"
-        app:showAsAction="never"
-        android:visible="false"/>
+        android:visible="false"
+        app:showAsAction="never" />
 
 </menu>

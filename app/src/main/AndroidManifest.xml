@@ -54,7 +54,7 @@
             android:parentActivityName=".PageProfileAdmin"
             android:theme="@style/CustomActivityTheme" />
         <activity
-            android:name=".HelpAndFAQs"
+            android:name=".Help"
             android:parentActivityName=".UserProfile"
             android:theme="@style/CustomActivityTheme" />
         <activity

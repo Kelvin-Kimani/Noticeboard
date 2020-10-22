@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -159,7 +161,7 @@ public class PageProfileUser extends AppCompatActivity {
 
                                 //save requested follower details
                                 DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Requested").document(userID);
-                                requested.set(new UserDetails(username, level, userID,phonenumber, userImage, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                requested.set(new UserDetails(username, level, userID, phonenumber, userImage, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -319,6 +321,7 @@ public class PageProfileUser extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -330,6 +333,65 @@ public class PageProfileUser extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = getMenuInflater();
+
+        DocumentReference checkPrivacy = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID);
+        checkPrivacy.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                final String privacy = documentSnapshot.getString("privacy");
+
+                if ("Private".equals(privacy)) {
+
+                    inflater.inflate(R.menu.private_account, menu);
+
+
+                } else {
+
+                    inflater.inflate(R.menu.public_account, menu);
+
+                }
+
+            }
+        });
+
+        return true;
+    }
+
+    public void publicpopup(MenuItem item) {
+
+        TextView title, description;
+
+        dialog.setContentView(R.layout.description_pop_up);
+        title = dialog.findViewById(R.id.title);
+        title.setText("Public");
+        description = dialog.findViewById(R.id.description);
+        description.setText("This page is open to everyone and therefore one can follow to get updates.");
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+    }
+
+    public void privatepopup(MenuItem item) {
+
+        TextView title, description;
+
+        dialog.setContentView(R.layout.description_pop_up);
+        title = dialog.findViewById(R.id.title);
+        title.setText("Private");
+        description = dialog.findViewById(R.id.description);
+        description.setText("This page is private and one has to request to follow this page.");
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
     }
 }
 

@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.noticeboard.Utils.AppUtils;
@@ -28,15 +27,12 @@ public class SignUp extends AppCompatActivity {
     Button signupbtn;
     ProgressBar progressBar;
     Context context = this;
-    private TextInputLayout textEmailLayout, textPwdLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        textEmailLayout = findViewById(R.id.emailTIL);
-        textPwdLayout = findViewById(R.id.pwdTIL);
         emailaddress = findViewById(R.id.idemail);
         password = findViewById(R.id.pwd);
         signupbtn = findViewById(R.id.signup);

@@ -2,6 +2,8 @@ package com.noticeboard.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,9 @@ public class HomeFragment extends Fragment {
     RelativeLayout relativeLayout;
     private CollectionReference postref;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    static Bundle recyclerViewState;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private Parcelable mListState = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -221,7 +226,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -233,4 +237,5 @@ public class HomeFragment extends Fragment {
         super.onStop();
         postAdapter.stopListening();
     }
+
 }
