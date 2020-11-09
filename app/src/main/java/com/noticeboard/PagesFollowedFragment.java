@@ -1,11 +1,15 @@
 package com.noticeboard;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -36,6 +42,7 @@ public class PagesFollowedFragment extends Fragment {
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo, administratorUID, privacy, username, level, phonenumber;
     RelativeLayout relativeLayout;
     private FirestoreRecyclerAdapter adapter;
+    Dialog dialog;
 
     public PagesFollowedFragment() {
         // Required empty public constructor
@@ -57,6 +64,7 @@ public class PagesFollowedFragment extends Fragment {
 
         this.v = view;
 
+        dialog = new Dialog(getActivity());
         relativeLayout = v.findViewById(R.id.followpageRL);
         setUpPagesFollowedRecyclerView();
         recyclerViewOnClick();
@@ -123,6 +131,70 @@ public class PagesFollowedFragment extends Fragment {
                 intent.putExtra("privacy", privacy);
 
                 startActivity(intent);
+
+            }
+        });
+
+        followingAdapter.setOnFollowingButtonClickListener(new PageUserAdapter.OnFollowingButtonClickListener() {
+            @Override
+            public void onFollowingButtonClick(DocumentSnapshot documentSnapshot, final int position) {
+
+                PageDetails page = documentSnapshot.toObject(PageDetails.class);
+
+                pageID = page.getPageID();
+                pname = page.getPagename();
+                pinfo = page.getPageinfo();
+                administratorUID = page.getUserID();
+                privacy = page.getPrivacy();
+
+                TextView title;
+                RelativeLayout accept;
+                dialog.setContentView(R.layout.unfollow_pop_up);
+
+                title = dialog.findViewById(R.id.unfollowTitle);
+                title.setText("Unfollow " + pname);
+
+                accept = dialog.findViewById(R.id.unfollowview);
+                accept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                        pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                if (task.isSuccessful()) {
+
+                                    Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
+                                    final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                                    Query query = pagefollowed.whereEqualTo("pageID", pageID);
+                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                            if (task.isSuccessful()) {
+
+                                                for (DocumentSnapshot document : task.getResult()) {
+
+                                                    pagefollowed.document(document.getId()).delete();
+                                                    followingAdapter.notifyItemChanged(position);
+                                                    dialog.dismiss();
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                });
+
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
 
             }
         });

@@ -27,7 +27,6 @@ public class AdminPagePosts extends AppCompatActivity {
     PostAdapter postAdapter;
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    ;
     String postID, postTitle, postContent, postTime, postersID;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference postref;

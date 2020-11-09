@@ -38,6 +38,7 @@ import com.noticeboard.Utils.AppUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Comments extends AppCompatActivity {
 
@@ -100,12 +101,16 @@ public class Comments extends AppCompatActivity {
                     commentET.setError("Comment cannot be empty");
                 } else {
 
-                    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
-                    final String time = dateTimeInstance.format(Calendar.getInstance().getTime());
+                    //DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
+                    //final String time = dateTimeInstance.format(Calendar.getInstance().getTime());
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+                    Date date = new Date();
+                    String Date_Time = formatter.format(date);
 
                     DocumentReference commentsRef = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document();
                     String commentID = commentsRef.getId();
-                    commentsRef.set(new CommentDetails(commentDetails, userID, commentID, time, username, userimageURL)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    commentsRef.set(new CommentDetails(commentDetails, userID, commentID, Date_Time, username, userimageURL)).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 

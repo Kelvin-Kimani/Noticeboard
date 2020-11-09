@@ -60,6 +60,33 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/noposts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/nopoststitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Welcome"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nopoststitle"
+            android:layout_centerHorizontal="true"
+            android:text="We will keep you updated once there is a post"
+            android:textColor="@color/color_title" />
+
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userPagePostsRecyclerView"
         android:layout_width="match_parent"

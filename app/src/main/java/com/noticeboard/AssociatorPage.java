@@ -192,6 +192,13 @@ public class AssociatorPage extends AppCompatActivity {
 
                                                 globalPageRef.document(document.getId()).update("privacy", chosenPrivacy);
 
+                                                if (chosenPrivacy.equals("Public")){
+
+                                                    //check for pending request
+                                                    
+
+                                                }
+
                                             }
                                         }
                                     }

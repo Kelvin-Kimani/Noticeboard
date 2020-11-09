@@ -132,6 +132,7 @@ public class PageProfileUser extends AppCompatActivity {
         intent.putExtra("userID", userID);
         intent.putExtra("pageID", pageID);
         intent.putExtra("AdminUserID", adminUID);
+        intent.putExtra("pagename", page_name);
 
         startActivity(intent);
     }
