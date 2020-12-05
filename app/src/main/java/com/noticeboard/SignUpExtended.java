@@ -2,10 +2,13 @@ package com.noticeboard;
 
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,7 +36,6 @@ public class SignUpExtended extends AppCompatActivity {
     EditText fname, pno, regno;
     Spinner spinner;
     String userID, email;
-    ProgressBar progressBar;
     FloatingActionButton submit;
     Dialog dialog;
 
@@ -45,7 +47,6 @@ public class SignUpExtended extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        progressBar = new ProgressBar(this);
         fname = findViewById(R.id.fullnames);
         pno = findViewById(R.id.phonenumber);
         spinner = findViewById(R.id.spinner);
@@ -84,7 +85,29 @@ public class SignUpExtended extends AppCompatActivity {
 
                 if (validateForm()) {
 
-                    progressBar.setVisibility(View.VISIBLE);
+                    final ProgressDialog progress = new ProgressDialog(SignUpExtended.this);
+                    progress.setMessage("Completing SignUp...");
+                    progress.show();
+                    progress.setCanceledOnTouchOutside(false);
+
+                    Runnable progressRunnable = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            progress.cancel();
+                        }
+                    };
+
+                    Handler pdCanceller = new Handler();
+                    pdCanceller.postDelayed(progressRunnable, 30000);
+
+
+                    progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            Toast.makeText(SignUpExtended.this, "Will Update later", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                     final String fullnames = fname.getText().toString().trim();
 
@@ -97,8 +120,6 @@ public class SignUpExtended extends AppCompatActivity {
                     userRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-
-                            progressBar.setVisibility(View.INVISIBLE);
 
                             if (task.isSuccessful()) {
 

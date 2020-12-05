@@ -2,6 +2,8 @@ package com.noticeboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +33,10 @@ public class SavedPost extends AppCompatActivity {
     RecyclerView recyclerView;
     String changedValue = "Yes", userID, postID, postTitle, postContent, postPageName, posters_id, pageID, pageAdminID;
     RelativeLayout relativeLayout;
+    Bundle bundleRecyclerViewState;
+    private Parcelable recyclerstate = null;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class SavedPost extends AppCompatActivity {
                 postContent = post.getContent();
                 postPageName = post.getPagename();
                 posters_id = post.getPostersID();
+                pageAdminID = post.getPageAdminID();
+                pageID = post.getPageID();
 
                 Toast.makeText(SavedPost.this,
                         "Title: " + postTitle, Toast.LENGTH_LONG).show();
@@ -69,6 +77,9 @@ public class SavedPost extends AppCompatActivity {
                 intent.putExtra("postTime", post.getTime());
                 intent.putExtra("postID", postID);
                 intent.putExtra("postersID", posters_id);
+                intent.putExtra("pageID", pageID);
+                intent.putExtra("pageAdminID", pageAdminID);
+
 
                 startActivity(intent);
 
@@ -198,6 +209,36 @@ public class SavedPost extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         postAdapter.stopListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = recyclerView.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override

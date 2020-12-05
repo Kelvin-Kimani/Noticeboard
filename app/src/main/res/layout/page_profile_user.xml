@@ -49,7 +49,7 @@
 
         <Button
             android:id="@+id/requestedstate"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="50dp"
             android:layout_below="@+id/pageprofileimg"
             android:layout_centerHorizontal="true"
@@ -122,12 +122,6 @@
             android:textColor="@color/color_title"
             android:textSize="18sp" />
 
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/bio"
-            android:background="@color/profile_desc" />
 
         <RelativeLayout
             android:id="@+id/postslayout"
@@ -152,6 +146,18 @@
                 android:layout_toRightOf="@+id/postsicon"
                 android:text="Posts"
                 android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/noofposts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="20dp"
+               android:layout_alignParentRight="true"
+                android:text="0"
+                android:textStyle="bold" />
+
 
             <View
                 android:id="@+id/view"

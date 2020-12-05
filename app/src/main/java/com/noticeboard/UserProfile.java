@@ -25,11 +25,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -47,10 +49,9 @@ public class UserProfile extends AppCompatActivity {
 
     FloatingActionButton floatingActionButton;
     CircleImageView circleImageView;
-    TextView username, level;
+    TextView username, level, pages_created, pages_followed, associated_pages;
     FirebaseFirestore firestore;
-    FirebaseAuth auth;
-    String userID;
+    String userID =  FirebaseAuth.getInstance().getCurrentUser().getUid();
     DatabaseReference imageref;
     Uri imageUri;
     StorageReference storageReference;
@@ -68,6 +69,9 @@ public class UserProfile extends AppCompatActivity {
         username = findViewById(R.id.username);
         level = findViewById(R.id.level);
         floatingActionButton = findViewById(R.id.fab);
+        pages_created = findViewById(R.id.noofpagescreated);
+        pages_followed = findViewById(R.id.noofpagesfollowed);
+        associated_pages = findViewById(R.id.noofassociatedpages);
 
         //edit profile pic
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -77,12 +81,10 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         imageref = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference().child("User Profiles");
 
-        userID = auth.getCurrentUser().getUid();
 
         // retrieve user details
         DocumentReference documentReference = firestore.collection("Users").document(userID);
@@ -95,6 +97,42 @@ public class UserProfile extends AppCompatActivity {
 
             }
         });
+
+
+        final CollectionReference pagescreated = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages");
+        pagescreated.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        pages_created.setText(Integer.toString(task.getResult().size()));
+                    }
+                }
+            }
+        });
+
+        CollectionReference pagesfollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+        pagesfollowed.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        pages_followed.setText(Integer.toString(task.getResult().size()));
+                    }
+                }
+            }
+        });
+
+        CollectionReference associatedpages = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Associated Pages");
+        associatedpages.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    associated_pages.setText(Integer.toString(task.getResult().size()));
+                }
+            }
+        });
+
 
         retrieveUserImage();
     }

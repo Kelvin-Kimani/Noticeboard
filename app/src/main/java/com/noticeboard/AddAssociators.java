@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class AddAssociators extends AppCompatActivity {
 
@@ -37,6 +40,10 @@ public class AddAssociators extends AppCompatActivity {
     FollowersAdapter followersAdapter;
     String userID, pageID, followerUserID, followerUsername, pagename, pageinfo, privacy;
     Dialog dialog;
+    RelativeLayout relativeLayout;
+    Bundle bundleRecyclerViewState;
+    private Parcelable recyclerstate = null;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +58,7 @@ public class AddAssociators extends AppCompatActivity {
         Intent intent = getIntent();
         pageID = intent.getStringExtra("pageID");
         userID = intent.getStringExtra("userID");
+        relativeLayout = findViewById(R.id.nofollowersRL);
 
         floatingActionButton = findViewById(R.id.addassociatorfab);
 
@@ -182,8 +190,8 @@ public class AddAssociators extends AppCompatActivity {
                             Toast.makeText(AddAssociators.this, "Removed as Associator", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
 
-                            DocumentReference removeAssociator = FirebaseFirestore.getInstance().collection("Users").document(followerUserID).collection("Associated Pages").document(pageID);
-                            removeAssociator.delete();
+                            DocumentReference removeAssociationPage = FirebaseFirestore.getInstance().collection("Users").document(followerUserID).collection("Associated Pages").document(pageID);
+                            removeAssociationPage.delete();
 
                             //Add Followed Page
                             DocumentReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(followerUserID).collection("PagesFollowed").document(pageID);
@@ -201,6 +209,26 @@ public class AddAssociators extends AppCompatActivity {
     }
 
     private void setUpFollowersRecyclerView() {
+
+        Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Followers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+
+                    if (task.getResult().size() > 0) {
+
+                        relativeLayout.setVisibility(View.GONE);
+
+                    } else {
+
+                        relativeLayout.setVisibility(View.VISIBLE);
+
+                    }
+                }
+
+            }
+        });
 
         Query query = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Followers").orderBy("fullname", Query.Direction.ASCENDING);
         FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()
@@ -223,6 +251,36 @@ public class AddAssociators extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         followersAdapter.stopListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = recyclerView.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override

@@ -6,11 +6,14 @@
     tools:context=".RequestedFollowers">
 
     <TextView
+        android:id="@+id/nofollowrequest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="No New Requested Follows"
+        android:text="No New Follow Requests"
         android:textColor="@color/color_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

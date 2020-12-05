@@ -27,6 +27,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class PageAssociators extends AppCompatActivity {
 
@@ -35,6 +36,7 @@ public class PageAssociators extends AppCompatActivity {
     FollowersAdapter adapter;
     RecyclerView associators;
     Dialog dialog;
+    TextView noassociators;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class PageAssociators extends AppCompatActivity {
         page_name = intent.getStringExtra("pagename");
         pageID = intent.getStringExtra("pageID");
         userID = intent.getStringExtra("userID");
+        noassociators = findViewById(R.id.noassociators);
 
         getSupportActionBar().setTitle(page_name + " Associators");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -161,7 +164,7 @@ public class PageAssociators extends AppCompatActivity {
 
     private void setUpAssociatorsRecyclerview() {
 
-        /*Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Associators").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
@@ -169,17 +172,17 @@ public class PageAssociators extends AppCompatActivity {
 
                     if (task.getResult().size() > 0) {
 
-                        relativeLayout.setVisibility(View.GONE);
+                        noassociators.setVisibility(View.GONE);
 
                     } else {
 
-                        relativeLayout.setVisibility(View.VISIBLE);
+                        noassociators.setVisibility(View.VISIBLE);
 
                     }
                 }
 
             }
-        });*/
+        });
 
         Query query = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Associators").orderBy("fullname", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()

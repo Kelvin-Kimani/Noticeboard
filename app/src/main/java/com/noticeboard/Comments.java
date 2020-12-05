@@ -35,9 +35,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.noticeboard.Utils.AppUtils;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Comments extends AppCompatActivity {
@@ -152,6 +150,7 @@ public class Comments extends AppCompatActivity {
                             if (AppUtils.isNetworkConnected(context)) {
 
                                 dialog.dismiss();
+
                                 commentET.setText(commentDetails);
                                 commentET.setFocusableInTouchMode(true);
                                 commentET.requestFocus();
@@ -166,6 +165,7 @@ public class Comments extends AppCompatActivity {
                                             commentET.setError("Comment cannot be empty");
                                         } else if (commentDetails.equals(newComment)) {
                                             finish();
+                                            startActivity(getIntent());
                                         } else {
 
                                             finish();
@@ -198,6 +198,10 @@ public class Comments extends AppCompatActivity {
                         public void onClick(View v) {
 
                             if (AppUtils.isNetworkConnected(context)) {
+                                dialog.dismiss();
+                                finish();
+                                startActivity(getIntent());
+
                                 DocumentReference deletecomment = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document(commentID);
                                 deletecomment.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -205,7 +209,6 @@ public class Comments extends AppCompatActivity {
                                         if (task.isSuccessful()) {
 
                                             Toast.makeText(Comments.this, "Comment deleted", Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
 
                                         }
                                     }

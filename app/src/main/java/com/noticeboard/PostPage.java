@@ -99,38 +99,38 @@ public class PostPage extends AppCompatActivity {
 
             if (validateForm()) {
 
+                finish();
+
                 final String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 final String title = posttitle.getText().toString().trim();
                 final String content = post.getText().toString().trim();
+                final String status = "UNREAD";
 
 
-                //SimpleDateFormat ISO_8601_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
                 DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
-                //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 final String time = dateTimeInstance.format(Calendar.getInstance().getTime());
 
                 DocumentReference postreference = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document();
                 final String postID = postreference.getId();
-                postreference.set(new PostDetails(title, content, time, postID));
-
-
-                DocumentReference allpostreference = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(postID);
-                allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue, userID, pageAdminID)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                postreference.set(new PostDetails(title, content, time, postID)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
 
-                        Toast.makeText(PostPage.this, "Information Posted Successfully!", Toast.LENGTH_LONG).show();
-                        finish();
+                        Toast.makeText(PostPage.this, "Posted Successfully!", Toast.LENGTH_LONG).show();
 
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                        Toast.makeText(PostPage.this, "An Error Occurred. Please try again later ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(PostPage.this, "An Error Occurred. Please try again later ", Toast.LENGTH_LONG).show();
 
-                    }
-                });
+                            }
+                        });
+
+                DocumentReference allpostreference = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(postID);
+                allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue, userID, pageAdminID, status));
 
                 CollectionReference follower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers");
                 follower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -138,29 +138,12 @@ public class PostPage extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
                                 UserDetails user = document.toObject(UserDetails.class);
 
                                 String followerID = user.getUserID();
 
                                 DocumentReference allpostreference = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts").document(postID);
-                                allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue, userID, pageAdminID)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-
-                                        Toast.makeText(PostPage.this, "Posted Successfully!", Toast.LENGTH_LONG).show();
-                                        finish();
-
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-
-                                        Toast.makeText(PostPage.this, "An Error Occurred. Please try again later ", Toast.LENGTH_LONG).show();
-
-                                    }
-                                });
-
+                                allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue, userID, pageAdminID, status));
 
                             }
                         }

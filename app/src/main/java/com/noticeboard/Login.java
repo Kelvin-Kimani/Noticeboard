@@ -68,6 +68,26 @@ public class Login extends AppCompatActivity {
                         final ProgressDialog progress = new ProgressDialog(Login.this);
                         progress.setMessage("Logging in");
                         progress.show();
+                        progress.setCanceledOnTouchOutside(false);
+
+                        Runnable progressRunnable = new Runnable() {
+
+                            @Override
+                            public void run() {
+                                progress.cancel();
+                            }
+                        };
+
+                        Handler pdCanceller = new Handler();
+                        pdCanceller.postDelayed(progressRunnable, 30000);
+
+
+                        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                Toast.makeText(Login.this, "Login Failed. Try again", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
 
                         firebaseAuth.signInWithEmailAndPassword(emailAddress, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -83,7 +103,8 @@ public class Login extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
 
-                                Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Login.this, "Authentication Failed. Check your email and Password", Toast.LENGTH_LONG).show();
+                                progress.cancel();
 
                             }
                         });

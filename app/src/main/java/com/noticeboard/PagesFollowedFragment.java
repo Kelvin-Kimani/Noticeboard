@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,10 @@ public class PagesFollowedFragment extends Fragment {
     RelativeLayout relativeLayout;
     private FirestoreRecyclerAdapter adapter;
     Dialog dialog;
+    Bundle bundleRecyclerViewState;
+    private Parcelable recyclerstate = null;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+
 
     public PagesFollowedFragment() {
         // Required empty public constructor
@@ -211,5 +217,35 @@ public class PagesFollowedFragment extends Fragment {
     public void onStop() {
         super.onStop();
         followingAdapter.stopListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = recyclerView.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 }

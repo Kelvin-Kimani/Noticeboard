@@ -4,23 +4,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class PageFollowers extends AppCompatActivity {
 
     String pageID, followerUserID, associatorID, adminUID;
     FollowersAdapter followersAdapter;
     RecyclerView recyclerview;
+    TextView nofollowers;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +44,7 @@ public class PageFollowers extends AppCompatActivity {
         getSupportActionBar().setTitle(" Followers");
 
         associatorID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        nofollowers = findViewById(R.id.nofollowers);
 
         setUpFollowersRecyclerView();
 
@@ -60,6 +68,21 @@ public class PageFollowers extends AppCompatActivity {
     }
 
     private void setUpFollowersRecyclerView() {
+
+        Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+
+                        nofollowers.setVisibility(View.GONE);
+                    } else {
+
+                        nofollowers.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
 
         Query query = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").orderBy("fullname", Query.Direction.ASCENDING);
         FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()

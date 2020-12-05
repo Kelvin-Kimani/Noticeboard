@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,10 @@ public class GlobalPagesFragment extends Fragment {
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo, administratorUID, privacy, username, level, phonenumber, email;
     Dialog dialog;
+    Bundle bundleRecyclerViewState;
+    private Parcelable recyclerstate = null;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+
 
     public GlobalPagesFragment() {
         // Required empty public constructor
@@ -69,33 +75,12 @@ public class GlobalPagesFragment extends Fragment {
 
     public void setUpGlobalPages() {
 
-        //Add query to remove user pages from global ones
-
-        Query greaterquery = FirebaseFirestore.getInstance().collection("Global Pages").whereGreaterThan("userID", userID).orderBy("userID", Query.Direction.ASCENDING);
-        Query lessquery = FirebaseFirestore.getInstance().collection("Global Pages").whereLessThan("userID", userID).orderBy("userID", Query.Direction.ASCENDING);
-
-        //Task firstQuery = lessquery.get();
-        //Task secondQuery = greaterquery.get();
-
-        /*Task combinedQuery = Tasks.whenAllSuccess(firstQuery, secondQuery).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-            @Override
-            public void onSuccess(List<Object> objects) {
-
-
-
-            }
-        });*/
-
-
-        FirestoreRecyclerOptions<PageDetails> options = new FirestoreRecyclerOptions.Builder<PageDetails>()
-                .setQuery(lessquery, PageDetails.class)
-                .build();
+        Query query = FirebaseFirestore.getInstance().collection("Global Pages").orderBy("userID", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<PageDetails> options1 = new FirestoreRecyclerOptions.Builder<PageDetails>()
-                .setQuery(greaterquery, PageDetails.class)
+                .setQuery(query, PageDetails.class)
                 .build();
 
-        userAdapter = new PageUserAdapter(options);
         userAdapter = new PageUserAdapter(options1);
 
         recyclerView = v.findViewById(R.id.globalpagesrecyclerview);
@@ -118,18 +103,26 @@ public class GlobalPagesFragment extends Fragment {
                 administratorUID = page.getUserID();
                 privacy = page.getPrivacy();
 
-                Toast.makeText(getActivity(),
-                        "Position: " + position + " ID: " + pageID + "PN: " + pname + "bio: " + pinfo, Toast.LENGTH_LONG).show();
+                if (userID.equals(administratorUID)) {
+
+                    Toast.makeText(getActivity(), "This is your page", Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    Toast.makeText(getActivity(),
+                            "Position: " + position + " ID: " + pageID + "PN: " + pname + "bio: " + pinfo, Toast.LENGTH_LONG).show();
 
 
-                Intent intent = new Intent(getActivity(), PageProfileUser.class);
-                intent.putExtra("pagename", pname);
-                intent.putExtra("pageinfo", pinfo);
-                intent.putExtra("pageID", pageID);
-                intent.putExtra("adminUID", administratorUID);
-                intent.putExtra("privacy", privacy);
+                    Intent intent = new Intent(getActivity(), PageProfileUser.class);
+                    intent.putExtra("pagename", pname);
+                    intent.putExtra("pageinfo", pinfo);
+                    intent.putExtra("pageID", pageID);
+                    intent.putExtra("adminUID", administratorUID);
+                    intent.putExtra("privacy", privacy);
 
-                startActivity(intent);
+                    startActivity(intent);
+
+                }
 
             }
         });
@@ -147,6 +140,17 @@ public class GlobalPagesFragment extends Fragment {
                 privacy = page.getPrivacy();
 
                 if ("Private".equals(privacy)) {
+
+                    TextView title, description;
+
+                    dialog.setContentView(R.layout.description_pop_up);
+                    title = dialog.findViewById(R.id.title);
+                    title.setText("Private");
+                    description = dialog.findViewById(R.id.description);
+                    description.setText("This page is private and your request has to be accepted first");
+
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
 
                     DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(userID);
                     documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -233,54 +237,130 @@ public class GlobalPagesFragment extends Fragment {
                 administratorUID = page.getUserID();
                 privacy = page.getPrivacy();
 
-                TextView title, text;
-                RelativeLayout accept;
-                dialog.setContentView(R.layout.unfollow_pop_up);
-
-                title = dialog.findViewById(R.id.unfollowTitle);
-                title.setText("Unfollow " + pname);
-
-                accept = dialog.findViewById(R.id.unfollowview);
-                accept.setOnClickListener(new View.OnClickListener() {
+                //check if associator first
+                DocumentReference ifassociator = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Associators").document(userID);
+                ifassociator.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onClick(View v) {
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
 
-                        DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
-                        pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                            final TextView title, text, unfollow;
+                            final RelativeLayout accept;
+                            dialog.setContentView(R.layout.unfollow_pop_up);
 
-                                if (task.isSuccessful()) {
+                            title = dialog.findViewById(R.id.unfollowTitle);
+                            text = dialog.findViewById(R.id.defaulttext);
+                            unfollow = dialog.findViewById(R.id.unfollowText);
+                            accept = dialog.findViewById(R.id.unfollowview);
 
-                                    Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
-                                    final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
-                                    Query query = pagefollowed.whereEqualTo("pageID", pageID);
-                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            title.setText("You're an associator");
+                            text.setText(R.string.associatorunfollowwarning);
+                            unfollow.setText("Yes");
+
+                            accept.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                                    pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        public void onComplete(@NonNull Task<Void> task) {
 
                                             if (task.isSuccessful()) {
 
-                                                for (DocumentSnapshot document : task.getResult()) {
+                                                dialog.dismiss();
+                                                Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
 
-                                                    pagefollowed.document(document.getId()).delete();
-                                                    userAdapter.notifyItemChanged(position);
-                                                    dialog.dismiss();
-                                                }
+                                                //Delete Associator and association page
+                                                DocumentReference associator = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Associators").document(userID);
+                                                associator.delete();
+
+                                                DocumentReference associatedpage = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Associated Pages").document(pageID);
+                                                associatedpage.delete();
+
+                                                final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                                                Query query = pagefollowed.whereEqualTo("pageID", pageID);
+                                                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                        if (task.isSuccessful()) {
+
+                                                            for (DocumentSnapshot document : task.getResult()) {
+
+                                                                pagefollowed.document(document.getId()).delete();
+                                                                userAdapter.notifyItemChanged(position);
+
+                                                            }
+                                                        }
+                                                    }
+                                                });
+
                                             }
                                         }
                                     });
-
                                 }
-                            }
-                        });
+                            });
+
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.setCanceledOnTouchOutside(true);
+                            dialog.show();
+
+                        } else {
+
+                            TextView title;
+                            RelativeLayout accept;
+                            dialog.setContentView(R.layout.unfollow_pop_up);
+
+                            title = dialog.findViewById(R.id.unfollowTitle);
+                            title.setText("Unfollow " + pname);
+
+                            accept = dialog.findViewById(R.id.unfollowview);
+                            accept.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                                    pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                            if (task.isSuccessful()) {
+
+                                                userAdapter.notifyItemChanged(position);
+                                                dialog.dismiss();
+                                                Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
+                                                final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                                                Query query = pagefollowed.whereEqualTo("pageID", pageID);
+                                                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                        if (task.isSuccessful()) {
+
+                                                            for (DocumentSnapshot document : task.getResult()) {
+
+                                                                pagefollowed.document(document.getId()).delete();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.setCanceledOnTouchOutside(true);
+                            dialog.show();
+
+
+                        }
                     }
                 });
-
-
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
 
             }
         });
@@ -351,5 +431,35 @@ public class GlobalPagesFragment extends Fragment {
     public void onStop() {
         super.onStop();
         userAdapter.stopListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = recyclerView.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 }

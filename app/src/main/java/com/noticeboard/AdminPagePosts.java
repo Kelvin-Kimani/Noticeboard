@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -20,6 +24,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class AdminPagePosts extends AppCompatActivity {
 
@@ -28,6 +33,7 @@ public class AdminPagePosts extends AppCompatActivity {
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String postID, postTitle, postContent, postTime, postersID;
+    TextView noposts;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference postref;
 
@@ -43,6 +49,7 @@ public class AdminPagePosts extends AppCompatActivity {
         page_name = intent.getStringExtra("pagename");
         pageID = intent.getStringExtra("pageID");
         pageAdminID = intent.getStringExtra("pageAdminID");
+        noposts = findViewById(R.id.noposts);
 
         getSupportActionBar().setTitle(page_name + " Posts");
 
@@ -67,9 +74,8 @@ public class AdminPagePosts extends AppCompatActivity {
                         postersID = documentSnapshot.getString("postersID");
 
                         Intent intent1 = new Intent(AdminPagePosts.this, PostWithComments.class);
+
                         intent1.putExtra("pagename", page_name);
-                        intent1.putExtra("postTitle", postTitle);
-                        intent1.putExtra("postContent", postContent);
                         intent1.putExtra("postTime", postTime);
                         intent1.putExtra("postID", postID);
                         intent1.putExtra("pageAdminID", pageAdminID);
@@ -81,13 +87,25 @@ public class AdminPagePosts extends AppCompatActivity {
                     }
                 });
 
-
             }
         });
 
     }
 
     private void setUpRecyclerView() {
+
+        Task<QuerySnapshot> queryforemptiness = postref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        noposts.setVisibility(View.GONE);
+                    } else {
+                        noposts.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
 
         Query query = postref.orderBy("time", Query.Direction.DESCENDING);
 
@@ -111,6 +129,14 @@ public class AdminPagePosts extends AppCompatActivity {
         intent.putExtra("pageAdminID", pageAdminID);
         startActivity(intent);
 
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     @Override

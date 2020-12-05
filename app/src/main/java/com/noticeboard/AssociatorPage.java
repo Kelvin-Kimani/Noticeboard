@@ -41,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AssociatorPage extends AppCompatActivity {
 
     String pageID, adminUID, pname, pinfo, privacy;
-    TextView pagename, pageinfo;
+    TextView pagename, pageinfo, posts_no, followers_no, requests_no;
     Dialog dialog;
     RadioGroup group;
     RadioButton radioButton;
@@ -65,6 +65,10 @@ public class AssociatorPage extends AppCompatActivity {
         pagename = findViewById(R.id.pagename);
         pageinfo = findViewById(R.id.bio);
         circleImageView = findViewById(R.id.pageprofileimg);
+        followers_no = findViewById(R.id.nooffollowers);
+        posts_no = findViewById(R.id.noofposts);
+        requests_no = findViewById(R.id.noofrequests);
+
 
         DocumentReference pageDetails = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID);
         pageDetails.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -77,6 +81,36 @@ public class AssociatorPage extends AppCompatActivity {
                 pageinfo.setText(pinfo);
 
 
+            }
+        });
+
+        CollectionReference page_posts = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Posts");
+        page_posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                   posts_no.setText(Integer.toString(task.getResult().size()));
+                }
+            }
+        });
+
+        CollectionReference page_followers = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers");
+        page_followers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    followers_no.setText(Integer.toString(task.getResult().size()));
+                }
+            }
+        });
+
+        CollectionReference page_requests = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Requested");
+        page_requests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    requests_no.setText(Integer.toString(task.getResult().size()));
+                }
             }
         });
 
@@ -195,7 +229,7 @@ public class AssociatorPage extends AppCompatActivity {
                                                 if (chosenPrivacy.equals("Public")){
 
                                                     //check for pending request
-                                                    
+
 
                                                 }
 
@@ -254,6 +288,7 @@ public class AssociatorPage extends AppCompatActivity {
         intent.putExtra("pageID", pageID);
         intent.putExtra("pageinfo", pinfo);
         intent.putExtra("pagename", pname);
+        intent.putExtra("adminID", adminUID);
 
         startActivity(intent);
     }

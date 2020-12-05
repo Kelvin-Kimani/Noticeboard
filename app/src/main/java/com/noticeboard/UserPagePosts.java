@@ -76,11 +76,11 @@ public class UserPagePosts extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
 
-                                if (task.getResult().size() == 0) {
-                                    fornoposts.setVisibility(View.VISIBLE);
+                                if (task.getResult().size() > 0) {
+                                    fornoposts.setVisibility(View.GONE);
                                 }
                                 else {
-                                    fornoposts.setVisibility(View.GONE);
+                                    fornoposts.setVisibility(View.VISIBLE);
                                 }
                             }
 
@@ -110,8 +110,6 @@ public class UserPagePosts extends AppCompatActivity {
 
                         Intent intent1 = new Intent(UserPagePosts.this, PostWithComments.class);
                         intent1.putExtra("pagename", pagename);
-                        intent1.putExtra("postTitle", postTitle);
-                        intent1.putExtra("postContent", postContent);
                         intent1.putExtra("postTime", postTime);
                         intent1.putExtra("postID", postID);
                         intent1.putExtra("pageAdminID", adminUID);

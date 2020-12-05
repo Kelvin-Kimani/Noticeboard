@@ -129,7 +129,6 @@ public class AddUserProfile extends AppCompatActivity {
 
                                 Toast.makeText(AddUserProfile.this, "Image Uploaded successfully", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(AddUserProfile.this, MainActivity.class));
-                                //Avoid going back to the same page on back press
                                 finish();
 
                                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();

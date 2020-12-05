@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -33,18 +34,19 @@ import com.noticeboard.R;
 
 public class HomeFragment extends Fragment {
 
+    private final String KEY_RECYCLER_STATE = "recycler_state";
     HomePostAdapter postAdapter;
     FloatingActionButton floatingActionButton;
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    String postID, postTitle, postContent, postPageName, postersID, pageID,pageAdminID;
+    String postID, postTitle, postContent, postPageName, postersID, pageID, pageAdminID, status, set_read = "READ";
+    ;
     View v;
     RelativeLayout relativeLayout;
     private CollectionReference postref;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    static Bundle recyclerViewState;
-    private final String KEY_RECYCLER_STATE = "recycler_state";
-    private Parcelable mListState = null;
+    private Parcelable recyclerstate = null;
+    Bundle bundleRecyclerViewState;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +70,21 @@ public class HomeFragment extends Fragment {
                 PostBottomSheetDialog bottomSheetDialog = new PostBottomSheetDialog();
                 bottomSheetDialog.show(getFragmentManager(), "bottomSheet");
 
+
+            }
+        });
+
+        recyclerView = v.findViewById(R.id.homerecyclerview);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    floatingActionButton.hide();
+                } else {
+                    floatingActionButton.show();
+                }
+
+                super.onScrolled(recyclerView, dx, dy);
 
             }
         });
@@ -107,7 +124,6 @@ public class HomeFragment extends Fragment {
 
         postAdapter = new HomePostAdapter(options);
 
-        recyclerView = v.findViewById(R.id.homerecyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(postAdapter);
 
@@ -121,21 +137,25 @@ public class HomeFragment extends Fragment {
 
                 PostDetails post = documentSnapshot.toObject(PostDetails.class);
                 postID = post.getPostID();
-                postTitle = post.getTitle();
-                postContent = post.getContent();
-                postPageName = post.getPagename();
                 postersID = post.getPostersID();
                 pageAdminID = post.getPageAdminID();
                 pageID = post.getPageID();
+                status = post.getStatus();
 
-                Toast.makeText(getActivity(),
-                        "PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
+                if (set_read.equals(status)) {
 
+                    Toast.makeText(getActivity(),
+                            "PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    DocumentReference updatestatus = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").document(postID);
+                    updatestatus.update("status", set_read);
+
+                }
                 Intent intent = new Intent(getContext(), PostWithComments.class);
 
                 intent.putExtra("pagename", postPageName);
-                intent.putExtra("postTitle", postTitle);
-                intent.putExtra("postContent", postContent);
                 intent.putExtra("postTime", post.getTime());
                 intent.putExtra("postID", postID);
                 intent.putExtra("postersID", postersID);
@@ -238,4 +258,33 @@ public class HomeFragment extends Fragment {
         postAdapter.stopListening();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = recyclerView.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
 }

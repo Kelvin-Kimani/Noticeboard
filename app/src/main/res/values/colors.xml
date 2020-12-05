@@ -5,6 +5,7 @@
     <color name="colorAccent">#03A9F4</color>
     <color name="colorpink">#D81B60</color>
     <color name="colorRed">#FF1100</color>
+    <color name="transparent">#00ff0000</color>
     //latter
 
     <color name="gradient_start">#5770f3</color>

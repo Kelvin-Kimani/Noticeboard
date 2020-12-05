@@ -2,6 +2,8 @@ package com.noticeboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,9 @@ public class PagesCreatedFragment extends Fragment {
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo;
     RelativeLayout relativeLayout;
     String privacy, adminUserID;
+    Bundle bundleRecyclerViewState;
+    private Parcelable recyclerstate = null;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
 
     public PagesCreatedFragment() {
         // Required empty public constructor
@@ -56,6 +61,21 @@ public class PagesCreatedFragment extends Fragment {
 
                 startActivity(new Intent(getActivity(), CreatePage.class));
 
+            }
+        });
+
+        recyclerView = view.findViewById(R.id.pagesCreatedRecyclerView);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+                if (dy > 0){
+                    createpageFAB.hide();
+                }
+                else {
+                    createpageFAB.show();
+                }
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
 
@@ -133,8 +153,6 @@ public class PagesCreatedFragment extends Fragment {
 
         adapter = new PageProfileAdapter(options);
 
-        recyclerView = v.findViewById(R.id.pagesCreatedRecyclerView);
-        //recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -150,5 +168,35 @@ public class PagesCreatedFragment extends Fragment {
     public void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = recyclerView.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 }

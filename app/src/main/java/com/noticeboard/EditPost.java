@@ -81,13 +81,14 @@ public class EditPost extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
+                            finish();
                             Toast.makeText(EditPost.this, "Updated", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(EditPost.this, MainActivity.class));
 
                             //update on page admin
                             DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(postID);
                             post.update("title", updatedTitle);
                             post.update("content", updatedPost);
+                            post.update("status", "UNREAD");
 
                             //update on followers
                             CollectionReference follower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers");
@@ -104,6 +105,7 @@ public class EditPost extends AppCompatActivity {
                                             DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts").document(postID);
                                             post.update("title", updatedTitle);
                                             post.update("content", updatedPost);
+                                            post.update("status", "UNREAD");
 
                                         }
                                     }
@@ -126,9 +128,7 @@ public class EditPost extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                //NavUtils.navigateUpFromSameTask(this);
                 onBackPressed();
                 return true;
         }

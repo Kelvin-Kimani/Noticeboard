@@ -55,7 +55,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PageProfileAdmin extends AppCompatActivity {
 
     CircleImageView circleImageView;
-    TextView pagename, pageinfo;
+    TextView pagename, pageinfo, posts_no, followers_no, requests_no, associators_no;
     FirebaseFirestore firestore;
     FirebaseAuth auth;
     String userID;
@@ -89,6 +89,10 @@ public class PageProfileAdmin extends AppCompatActivity {
         pageinfo = findViewById(R.id.bio);
         requested = findViewById(R.id.requestedRL);
         deletePage = findViewById(R.id.deletepagerelativelayout);
+        posts_no = findViewById(R.id.noofposts);
+        followers_no = findViewById(R.id.nooffollowers);
+        requests_no = findViewById(R.id.noofrequests);
+        associators_no = findViewById(R.id.noofassociators);
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -130,6 +134,50 @@ public class PageProfileAdmin extends AppCompatActivity {
             }
         });
 
+        CollectionReference page_posts = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(pageID).collection("Posts");
+        page_posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        posts_no.setText(Integer.toString(task.getResult().size()));
+                    }
+                }
+            }
+        });
+
+        CollectionReference page_followers = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(pageID).collection("Followers");
+        page_followers.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        followers_no.setText(Integer.toString(task.getResult().size()));
+                    }
+                }
+            }
+        });
+
+        CollectionReference page_requests = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(pageID).collection("Requested");
+        page_requests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    requests_no.setText(Integer.toString(task.getResult().size()));
+                }
+            }
+        });
+
+        CollectionReference page_associators = FirebaseFirestore.getInstance().collection("Users").document(adminUserID).collection("Pages").document(pageID).collection("Associators");
+        page_associators.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    associators_no.setText(Integer.toString(task.getResult().size()));
+                }
+            }
+        });
+
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +188,14 @@ public class PageProfileAdmin extends AppCompatActivity {
         });
 
         retrievePageImage();
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     public void popupprivacy(View view) {
@@ -188,6 +244,7 @@ public class PageProfileAdmin extends AppCompatActivity {
 
                 } else {
 
+                    //if page is changing from private to public, delete all follow requests.
                     DocumentReference page = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID);
                     page.update("privacy", chosenPrivacy).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -476,6 +533,7 @@ public class PageProfileAdmin extends AppCompatActivity {
         intent.putExtra("pageID", pageID);
         intent.putExtra("pageinfo", page_info);
         intent.putExtra("pagename", page_name);
+        intent.putExtra("adminID", adminUserID);
 
         startActivity(intent);
 
@@ -486,7 +544,9 @@ public class PageProfileAdmin extends AppCompatActivity {
         Intent intent = new Intent(PageProfileAdmin.this, RequestedFollowers.class);
         intent.putExtra("pageID", pageID);
         intent.putExtra("pageAdminID", adminUserID);
-
+        intent.putExtra("pagename", page_name);
+        intent.putExtra("pageinfo", page_info);
+        intent.putExtra("privacy", privacy);
 
         startActivity(intent);
     }

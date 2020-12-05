@@ -91,6 +91,7 @@
     <string name="introduction">Noticeboard helps you to keep yourself updated with posts and news that you may have missed on your physical Noticeboard. Below is a guide of how to use the application to follow pages, create pages and posting content for your followers.</string>
     <string name="createpage">Create a page here and start to post to your followers.</string>
     <string name="followpage">Follow pages from here and get instant news.</string>
+    <string name="associatorunfollowwarning">"You'll stop being an associator if you unfollow. \n\nDo you wish to continue?"</string>
     <string name="associator">For Admins, you can have Associators who’ll help you with your posting in case of your Absence. </string>
 
 </resources>

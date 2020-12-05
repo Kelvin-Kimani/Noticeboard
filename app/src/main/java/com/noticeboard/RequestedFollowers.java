@@ -3,6 +3,8 @@ package com.noticeboard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,12 +23,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class RequestedFollowers extends AppCompatActivity {
 
-    String pageID, userID, requestedID, pageAdminID;
+    String pageID, userID, requestedID, pageAdminID, pagename, pageinfo, privacy;
     RecyclerView requestingFollowers;
     RequestedFollowersAdapter requestedFollowersAdapter;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,12 @@ public class RequestedFollowers extends AppCompatActivity {
         Intent intent = getIntent();
         pageID = intent.getStringExtra("pageID");
         pageAdminID = intent.getStringExtra("pageAdminID");
+        pagename = intent.getStringExtra("pagename");
+        pageinfo = intent.getStringExtra("pageinfo");
+        privacy = intent.getStringExtra("privacy");
+
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        textView = findViewById(R.id.nofollowrequest);
 
         setUpFollowersRequest();
 
@@ -69,9 +78,14 @@ public class RequestedFollowers extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(RequestedFollowers.this, "Accepted", Toast.LENGTH_SHORT).show();
 
-                                    //Remove as Requested
+                                    //Remove from Requested
                                     DocumentReference remove = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Requested").document(requestedID);
                                     remove.delete();
+
+                                    //Add page to followed pages
+                                    DocumentReference addpage = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed").document(pageID);
+                                    addpage.set(new PageDetails(pagename, pageinfo, privacy, pageID, pageAdminID));
+
                                 }
                             }
                         });
@@ -99,6 +113,24 @@ public class RequestedFollowers extends AppCompatActivity {
     }
 
     private void setUpFollowersRequest() {
+
+        Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Requested").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+
+                        textView.setVisibility(View.GONE);
+                    } else {
+
+                        textView.setVisibility(View.VISIBLE);
+
+                    }
+
+                }
+            }
+        });
 
         Query query = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Requested").orderBy("fullname", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()

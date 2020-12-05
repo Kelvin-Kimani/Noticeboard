@@ -76,19 +76,55 @@ public class PostWithComments extends AppCompatActivity {
         addCommentTV = findViewById(R.id.addCommentText);
 
         Intent intent = getIntent();
+
         page_name = intent.getStringExtra("pagename");
-        post_title = intent.getStringExtra("postTitle");
-        post_content = intent.getStringExtra("postContent");
         post_time = intent.getStringExtra("postTime");
         post_id = intent.getStringExtra("postID");
         posters_id = intent.getStringExtra("postersID");
         pageAdminID = intent.getStringExtra("pageAdminID");
         pageID = intent.getStringExtra("pageID");
 
-        pagename.setText(page_name);
-        postTitle.setText(post_title);
-        postContent.setText(post_content);
+
         time.setText(post_time);
+
+        DocumentReference getPageName = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID);
+        getPageName.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                page_name = documentSnapshot.getString("pagename");
+                pagename.setText(page_name);
+
+                Character firstLetter = page_name.charAt(0);
+                TextDrawable drawable;
+                drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(Color.RED)
+                        .fontSize(30)
+                        .toUpperCase()
+                        .bold()
+                        .width(80)  // width in px
+                        .height(80) // height in px
+                        .endConfig()
+                        .buildRect(String.valueOf(firstLetter), Color.BLACK);
+
+                circleImageView.setImageDrawable(drawable);
+
+            }
+        });
+
+        DocumentReference getPostDetails = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(post_id);
+        getPostDetails.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                post_content = documentSnapshot.getString("content");
+                post_title = documentSnapshot.getString("title");
+
+                postTitle.setText(post_title);
+                postContent.setText(post_content);
+
+            }
+        });
 
         final DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(posters_id);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -111,8 +147,7 @@ public class PostWithComments extends AppCompatActivity {
             }
         });
 
-        final CollectionReference CommentsEmpty = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(post_id).collection("Comments");
-        Task<QuerySnapshot> queryforemptiness = CommentsEmpty.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Task<QuerySnapshot> queryforemptiness = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(post_id).collection("Comments").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
@@ -149,22 +184,6 @@ public class PostWithComments extends AppCompatActivity {
             }
         });
 
-        Character firstLetter = page_name.charAt(0);
-        TextDrawable drawable;
-        drawable = TextDrawable.builder()
-                .beginConfig()
-                .textColor(Color.RED)
-                .fontSize(30)
-                .toUpperCase()
-                .bold()
-                .width(80)  // width in px
-                .height(80) // height in px
-                .endConfig()
-                .buildRect(String.valueOf(firstLetter), Color.BLACK);
-
-        circleImageView.setImageDrawable(drawable);
-
-
         yesComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,6 +204,14 @@ public class PostWithComments extends AppCompatActivity {
     public void onBackPressed() {
 
         finish();
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     public void openKeyboardForComments(View view) {

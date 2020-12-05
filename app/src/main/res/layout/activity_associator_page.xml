@@ -103,6 +103,18 @@
                         android:text="Posts"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/noofposts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="20dp"
+                       android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textStyle="bold" />
+
+
+
                     <View
                         android:id="@+id/view"
                         android:layout_width="match_parent"
@@ -140,6 +152,18 @@
                         android:text="Followers"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/nooffollowers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="20dp"
+                        android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textStyle="bold" />
+
+
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -167,6 +191,18 @@
                         android:layout_toRightOf="@+id/requestedicon"
                         android:text="Requested"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/noofrequests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="20dp"
+                        android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textStyle="bold" />
+
+
 
                     <View
                         android:id="@+id/requestedView"

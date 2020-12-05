@@ -1,6 +1,7 @@
 package com.noticeboard;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,8 +60,6 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         holder.following.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.following.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -74,13 +73,20 @@ public class PageUserAdapter extends FirestoreRecyclerAdapter<PageDetails, PageU
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         holder.requested.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.requested.setVisibility(View.INVISIBLE);
                     }
                 }
             }
         });
 
+        if (userID.equals(adUID)){
+
+            holder.follow.setVisibility(View.GONE);
+            holder.textViewPageName.setTextColor(Color.parseColor("#5C5C5C"));
+            holder.textViewPageInfo.setTextColor(Color.parseColor("#5C5C5C"));
+            holder.textViewPageName.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+            holder.textViewPageInfo.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+
+        }
 
         holder.textViewPageName.setText(model.getPagename());
         holder.textViewPageInfo.setText(model.getPageinfo());

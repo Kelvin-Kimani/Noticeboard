@@ -38,7 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PageProfileUser extends AppCompatActivity {
 
     CircleImageView circleImageView;
-    TextView pagename, pageinfo;
+    TextView pagename, pageinfo, posts_no;
     String userID;
     String page_name, page_info, pageID;
     Switch notificationswitch;
@@ -68,6 +68,7 @@ public class PageProfileUser extends AppCompatActivity {
         follow = findViewById(R.id.followstate);
         Requested = findViewById(R.id.requestedstate);
         following = findViewById(R.id.followingstate);
+        posts_no = findViewById(R.id.noofposts);
 
         Intent intent = getIntent();
         page_name = intent.getStringExtra("pagename");
@@ -77,7 +78,7 @@ public class PageProfileUser extends AppCompatActivity {
         privacy = intent.getStringExtra("privacy");
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DocumentReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed").document(pageID);
+        DocumentReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").document(userID);
         pagefollowed.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -123,6 +124,15 @@ public class PageProfileUser extends AppCompatActivity {
 
         circleImageView.setImageDrawable(drawable);
 
+        CollectionReference page_posts = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Posts");
+        page_posts.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    posts_no.setText(Integer.toString(task.getResult().size()));
+                }
+            }
+        });
     }
 
 
@@ -227,55 +237,134 @@ public class PageProfileUser extends AppCompatActivity {
 
     public void unfollowpage(View view) {
 
-        TextView title, text;
-        RelativeLayout accept;
-        dialog.setContentView(R.layout.unfollow_pop_up);
-
-        title = dialog.findViewById(R.id.unfollowTitle);
-        title.setText("Unfollow " + page_name);
-
-        accept = dialog.findViewById(R.id.unfollowview);
-        accept.setOnClickListener(new View.OnClickListener() {
+        //check if is an associator
+        DocumentReference ifassociator = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Associators").document(userID);
+        ifassociator.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
 
-                DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").document(userID);
-                pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                        final TextView title, text, unfollow;
+                        final RelativeLayout accept;
+                        dialog.setContentView(R.layout.unfollow_pop_up);
 
-                        if (task.isSuccessful()) {
+                        title = dialog.findViewById(R.id.unfollowTitle);
+                        text = dialog.findViewById(R.id.defaulttext);
+                        unfollow = dialog.findViewById(R.id.unfollowText);
+                        accept = dialog.findViewById(R.id.unfollowview);
 
-                            Toast.makeText(PageProfileUser.this, "Unfollowed", Toast.LENGTH_SHORT).show();
-                            final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
-                            Query query = pagefollowed.whereEqualTo("pageID", pageID);
-                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        title.setText("You're an associator");
+                        text.setText("You'll stop being an associator if you unfollow. Do you wish to continue?");
+                        unfollow.setText("Yes");
 
-                                    if (task.isSuccessful()) {
+                        accept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
-                                        for (DocumentSnapshot document : task.getResult()) {
+                                DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                                pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                            pagefollowed.document(document.getId()).delete();
-                                            follow.setVisibility(View.VISIBLE);
-                                            following.setVisibility(View.GONE);
-                                            dialog.cancel();
+                                        if (task.isSuccessful()) {
+
+                                            Toast.makeText(PageProfileUser.this, "Unfollowed", Toast.LENGTH_SHORT).show();
+
+                                            //Delete Associator and association page
+                                            DocumentReference ifassociator = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Associator").document(userID);
+                                            ifassociator.delete();
+
+                                            DocumentReference associatedpage = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Associated Pages").document(pageID);
+                                            associatedpage.delete();
+
+                                            final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                                            Query query = pagefollowed.whereEqualTo("pageID", pageID);
+                                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                    if (task.isSuccessful()) {
+
+                                                        for (DocumentSnapshot document : task.getResult()) {
+
+                                                            pagefollowed.document(document.getId()).delete();
+                                                            follow.setVisibility(View.VISIBLE);
+                                                            following.setVisibility(View.GONE);
+                                                            dialog.cancel();
+                                                        }
+                                                    }
+                                                }
+                                            });
+
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }
+                        });
 
-                        }
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
+
+                    } else {
+
+                        final TextView title, text, unfollow;
+                        final RelativeLayout accept;
+                        dialog.setContentView(R.layout.unfollow_pop_up);
+
+                        title = dialog.findViewById(R.id.unfollowTitle);
+                        text = dialog.findViewById(R.id.defaulttext);
+                        unfollow = dialog.findViewById(R.id.unfollowText);
+                        accept = dialog.findViewById(R.id.unfollowview);
+
+                        title.setText("Unfollow " + page_name);
+                        accept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                DocumentReference pagefollower1 = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").document(userID);
+                                pagefollower1.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        if (task.isSuccessful()) {
+
+                                            Toast.makeText(PageProfileUser.this, "Unfollowed", Toast.LENGTH_SHORT).show();
+                                            final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                                            Query query = pagefollowed.whereEqualTo("pageID", pageID);
+                                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                    if (task.isSuccessful()) {
+
+                                                        for (DocumentSnapshot document : task.getResult()) {
+
+                                                            pagefollowed.document(document.getId()).delete();
+                                                            follow.setVisibility(View.VISIBLE);
+                                                            following.setVisibility(View.GONE);
+                                                            dialog.cancel();
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
                     }
-                });
+                }
+
             }
         });
-
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
 
     }
 

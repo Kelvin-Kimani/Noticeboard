@@ -25,13 +25,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.noticeboard.Utils.AppUtils;
 
 public class EditPage extends AppCompatActivity {
 
     EditText pagename, bio;
-    String userID, pageID, page_name, page_info;
+    String userID, pageID, page_name, page_info, pageAdminID;
     Dialog dialog;
     Context context = this;
 
@@ -50,6 +51,7 @@ public class EditPage extends AppCompatActivity {
         pageID = intent.getStringExtra("pageID");
         page_name = intent.getStringExtra("pagename");
         page_info = intent.getStringExtra("pageinfo");
+        pageAdminID = intent.getStringExtra("adminID");
 
         pagename = findViewById(R.id.pagename);
         bio = findViewById(R.id.bioinfo);
@@ -131,6 +133,51 @@ public class EditPage extends AppCompatActivity {
                                     }
                                 }
                             });
+
+                            //edit on posts on admin
+                            final CollectionReference editpost_on_admin = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts");
+                            Query query2 = editpost_on_admin.whereEqualTo("pageID", pageID);
+                            query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            editpost_on_admin.document(document.getId()).update("pagename", pagenameupdated);
+                                        }
+                                    }
+                                }
+                            });
+
+                            //edit on followers posts
+                            CollectionReference follower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers");
+                            follower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                            UserDetails user = document.toObject(UserDetails.class);
+
+                                            String followerID = user.getUserID();
+
+                                            final CollectionReference post = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts");
+                                            Query query3 = post.whereEqualTo("pageID", pageID);
+                                            query3.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (DocumentSnapshot document : task.getResult()) {
+                                                            post.document(document.getId()).update("pagename", pagenameupdated);
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }
+                            });
+
                         }
                     });
 
@@ -182,9 +229,7 @@ public class EditPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                //NavUtils.navigateUpFromSameTask(this);
                 onBackPressed();
                 return true;
         }

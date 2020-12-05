@@ -3,7 +3,7 @@ package com.noticeboard;
 public class PostDetails {
 
 
-    private String title, content, pagename, time, pageID, postID, saveValue, postersID, pageAdminID;
+    private String title, content, pagename, time, pageID, postID, saveValue, postersID, pageAdminID, status;
 
 
     public PostDetails(String title, String content, String time, String postID) {
@@ -14,7 +14,7 @@ public class PostDetails {
 
     }
 
-    public PostDetails(String pagename, String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID) {
+    public PostDetails(String pagename, String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID, String status) {
         this.pagename = pagename;
         this.title = title;
         this.content = content;
@@ -24,9 +24,18 @@ public class PostDetails {
         this.saveValue = saveValue;
         this.postersID = postersID;
         this.pageAdminID = pageAdminID;
+        this.status = status;
     }
 
     public PostDetails() {
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getPageAdminID() {

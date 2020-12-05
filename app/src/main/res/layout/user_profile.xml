@@ -109,6 +109,16 @@
                     android:text="Pages"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/noofpagescreated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/dimen_20dp"
+                    android:layout_alignParentRight="true"
+                    android:text="0"
+                    android:textStyle="bold" />
+
                 <View
                     android:id="@+id/view2"
                     android:layout_width="match_parent"
@@ -143,6 +153,16 @@
                     android:text="Following"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/noofpagesfollowed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/dimen_20dp"
+                    android:layout_alignParentRight="true"
+                    android:text="0"
+                    android:textStyle="bold" />
+
                 <View
                     android:id="@+id/view3"
                     android:layout_width="match_parent"
@@ -175,6 +195,16 @@
                     android:layout_margin="@dimen/dimen_20dp"
                     android:layout_toRightOf="@+id/associationicon"
                     android:text="Associations"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/noofassociatedpages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/dimen_20dp"
+                    android:layout_alignParentRight="true"
+                    android:text="0"
                     android:textStyle="bold" />
 
             </RelativeLayout>

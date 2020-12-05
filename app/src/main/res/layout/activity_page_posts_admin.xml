@@ -5,6 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".AdminPagePosts">
 
+    <TextView
+        android:id="@+id/noposts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="There are no posts"
+        android:textColor="@color/color_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pagepostsrecycler"
         android:layout_width="match_parent"
