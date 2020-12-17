@@ -52,6 +52,9 @@ public class GlobalPagesFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static void doSearch(String query) {
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -166,7 +169,17 @@ public class GlobalPagesFragment extends Fragment {
 
                                 //save requested follower details
                                 DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Requested").document(userID);
-                                requested.set(new UserDetails(username, level, userID, phonenumber, userImage, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                UserDetails requestedFollower = new UserDetails();
+                                requestedFollower.setFullname(username);
+                                requestedFollower.setLevel(level);
+                                requestedFollower.setUserID(userID);
+                                requestedFollower.setPhonenumber(phonenumber);
+                                requestedFollower.setUserimage(userImage);
+                                requestedFollower.setEmail(email);
+                                //add tolowercase
+
+                                requested.set(requestedFollower).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -202,7 +215,17 @@ public class GlobalPagesFragment extends Fragment {
 
                                 //save follower details
                                 DocumentReference followers = FirebaseFirestore.getInstance().collection("Users").document(administratorUID).collection("Pages").document(pageID).collection("Followers").document(userID);
-                                followers.set(new UserDetails(username, level, userID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                UserDetails follower = new UserDetails();
+                                follower.setFullname(username);
+                                follower.setLevel(level);
+                                follower.setUserID(userID);
+                                follower.setPhonenumber(phonenumber);
+                                follower.setUserimage(userImage);
+                                follower.setEmail(email);
+                                // add to lowercase
+
+                                followers.set(follower).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -330,6 +353,7 @@ public class GlobalPagesFragment extends Fragment {
                                                 userAdapter.notifyItemChanged(position);
                                                 dialog.dismiss();
                                                 Toast.makeText(getActivity(), "Unfollowed", Toast.LENGTH_SHORT).show();
+
                                                 final CollectionReference pagefollowed = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
                                                 Query query = pagefollowed.whereEqualTo("pageID", pageID);
                                                 query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

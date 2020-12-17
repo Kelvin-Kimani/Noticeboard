@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,7 @@ public class AdminPagePosts extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Posts");
 
         Intent intent = getIntent();
         page_name = intent.getStringExtra("pagename");
@@ -51,11 +53,13 @@ public class AdminPagePosts extends AppCompatActivity {
         pageAdminID = intent.getStringExtra("pageAdminID");
         noposts = findViewById(R.id.noposts);
 
-        getSupportActionBar().setTitle(page_name + " Posts");
-
         postref = firestore.collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts");
 
         setUpRecyclerView();
+        onPostClick();
+    }
+
+    private void onPostClick() {
 
         postAdapter.setOnItemClickListener(new PostAdapter.OnItemClickListener() {
             @Override
@@ -107,7 +111,7 @@ public class AdminPagePosts extends AppCompatActivity {
             }
         });
 
-        Query query = postref.orderBy("time", Query.Direction.DESCENDING);
+        Query query = postref.orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
                 .setQuery(query, PostDetails.class)
@@ -151,13 +155,51 @@ public class AdminPagePosts extends AppCompatActivity {
         postAdapter.stopListening();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchData(query);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String query) {
+                searchData(query);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+
+                return false;
+            }
+        });
         return true;
+    }
+
+    private void searchData(String query) {
+
+        FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").orderBy("title", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), PostDetails.class)
+                .build();
+
+        postAdapter = new PostAdapter(options);
+        postAdapter.startListening();
+        recyclerView.setAdapter(postAdapter);
+        onPostClick();
     }
 
     @Override

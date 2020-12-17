@@ -25,8 +25,6 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostDetails, PostAdapt
 
         holder.title.setText(model.getTitle());
         holder.content.setText(model.getContent());
-        //Remember to add time
-        //holder.time.setText(new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date()));
         holder.time.setText(model.getTime());
 
     }
@@ -63,6 +61,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostDetails, PostAdapt
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     int position = getAdapterPosition();
 
                     if (position != RecyclerView.NO_POSITION && listener != null) {

@@ -1,5 +1,6 @@
 package com.noticeboard.ui.home;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,13 +35,15 @@ import com.noticeboard.R;
 
 public class HomeFragment extends Fragment {
 
+    /*private static String staticUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();;
+    private static HomePostAdapter staticPostAdapter;
+    private static RecyclerView staticRecyclerView;*/
     private final String KEY_RECYCLER_STATE = "recycler_state";
     HomePostAdapter postAdapter;
     FloatingActionButton floatingActionButton;
-    RecyclerView recyclerView;
+    static RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String postID, postTitle, postContent, postPageName, postersID, pageID, pageAdminID, status, set_read = "READ";
-    ;
     View v;
     RelativeLayout relativeLayout;
     private CollectionReference postref;
@@ -75,6 +78,7 @@ public class HomeFragment extends Fragment {
         });
 
         recyclerView = v.findViewById(R.id.homerecyclerview);
+        //staticRecyclerView = v.findViewById(R.id.homerecyclerview);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -91,6 +95,7 @@ public class HomeFragment extends Fragment {
 
         loadPosts();
         recyclerViewOnClick();
+
     }
 
     private void loadPosts() {
@@ -116,7 +121,7 @@ public class HomeFragment extends Fragment {
         });
 
         postref = firebaseFirestore.collection("Users").document(userID).collection("All Posts");
-        Query query = postref.orderBy("time", Query.Direction.DESCENDING);
+        Query query = postref.orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
                 .setQuery(query, PostDetails.class)
@@ -144,8 +149,7 @@ public class HomeFragment extends Fragment {
 
                 if (set_read.equals(status)) {
 
-                    Toast.makeText(getActivity(),
-                            "PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
+                    Toast.makeText(HomeFragment.this.getActivity(), "Position "+ position +"PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
 
                 } else {
 
@@ -153,7 +157,8 @@ public class HomeFragment extends Fragment {
                     updatestatus.update("status", set_read);
 
                 }
-                Intent intent = new Intent(getContext(), PostWithComments.class);
+
+                Intent intent = new Intent(HomeFragment.this.getActivity(), PostWithComments.class);
 
                 intent.putExtra("pagename", postPageName);
                 intent.putExtra("postTime", post.getTime());
@@ -188,7 +193,7 @@ public class HomeFragment extends Fragment {
                                 for (DocumentSnapshot document : task.getResult()) {
 
                                     pagePostsRef.document(document.getId()).update("saveValue", defaultValue);
-                                    Toast.makeText(getContext(), "Removed", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HomeFragment.this.getActivity(), "Removed", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -206,7 +211,7 @@ public class HomeFragment extends Fragment {
                                 for (DocumentSnapshot document : task.getResult()) {
 
                                     pagePostsRef.document(document.getId()).update("saveValue", changedValue);
-                                    Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HomeFragment.this.getActivity(), "Saved", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -229,7 +234,7 @@ public class HomeFragment extends Fragment {
                 postContent = post.getContent();
                 pageAdminID = post.getPageAdminID();
 
-                Toast.makeText(getActivity(),
+                Toast.makeText(HomeFragment.this.getActivity(),
                         "PageName:" + postPageName + "PostID: " + postID, Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(getContext(), Comments.class);
@@ -286,5 +291,17 @@ public class HomeFragment extends Fragment {
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    public void doFilter(String searchQuery){
+
+        FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").orderBy("title", Query.Direction.ASCENDING).startAt(searchQuery).endAt(searchQuery + "\uf8ff"), PostDetails.class)
+                .build();
+
+        postAdapter = new HomePostAdapter(options);
+        postAdapter.startListening();
+        recyclerView.setAdapter(postAdapter);
+       // recyclerViewOnClick();
     }
 }

@@ -51,6 +51,12 @@ public class SavedPost extends AppCompatActivity {
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         setUpSavedPostRecyclerView();
+        recyclerOnClick();
+
+
+    }
+
+    private void recyclerOnClick() {
 
         postAdapter.setOnItemClickListener(new HomePostAdapter.OnItemClickListener() {
             @Override
@@ -89,7 +95,7 @@ public class SavedPost extends AppCompatActivity {
 
         postAdapter.setOnSaveItemClickListener(new HomePostAdapter.OnSaveItemClickListener() {
             @Override
-            public void onSaveItemClick(DocumentSnapshot documentSnapshot, int position) {
+            public void onSaveItemClick(DocumentSnapshot documentSnapshot, final int position) {
 
                 PostDetails post = documentSnapshot.toObject(PostDetails.class);
                 String saveValue = post.getSaveValue();
@@ -109,6 +115,7 @@ public class SavedPost extends AppCompatActivity {
 
                                     pagePostsRef.document(document.getId()).update("saveValue", defaultValue);
                                     Toast.makeText(SavedPost.this, "Removed", Toast.LENGTH_SHORT).show();
+                                    postAdapter.notifyDataSetChanged();
 
                                 }
                             }
@@ -127,6 +134,7 @@ public class SavedPost extends AppCompatActivity {
 
                                     pagePostsRef.document(document.getId()).update("saveValue", changedValue);
                                     Toast.makeText(SavedPost.this, "Saved", Toast.LENGTH_SHORT).show();
+                                    postAdapter.notifyItemChanged(position);
 
                                 }
                             }
@@ -161,6 +169,7 @@ public class SavedPost extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void setUpSavedPostRecyclerView() {
@@ -185,7 +194,7 @@ public class SavedPost extends AppCompatActivity {
 
             }
         });
-        Query query = pagePostsRef.whereEqualTo("saveValue", changedValue).orderBy("pagename", Query.Direction.ASCENDING);
+        Query query = pagePostsRef.whereEqualTo("saveValue", changedValue).orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
                 .setQuery(query, PostDetails.class)
@@ -196,7 +205,6 @@ public class SavedPost extends AppCompatActivity {
         recyclerView = findViewById(R.id.savedPostRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(postAdapter);
-
     }
 
     @Override
@@ -255,7 +263,20 @@ public class SavedPost extends AppCompatActivity {
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String query) {
+                searchData(query);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+
                 return false;
             }
         });
@@ -265,12 +286,14 @@ public class SavedPost extends AppCompatActivity {
     private void searchData(String query) {
 
         FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
-                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").whereEqualTo("saveValue", changedValue).orderBy("title", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), PostDetails.class)
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("All Posts").whereEqualTo("saveValue", changedValue).orderBy("title", Query.Direction.ASCENDING).startAt(query.toUpperCase()).endAt(query.toLowerCase() + "\uf8ff"), PostDetails.class)
                 .build();
 
         postAdapter = new HomePostAdapter(options);
         postAdapter.startListening();
+        postAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(postAdapter);
+        recyclerOnClick();
     }
 
     @Override

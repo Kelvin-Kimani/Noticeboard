@@ -35,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.noticeboard.ui.home.HomeFragment;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -183,21 +184,38 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchData(query);
+                // searchData(query);
+
+                HomeFragment fm = new HomeFragment();
+                fm.doFilter(query);
+
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String query) {
+
+                HomeFragment fm = new HomeFragment();
+                fm.doFilter(query);
+
+                //HomeFragment.doFilter(query);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+
                 return false;
             }
         });
         return true;
-    }
-
-    private void searchData(String query) {
-
-
     }
 
     @Override

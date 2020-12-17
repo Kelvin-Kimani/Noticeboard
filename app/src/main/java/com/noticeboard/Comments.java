@@ -35,6 +35,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.noticeboard.Utils.AppUtils;
 
+import org.w3c.dom.Comment;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -108,7 +110,16 @@ public class Comments extends AppCompatActivity {
 
                     DocumentReference commentsRef = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").document();
                     String commentID = commentsRef.getId();
-                    commentsRef.set(new CommentDetails(commentDetails, userID, commentID, Date_Time, username, userimageURL)).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    CommentDetails comment = new CommentDetails();
+                    comment.setComment(commentDetails);
+                    comment.setCommentID(commentID);
+                    comment.setUserID(userID);
+                    comment.setTime(Date_Time);
+                    comment.setUsername(username);
+                    comment.setImageURL(userimageURL);
+
+                    commentsRef.set(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 
@@ -253,7 +264,8 @@ public class Comments extends AppCompatActivity {
             }
         });
 
-        Query query = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").orderBy("time", Query.Direction.DESCENDING);
+
+        Query query = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document(postID).collection("Comments").orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<CommentDetails> options = new FirestoreRecyclerOptions.Builder<CommentDetails>()
                 .setQuery(query, CommentDetails.class)
                 .build();

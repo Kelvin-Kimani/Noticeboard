@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -42,6 +43,9 @@ public class AssociationPagesFragment extends Fragment {
 
     public AssociationPagesFragment() {
         // Required empty public constructor
+    }
+
+    public static void doSearch(String query) {
     }
 
 

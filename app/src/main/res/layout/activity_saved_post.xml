@@ -43,6 +43,33 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/noresultsRL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/noresulttitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="No Result Found"
+            android:textColor="@color/color_title"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/noresulttitle"
+            android:layout_centerHorizontal="true"
+            android:text="Try searching with in order and observe case"
+            android:textColor="@color/color_title" />
+
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/savedPostRecyclerView"
         android:layout_width="match_parent"

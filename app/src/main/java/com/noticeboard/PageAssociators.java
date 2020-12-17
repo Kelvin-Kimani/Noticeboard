@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,16 +46,16 @@ public class PageAssociators extends AppCompatActivity {
         setContentView(R.layout.activity_page_associators);
         dialog = new Dialog(this);
 
+
+        getSupportActionBar().setTitle("Associators");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         Intent intent = getIntent();
         page_name = intent.getStringExtra("pagename");
         pageID = intent.getStringExtra("pageID");
         userID = intent.getStringExtra("userID");
         noassociators = findViewById(R.id.noassociators);
-
-        getSupportActionBar().setTitle(page_name + " Associators");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
 
         DocumentReference page = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID);
         page.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -79,6 +81,10 @@ public class PageAssociators extends AppCompatActivity {
         });
 
         setUpAssociatorsRecyclerview();
+        recyclerItemOnClick();
+    }
+
+    private void recyclerItemOnClick() {
 
         adapter.setOnItemClickListener(new FollowersAdapter.OnItemClickListener() {
             @Override
@@ -219,6 +225,52 @@ public class PageAssociators extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchData(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+
+                return false;
+            }
+        });
+
+        return true;
+    }
+
+    private void searchData(String query) {
+
+        FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Associators").orderBy("fullname", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), UserDetails.class)
+                .build();
+
+        adapter = new FollowersAdapter(options);
+        adapter.startListening();
+        associators.setAdapter(adapter);
     }
 
 }

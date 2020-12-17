@@ -41,6 +41,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -110,7 +111,7 @@ public class PageProfileAdmin extends AppCompatActivity {
 
                 privacy = documentSnapshot.getString("privacy");
 
-                if (privacy.equals("Private")) {
+                if ("Private".equals(privacy)) {
 
                     requested.setVisibility(View.VISIBLE);
 
@@ -463,7 +464,7 @@ public class PageProfileAdmin extends AppCompatActivity {
                 pageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Snackbar.make(view, "Product deleted!", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(view, "Page deleted!", Snackbar.LENGTH_LONG).show();
                     }
                 });
 
@@ -495,8 +496,37 @@ public class PageProfileAdmin extends AppCompatActivity {
                     }
                 });
 
-                //Delete followers
-                CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Followers");
+                //Delete posts on followers page
+                final CollectionReference postsOnFollowers = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Followers");
+                Query query2 = postsOnFollowers.whereEqualTo("pageID", pageID);
+                query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot document: task.getResult()){
+
+                                UserDetails user = document.toObject(UserDetails.class);
+
+                                String followerID = user.getUserID();
+
+                                final CollectionReference pagePostsRef = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts");
+                                Query query = pagePostsRef.whereEqualTo("pageID", pageID);
+                                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (DocumentSnapshot document : task.getResult()) {
+                                                pagePostsRef.document(document.getId()).delete();
+                                            }
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+                    }
+                });
 
                 // yet to add delete users, associators and followers
 

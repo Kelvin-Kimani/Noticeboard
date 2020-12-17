@@ -1,20 +1,29 @@
 package com.noticeboard;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
+@IgnoreExtraProperties
 public class PostDetails {
 
 
-    private String title, content, pagename, time, pageID, postID, saveValue, postersID, pageAdminID, status;
+    private String title, content, pagename, time, pageID, postID, saveValue, postersID, pageAdminID, status, search_post;
+    private @ServerTimestamp Date timestamp;
 
 
-    public PostDetails(String title, String content, String time, String postID) {
+    public PostDetails(String title, String content, String time, String postID, Date timestamp) {
         this.title = title;
         this.content = content;
         this.time = time;
         this.postID = postID;
+        this.timestamp = timestamp;
+        this.search_post = search_post;
 
     }
 
-    public PostDetails(String pagename, String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID, String status) {
+    public PostDetails(String pagename, String title, String content, String time, String pageID, String postID, String saveValue, String postersID, String pageAdminID, String status, Date timestamp, String  search_post) {
         this.pagename = pagename;
         this.title = title;
         this.content = content;
@@ -25,9 +34,27 @@ public class PostDetails {
         this.postersID = postersID;
         this.pageAdminID = pageAdminID;
         this.status = status;
+        this.timestamp = timestamp;
+        this.search_post = search_post;
     }
 
     public PostDetails() {
+    }
+
+    public String getSearch_post() {
+        return search_post;
+    }
+
+    public void setSearch_post(String search_post) {
+        this.search_post = search_post;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getStatus() {

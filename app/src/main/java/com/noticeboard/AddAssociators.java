@@ -160,7 +160,16 @@ public class AddAssociators extends AppCompatActivity {
                                 String userImage = documentSnapshot.getString("userimage");
 
                                 DocumentReference associators = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document(pageID).collection("Associators").document(followerUserID);
-                                associators.set(new UserDetails(username, level, followerUserID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                UserDetails associator = new UserDetails();
+
+                                associator.setFullname(username);
+                                associator.setLevel(level);
+                                associator.setUserID(followerUserID);
+                                associator.setUserimage(userImage);
+                                associator.setSearch_user(username.toLowerCase());
+
+                                associators.set(associator).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +48,11 @@ public class PageFollowers extends AppCompatActivity {
         nofollowers = findViewById(R.id.nofollowers);
 
         setUpFollowersRecyclerView();
+        recyclerItemsOnClick();
+
+    }
+
+    private void recyclerItemsOnClick() {
 
         followersAdapter.setOnItemClickListener(new FollowersAdapter.OnItemClickListener() {
             @Override
@@ -64,6 +70,7 @@ public class PageFollowers extends AppCompatActivity {
 
             }
         });
+
 
     }
 
@@ -110,21 +117,6 @@ public class PageFollowers extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
-      /*  SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));*/
-
-        return true;
-    }
-
-    @Override
     public void onBackPressed() {
 
         finish();
@@ -143,4 +135,53 @@ public class PageFollowers extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchData(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                searchData(query);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+
+                return false;
+            }
+        });
+        return true;
+    }
+
+    private void searchData(String query) {
+
+        FirestoreRecyclerOptions<UserDetails> options = new FirestoreRecyclerOptions.Builder<UserDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").orderBy("fullname", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), UserDetails.class)
+                .build();
+
+        followersAdapter = new FollowersAdapter(options);
+        followersAdapter.startListening();
+        recyclerview.setAdapter(followersAdapter);
+        recyclerItemsOnClick();
+
+    }
+
 }

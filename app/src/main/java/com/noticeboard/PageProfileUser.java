@@ -24,6 +24,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -32,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -133,6 +138,29 @@ public class PageProfileUser extends AppCompatActivity {
                 }
             }
         });
+
+        retrievePageImage();
+    }
+
+    private void retrievePageImage() {
+
+        FirebaseDatabase.getInstance().getReference().child("Users Profiles").child(adminUID).child("Pages")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if ((dataSnapshot.exists()) && (dataSnapshot.hasChild(pageID))) {
+
+                            String imageurl = dataSnapshot.child(pageID).child("PageProfile").getValue().toString();
+                            Picasso.get().load(imageurl).into(circleImageView);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
 
@@ -141,7 +169,7 @@ public class PageProfileUser extends AppCompatActivity {
         Intent intent = new Intent(PageProfileUser.this, UserPagePosts.class);
         intent.putExtra("userID", userID);
         intent.putExtra("pageID", pageID);
-        intent.putExtra("AdminUserID", adminUID);
+        intent.putExtra("adminUID", adminUID);
         intent.putExtra("pagename", page_name);
 
         startActivity(intent);
@@ -172,7 +200,18 @@ public class PageProfileUser extends AppCompatActivity {
 
                                 //save requested follower details
                                 DocumentReference requested = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Requested").document(userID);
-                                requested.set(new UserDetails(username, level, userID, phonenumber, userImage, email)).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                UserDetails requestedFollower = new UserDetails();
+
+                                requestedFollower.setFullname(username);
+                                requestedFollower.setLevel(level);
+                                requestedFollower.setUserID(userID);
+                                requestedFollower.setPhonenumber(phonenumber);
+                                requestedFollower.setUserimage(userImage);
+                                requestedFollower.setEmail(email);
+                                requestedFollower.setSearch_user(username.toLowerCase());
+
+                                requested.set(requestedFollower).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
@@ -210,7 +249,17 @@ public class PageProfileUser extends AppCompatActivity {
 
                                 //save follower details
                                 DocumentReference followers = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Followers").document(userID);
-                                followers.set(new UserDetails(username, level, userID, userImage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                UserDetails follower = new UserDetails();
+
+                                follower.setFullname(username);
+                                follower.setLevel(level);
+                                follower.setUserID(userID);
+                                follower.setUserimage(userImage);
+                                follower.setSearch_user(username.toLowerCase());
+                                // add to lowercase of username
+
+                                followers.set(follower).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 

@@ -2,6 +2,7 @@ package com.noticeboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.noticeboard.ui.home.HomePostAdapter;
 
 public class UserPagePosts extends AppCompatActivity {
 
@@ -38,17 +41,18 @@ public class UserPagePosts extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        forrequested = findViewById(R.id.requestedfollowers);
-        fornonfollowers = findViewById(R.id.nonfollowersview);
-        fornoposts = findViewById(R.id.noposts);
+        getSupportActionBar().setTitle("Posts");
 
 
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
         pageID = intent.getStringExtra("pageID");
-        adminUID = intent.getStringExtra("AdminUserID");
+        adminUID = intent.getStringExtra("adminUID");
         pagename = intent.getStringExtra("pagename");
+
+        forrequested = findViewById(R.id.requestedfollowers);
+        fornonfollowers = findViewById(R.id.nonfollowersview);
+        fornoposts = findViewById(R.id.noposts);
 
         fornonfollowers.setVisibility(View.VISIBLE);
 
@@ -91,6 +95,10 @@ public class UserPagePosts extends AppCompatActivity {
         });
 
         displayPagePosts();
+        onPostClick();
+    }
+
+    private void onPostClick() {
 
         postAdapter.setOnItemClickListener(new PostAdapter.OnItemClickListener() {
             @Override
@@ -126,7 +134,7 @@ public class UserPagePosts extends AppCompatActivity {
 
     private void displayPagePosts() {
 
-        Query query = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Posts").orderBy("time", Query.Direction.DESCENDING);
+        Query query = FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
                 .setQuery(query, PostDetails.class)
                 .build();
@@ -151,6 +159,53 @@ public class UserPagePosts extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchData(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                searchData(query);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
+                return false;
+            }
+        });
+        return true;
+    }
+
+    private void searchData(String query) {
+
+        FirestoreRecyclerOptions<PostDetails> options = new FirestoreRecyclerOptions.Builder<PostDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(adminUID).collection("Pages").document(pageID).collection("Posts").orderBy("title", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), PostDetails.class)
+                .build();
+
+        postAdapter = new PostAdapter(options);
+        postAdapter.startListening();
+        recyclerView.setAdapter(postAdapter);
+        onPostClick();
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
@@ -162,4 +217,5 @@ public class UserPagePosts extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

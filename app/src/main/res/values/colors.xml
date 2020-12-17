@@ -17,7 +17,7 @@
     <color name="tabtextcolor">#232323</color>
     <color name="tabtextcolor2">#5C5C5C</color>
     <color name="tabtextcolor1">#B1B1B1</color>
-    <color name="navigationview">#DFDFDF</color>
+    <color name="navigationview">#F4F4F4</color>
     <color name="tabcolor">#FFFF</color>
     <color name="color_title">#000000</color>
 </resources>

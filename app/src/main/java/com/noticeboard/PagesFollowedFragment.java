@@ -54,6 +54,11 @@ public class PagesFollowedFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static void doSearch(String query) {
+
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

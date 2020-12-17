@@ -115,7 +115,15 @@ public class SignUpExtended extends AppCompatActivity {
 
                     final String level = spinner.getSelectedItem().toString();
 
-                    UserDetails user = new UserDetails(fullnames, phonenumber, level, email, userID);
+                    UserDetails user = new UserDetails();
+
+                    user.setFullname(fullnames);
+                    user.setPhonenumber(phonenumber);
+                    user.setLevel(level);
+                    user.setUserID(userID);
+                    user.setEmail(email);
+                    user.setSearch_user(fullnames.toLowerCase());
+
                     DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users").document(userID);
                     userRef.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -124,7 +132,7 @@ public class SignUpExtended extends AppCompatActivity {
                             if (task.isSuccessful()) {
 
                                 Toast.makeText(SignUpExtended.this, "Profile Details Updated", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(SignUpExtended.this, AddUserProfile.class));
+                                startActivity(new Intent(SignUpExtended.this, MainActivity.class));
                                 finish();
 
                             } else {

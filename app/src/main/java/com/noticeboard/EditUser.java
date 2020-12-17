@@ -26,11 +26,15 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.noticeboard.Utils.AppUtils;
 
 public class EditUser extends AppCompatActivity {
@@ -162,27 +166,109 @@ public class EditUser extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (validateForm()) {
+                if (AppUtils.isNetworkConnected(context)){
 
-                    final String fname = fullnamesET.getText().toString().trim();
-                    final String pno = phonenumberET.getText().toString().trim();
+                    if (validateForm()) {
 
-                    DocumentReference documentReference = firestore.collection("Users").document(userID);
-                    documentReference.update("fullname", fname);
-                    documentReference.update("phonenumber", pno).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(EditUser.this, "Updated Successfully ", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(EditUser.this, UserProfile.class));
-                                finish();
-                            } else {
-                                Toast.makeText(EditUser.this, "An Error Occured, Try again!", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+
+                        final String fname = fullnamesET.getText().toString().trim();
+                        final String pno = phonenumberET.getText().toString().trim();
+
+                        DocumentReference documentReference = firestore.collection("Users").document(userID);
+                        documentReference.update("fullname", fname);
+                        documentReference.update("search_user", fname.toLowerCase());
+                        documentReference.update("phonenumber", pno).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(EditUser.this, "Updated Successfully ", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(EditUser.this, UserProfile.class));
+                                    finish();
+                                } else {
+                                    Toast.makeText(EditUser.this, "An Error Occured, Try again!", Toast.LENGTH_LONG).show();
+                                }
                             }
-                        }
-                    });
+                        });
 
+                        //edit on follower, requested follower, comment and associator
+
+                        CollectionReference getFollower = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("PagesFollowed");
+                        getFollower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (final QueryDocumentSnapshot document: task.getResult()){
+
+                                        PageDetails page = document.toObject(PageDetails.class);
+
+                                        String pageID = page.getPageID();
+                                        String pageAdminID = page.getUserID();
+
+                                        //edit on follower
+                                        final CollectionReference getFollower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers");
+                                        Query query = getFollower.whereEqualTo("userID", userID);
+                                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                if (task.isSuccessful()){
+                                                    getFollower.document(document.getId()).update("fullname", fname);
+                                                }
+                                            }
+                                        });
+
+                                        //edit on Associator and check if follower exists first
+                                        final CollectionReference getAssociator = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Associators");
+                                        Query query1 = getAssociator.whereEqualTo("userID", userID);
+                                        query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                if (task.isSuccessful()){
+                                                    getAssociator.document(document.getId()).update("fullname", fname);
+                                                }
+                                            }
+                                        });
+
+                                        //edit on requested follower
+                                        final CollectionReference getRequested = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Requested");
+                                        Query query2 = getRequested.whereEqualTo("userID", userID);
+                                        query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                if (task.isSuccessful()){
+                                                    getRequested.document(document.getId()).update("fullname", fname);
+                                                }
+                                            }
+                                        });
+
+                                        //edit on comment
+
+                                   /* final CollectionReference getRequested = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts");
+                                    Query query2 = getRequested.whereEqualTo("userID", userID);
+                                    query2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                            if (task.isSuccessful()){
+                                                getRequested.document(document.getId()).update("fullname", fname);
+                                            }
+                                        }
+                                    });*/
+
+
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
+                else {
+                    Toast.makeText(EditUser.this, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

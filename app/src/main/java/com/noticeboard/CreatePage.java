@@ -86,6 +86,8 @@ public class CreatePage extends AppCompatActivity {
 
             if (validateForm()) {
 
+                finish();
+
                 final String pagename = page_name.getText().toString().trim();
 
                 final String pageinfo = bio.getText().toString().trim();
@@ -95,13 +97,22 @@ public class CreatePage extends AppCompatActivity {
                 DocumentReference pageref = FirebaseFirestore.getInstance().collection("Users").document(userID).collection("Pages").document();
                 String pageID = pageref.getId();
 
-                pageref.set(new PageDetails(pagename, pageinfo, privacy, pageID, userID)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                PageDetails localPage = new PageDetails();
+
+                localPage.setPagename(pagename);
+                localPage.setPageinfo(pageinfo);
+                localPage.setPrivacy(privacy);
+                localPage.setPageID(pageID);
+                localPage.setUserID(userID);
+                localPage.setSearch_page(pagename.toLowerCase());
+
+                //add lower case to page
+
+                pageref.set(localPage).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
 
                         Toast.makeText(CreatePage.this, "Page Created", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(CreatePage.this, Pages.class));
-                        finish();
 
                     }
                 })
@@ -115,20 +126,20 @@ public class CreatePage extends AppCompatActivity {
                             }
                         });
 
-                PageDetails globalPage = new PageDetails(pagename, pageinfo, privacy, pageID, userID);
+                // Global Page
                 DocumentReference globalPageRef = FirebaseFirestore.getInstance().collection("Global Pages").document();
 
-                globalPageRef.set(globalPage).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                PageDetails globalPage = new PageDetails();
 
-                        if (task.isSuccessful()) {
+                globalPage.setPagename(pagename);
+                globalPage.setPageinfo(pageinfo);
+                globalPage.setPrivacy(privacy);
+                globalPage.setPageID(pageID);
+                globalPage.setUserID(userID);
+                globalPage.setSearch_page(pagename.toLowerCase());
 
-                            Toast.makeText(CreatePage.this, "It's global now!", Toast.LENGTH_LONG).show();
+                globalPageRef.set(globalPage);
 
-                        }
-                    }
-                });
             }
 
         } else {

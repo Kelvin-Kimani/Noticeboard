@@ -1,5 +1,6 @@
 package com.noticeboard;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.noticeboard.ui.home.HomePostAdapter;
 
 
 /**
@@ -32,9 +34,12 @@ import com.google.firebase.firestore.QuerySnapshot;
  */
 public class PagesCreatedFragment extends Fragment {
 
+    private static String staticUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private static RecyclerView staticRecyclerView;
     FloatingActionButton createpageFAB;
     View v;
     PageProfileAdapter adapter;
+    static PageProfileAdapter staticPageAdapter;
     RecyclerView recyclerView;
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid(), pageID, pname, pinfo;
     RelativeLayout relativeLayout;
@@ -46,6 +51,8 @@ public class PagesCreatedFragment extends Fragment {
     public PagesCreatedFragment() {
         // Required empty public constructor
     }
+
+
 
 
     @Override
@@ -65,6 +72,8 @@ public class PagesCreatedFragment extends Fragment {
         });
 
         recyclerView = view.findViewById(R.id.pagesCreatedRecyclerView);
+        staticRecyclerView = view.findViewById(R.id.pagesCreatedRecyclerView);
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -198,5 +207,16 @@ public class PagesCreatedFragment extends Fragment {
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    public static void doSearch(String query) {
+
+        FirestoreRecyclerOptions<PageDetails> options = new FirestoreRecyclerOptions.Builder<PageDetails>()
+                .setQuery(FirebaseFirestore.getInstance().collection("Users").document(staticUserID).collection("Pages").orderBy("pagename", Query.Direction.ASCENDING).startAt(query).endAt(query + "\uf8ff"), PageDetails.class)
+                .build();
+
+        staticPageAdapter = new PageProfileAdapter(options);
+        staticPageAdapter.startListening();
+        staticRecyclerView.setAdapter(staticPageAdapter);
     }
 }

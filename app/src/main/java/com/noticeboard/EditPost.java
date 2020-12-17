@@ -87,6 +87,7 @@ public class EditPost extends AppCompatActivity {
                             //update on page admin
                             DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(postID);
                             post.update("title", updatedTitle);
+                            post.update("title", updatedTitle.toLowerCase());
                             post.update("content", updatedPost);
                             post.update("status", "UNREAD");
 
@@ -104,6 +105,7 @@ public class EditPost extends AppCompatActivity {
 
                                             DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts").document(postID);
                                             post.update("title", updatedTitle);
+                                            post.update("title", updatedTitle.toLowerCase());
                                             post.update("content", updatedPost);
                                             post.update("status", "UNREAD");
 

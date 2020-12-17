@@ -18,6 +18,7 @@ public class Pages extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     TabsAccessorAdapter tabsAccessorAdapter;
+    int page;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class Pages extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         int defaultValue = 0;
-        int page = getIntent().getIntExtra("IntendedPage", defaultValue);
+        page = getIntent().getIntExtra("IntendedPage", defaultValue);
         viewPager.setCurrentItem(page);
 
     }
@@ -51,23 +52,70 @@ public class Pages extends AppCompatActivity {
         //Search View
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) item.getActionView();
-/*        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchData(query);
+                if (page == 0){
+
+                    PagesCreatedFragment.doSearch(query);
+
+                }
+                else if (page == 1){
+
+                    PagesFollowedFragment.doSearch(query);
+                }
+
+                else if (page == 2){
+
+                    AssociationPagesFragment.doSearch(query);
+
+                }
+
+                else if (page == 3){
+
+                    GlobalPagesFragment.doSearch(query);
+
+                }
+
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String query) {
+
+                if (page == 0){
+
+                    PagesCreatedFragment.doSearch(query);
+
+                }
+                else if (page == 1){
+
+                    PagesFollowedFragment.doSearch(query);
+                }
+
+                else if (page == 2){
+
+                    AssociationPagesFragment.doSearch(query);
+
+                }
+
+                else if (page == 3){
+
+                    GlobalPagesFragment.doSearch(query);
+
+                }
+
+
                 return false;
             }
-        });*/
+        });
 
         return true;
     }
 
     private void searchData(String query) {
+
+
 
 
     }

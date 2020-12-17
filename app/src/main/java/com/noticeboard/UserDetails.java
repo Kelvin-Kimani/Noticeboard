@@ -2,28 +2,37 @@ package com.noticeboard;
 
 public class UserDetails {
 
-    String fullname;
-    String level;
-    String phonenumber, userimage, userID, email;
+    String fullname, level, phonenumber, userimage, userID, email, search_user;
 
 
-    public UserDetails(String fullname, String phonenumber, String level, String email, String userID) {
+    public UserDetails(String fullname, String phonenumber, String level, String email, String userID, String search_user) {
         this.fullname = fullname;
         this.level = level;
         this.phonenumber = phonenumber;
         this.email = email;
         this.userID = userID;
+        this.search_user = search_user;
     }
 
-    public UserDetails(String fullname, String level, String userID, String phonenumber, String userimage, String email) {
+    public UserDetails(String fullname, String level, String userID, String phonenumber, String userimage, String email, String search_user) {
         this.fullname = fullname;
         this.level = level;
         this.userID = userID;
         this.phonenumber = phonenumber;
         this.userimage = userimage;
         this.email = email;
+        this.search_user = search_user;
     }
 
+    public UserDetails(String username, String level, String userID, String userImage, String search_user) {
+
+        this.fullname = username;
+        this.level = level;
+        this.userID = userID;
+        this.userimage = userImage;
+        this.search_user = search_user;
+
+    }
 
     public UserDetails(String userimage) {
         this.userimage = userimage;
@@ -33,13 +42,12 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public UserDetails(String username, String level, String userID, String userImage) {
+    public String getSearch_user() {
+        return search_user;
+    }
 
-        this.fullname = username;
-        this.level = level;
-        this.userID = userID;
-        this.userimage = userImage;
-
+    public void setSearch_user(String search_user) {
+        this.search_user = search_user;
     }
 
     public String getEmail() {

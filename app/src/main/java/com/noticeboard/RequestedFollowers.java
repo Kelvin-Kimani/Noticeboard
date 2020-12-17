@@ -2,6 +2,8 @@ package com.noticeboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -27,10 +29,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class RequestedFollowers extends AppCompatActivity {
 
+    private static final String KEY_RECYCLER_STATE = "recycler_state";
     String pageID, userID, requestedID, pageAdminID, pagename, pageinfo, privacy;
     RecyclerView requestingFollowers;
     RequestedFollowersAdapter requestedFollowersAdapter;
     TextView textView;
+    private Bundle bundleRecyclerViewState;
+    private Parcelable recyclerstate = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +77,17 @@ public class RequestedFollowers extends AppCompatActivity {
                         String level = documentSnapshot.getString("level");
                         String userimage = documentSnapshot.getString("userimage");
 
-                        DocumentReference follower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers").document(requestedID);
-                        follower.set(new UserDetails(username, level, requestedID, userimage)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        DocumentReference followers = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers").document(requestedID);
+
+                        UserDetails follower = new UserDetails();
+
+                        follower.setFullname(username);
+                        follower.setLevel(level);
+                        follower.setUserID(requestedID);
+                        follower.setEmail(userimage);
+                        follower.setSearch_user(username.toLowerCase());
+
+                        followers.set(follower).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
@@ -106,6 +121,20 @@ public class RequestedFollowers extends AppCompatActivity {
                 remove.delete();
                 Toast.makeText(RequestedFollowers.this, "Request Cancelled", Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+        requestedFollowersAdapter.setOnItemClickListener(new RequestedFollowersAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+
+                UserDetails user = documentSnapshot.toObject(UserDetails.class);
+                requestedID = user.getUserID();
+
+                //can do as a fragment on free time
+                Intent intent1 = new Intent(RequestedFollowers.this, UserPage.class);
+                intent1.putExtra("userID", requestedID);
+                startActivity(intent1);
             }
         });
 
@@ -154,6 +183,36 @@ public class RequestedFollowers extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         requestedFollowersAdapter.stopListening();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        bundleRecyclerViewState = new Bundle();
+
+        recyclerstate = requestingFollowers.getLayoutManager().onSaveInstanceState();
+
+        bundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, recyclerstate);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (bundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    recyclerstate = bundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+                    requestingFollowers.getLayoutManager().onRestoreInstanceState(recyclerstate);
+
+                }
+            }, 50);
+        }
+
+
+        requestingFollowers.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override

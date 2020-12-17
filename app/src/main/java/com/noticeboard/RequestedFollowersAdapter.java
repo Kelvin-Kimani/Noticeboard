@@ -20,6 +20,7 @@ public class RequestedFollowersAdapter extends FirestoreRecyclerAdapter<UserDeta
     CircleImageView userImage;
     private OnAcceptClickListener onAcceptClickListener;
     private OnCancelClickListener onCancelClickListener;
+    private OnItemClickListener onItemClickListener;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -55,12 +56,20 @@ public class RequestedFollowersAdapter extends FirestoreRecyclerAdapter<UserDeta
         this.onCancelClickListener = onCancelClickListener;
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     public interface OnAcceptClickListener {
         void onAcceptClick(DocumentSnapshot documentSnapshot, int position);
     }
 
     public interface OnCancelClickListener {
         void onCancelClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
     }
 
     public class RequestingUser extends RecyclerView.ViewHolder {
@@ -75,6 +84,19 @@ public class RequestedFollowersAdapter extends FirestoreRecyclerAdapter<UserDeta
             accept = itemView.findViewById(R.id.acceptRequest);
             cancel = itemView.findViewById(R.id.cancelRequest);
             userImage = itemView.findViewById(R.id.userprofileimg);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int position = getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION && onItemClickListener != null) {
+                        onItemClickListener.onItemClick(getSnapshots().getSnapshot(position), position);
+                    }
+
+                }
+            });
 
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override

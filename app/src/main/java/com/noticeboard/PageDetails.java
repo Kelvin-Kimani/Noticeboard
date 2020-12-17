@@ -3,7 +3,7 @@ package com.noticeboard;
 public class PageDetails {
 
 
-    String pagename, pageinfo, privacy, pageID, userID, pageimage;
+    String pagename, pageinfo, privacy, pageID, userID, pageimage, search_page;
 
     public PageDetails(String pagename, String pageinfo, String privacy) {
         this.pagename = pagename;
@@ -39,6 +39,20 @@ public class PageDetails {
         this.pageinfo = pageinfo;
         this.pageimage = pageimage;
         this.pageID = pageID;
+    }
+
+    public PageDetails(String search_page) {
+
+        this.search_page = search_page;
+
+    }
+
+    public String getSearch_page() {
+        return search_page;
+    }
+
+    public void setSearch_page(String search_page) {
+        this.search_page = search_page;
     }
 
     public String getPageimage() {

@@ -112,7 +112,15 @@ public class PostPage extends AppCompatActivity {
 
                 DocumentReference postreference = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Posts").document();
                 final String postID = postreference.getId();
-                postreference.set(new PostDetails(title, content, time, postID)).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                PostDetails post = new PostDetails();
+                post.setTitle(title);
+                post.setContent(content);
+                post.setPostID(postID);
+                post.setTime(time);
+                post.setSearch_post(title.toLowerCase());
+
+                postreference.set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
 
@@ -129,9 +137,25 @@ public class PostPage extends AppCompatActivity {
                             }
                         });
 
+                //all posts on admin
                 DocumentReference allpostreference = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(postID);
-                allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue, userID, pageAdminID, status));
 
+                PostDetails adminPost = new PostDetails();
+                adminPost.setPagename(page_name);
+                adminPost.setTitle(title);
+                adminPost.setContent(content);
+                adminPost.setPageID(pageID);
+                adminPost.setPostID(postID);
+                adminPost.setSaveValue(defaultValue);
+                adminPost.setPostersID(userID);
+                adminPost.setPageAdminID(pageAdminID);
+                adminPost.setStatus(status);
+                adminPost.setTime(time);
+                adminPost.setSearch_post(title.toLowerCase());
+
+                allpostreference.set(adminPost);
+
+                //all posts on followers
                 CollectionReference follower = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("Pages").document(pageID).collection("Followers");
                 follower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -143,7 +167,21 @@ public class PostPage extends AppCompatActivity {
                                 String followerID = user.getUserID();
 
                                 DocumentReference allpostreference = FirebaseFirestore.getInstance().collection("Users").document(followerID).collection("All Posts").document(postID);
-                                allpostreference.set(new PostDetails(page_name, title, content, time, pageID, postID, defaultValue, userID, pageAdminID, status));
+
+                                PostDetails followerPost = new PostDetails();
+                                followerPost.setPagename(page_name);
+                                followerPost.setTitle(title);
+                                followerPost.setContent(content);
+                                followerPost.setPageID(pageID);
+                                followerPost.setPostID(postID);
+                                followerPost.setSaveValue(defaultValue);
+                                followerPost.setPostersID(userID);
+                                followerPost.setPageAdminID(pageAdminID);
+                                followerPost.setStatus(status);
+                                followerPost.setTime(time);
+                                followerPost.setSearch_post(title.toLowerCase());
+
+                                allpostreference.set(followerPost);
 
                             }
                         }

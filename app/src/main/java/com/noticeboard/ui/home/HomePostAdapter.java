@@ -1,6 +1,5 @@
 package com.noticeboard.ui.home;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -34,7 +32,6 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
     private OnItemClickListener listener;
     private OnSaveItemClickListener saveListener;
     private OnCommentsClickListener commentsListener;
-    String status_read = "READ";
 
 
     /**
@@ -62,22 +59,22 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
         holder.textViewPageName.setText(pagename);
         holder.textViewTitle.setText(postTitle);
         holder.textViewContent.setText(model.getContent());
-        //Remember to add time
         holder.textViewTime.setText(model.getTime());
 
-        if (status_read.equals(status)){
+        if (status.equals("READ")) {
 
             holder.textViewPageName.setTextColor(Color.parseColor("#5C5C5C"));
             holder.textViewTitle.setTextColor(Color.parseColor("#5C5C5C"));
-        }
-        else{
+
+        } else {
 
             holder.textViewPageName.setTextColor(Color.BLACK);
-            holder.textViewPageName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-
             holder.textViewTitle.setTextColor(Color.BLACK);
+            holder.textViewPageName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
             holder.textViewTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
         }
+
 
         Character firstLetter = pagename.charAt(0);
 
@@ -159,11 +156,9 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
             textViewPageName = itemView.findViewById(R.id.pagename);
             textViewTime = itemView.findViewById(R.id.time);
             pageImageView = itemView.findViewById(R.id.pageprofileimg);
-            cardView = itemView.findViewById(R.id.HomePostCardView);
+//            cardView = itemView.findViewById(R.id.HomePostCardView);
             savePost = itemView.findViewById(R.id.savebutton);
             comments = itemView.findViewById(R.id.commentbutton);
-
-
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +170,8 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
                     if (position != RecyclerView.NO_POSITION && listener != null) {
 
                         listener.onItemClick(getSnapshots().getSnapshot(position), position);
+                        notifyDataSetChanged();
+                        notifyItemChanged(position);
 
                     }
                 }
@@ -189,6 +186,7 @@ public class HomePostAdapter extends FirestoreRecyclerAdapter<PostDetails, HomeP
                     if (position != RecyclerView.NO_POSITION && saveListener != null) {
 
                         saveListener.onSaveItemClick(getSnapshots().getSnapshot(position), position);
+                        notifyItemChanged(position);
 
                     }
                 }

@@ -1,20 +1,36 @@
 package com.noticeboard;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
+@IgnoreExtraProperties
 public class CommentDetails {
 
+    private @ServerTimestamp Date timestamp;
     String comment, userID, commentID, time, username, imageURL;
 
     public CommentDetails() {
 
     }
 
-    public CommentDetails(String comment, String userID, String commentID, String time, String username, String imageURL) {
+    public CommentDetails(String comment, String userID, String commentID, String time, String username, String imageURL, Date timestamp) {
         this.comment = comment;
         this.userID = userID;
         this.commentID = commentID;
         this.time = time;
         this.username = username;
         this.imageURL = imageURL;
+        this.timestamp = timestamp;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getUsername() {

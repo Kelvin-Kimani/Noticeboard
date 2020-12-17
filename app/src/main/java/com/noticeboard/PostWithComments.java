@@ -330,7 +330,7 @@ public class PostWithComments extends AppCompatActivity {
 
                             Toast.makeText(PostWithComments.this, "Post deleted", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
-                            startActivity(new Intent(PostWithComments.this, MainActivity.class));
+                            finish();
 
                             //delete on page admin
                             DocumentReference post = FirebaseFirestore.getInstance().collection("Users").document(pageAdminID).collection("All Posts").document(post_id);
